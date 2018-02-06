@@ -20,8 +20,8 @@ import me.limeglass.skungee.objects.BungeePacket;
 
 public class SpigotRunnable implements Runnable {
 
-	private Socket socket = null;
 	private InetAddress address;
+	private Socket socket;
 
 	public SpigotRunnable(Socket socket) {
 		this.socket = socket;

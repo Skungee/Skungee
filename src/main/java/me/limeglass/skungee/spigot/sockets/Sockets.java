@@ -24,11 +24,11 @@ import me.limeglass.skungee.spigot.Skungee;
 
 public class Sockets {
 
-	public static Socket bungeecord = null;
 	public static Map<InetAddress, Integer> attempts = new HashMap<InetAddress, Integer>();
 	public static Set<InetAddress> blocked = new HashSet<InetAddress>();
-	private static int task, heartbeat, keepAlive;
+	public static Socket bungeecord;
 	private static Boolean restart = true, checking = false;
+	private static int task, heartbeat, keepAlive;
 	
 	//TODO create a system to cache failed packets, It already does but it gives up after a few times and lets it go.
 	
