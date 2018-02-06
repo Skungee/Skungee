@@ -81,7 +81,7 @@ public class EncryptionUtil {
 					FileOutputStream out = new FileOutputStream(hashedFile);
 					out.write(hash());
 					out.close();
-					Skungee.consoleMessage("You're now save to set the `password` option to \"hashed\"");
+					Skungee.consoleMessage("You're now safe to set the `password` option to \"hashed\"");
 				} catch (IOException e) {
 					exception(e, "There was an error writting the hash to file.");
 				}
@@ -99,7 +99,7 @@ public class EncryptionUtil {
 					FileOutputStream out = new FileOutputStream(hashedFile);
 					out.write(hash());
 					out.close();
-					me.limeglass.skungee.bungeecord.Skungee.consoleMessage("You're now save to set the `password` option to \"hashed\"");
+					me.limeglass.skungee.bungeecord.Skungee.consoleMessage("You're now safe to set the `password` option to \"hashed\"");
 				} catch (IOException e) {
 					exception(e, "There was an error writting the hash to file.");
 				}
