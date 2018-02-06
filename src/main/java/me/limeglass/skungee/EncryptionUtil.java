@@ -23,9 +23,9 @@ import me.limeglass.skungee.spigot.Skungee;
 
 public class EncryptionUtil {
 
+	private me.limeglass.skungee.bungeecord.Skungee bungeeInstance;
 	private String algorithm = "AES/CTS/PKCS5Padding";
 	private Boolean spigot, printErrors;
-	private me.limeglass.skungee.bungeecord.Skungee bungeeInstance;
 	private Skungee spigotInstance;
 	
 	public EncryptionUtil(me.limeglass.skungee.bungeecord.Skungee skungee, Boolean spigot) {

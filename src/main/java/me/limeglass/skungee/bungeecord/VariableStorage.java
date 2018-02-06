@@ -23,15 +23,15 @@ import net.md_5.bungee.api.ProxyServer;
 
 public class VariableStorage {
 	
-	private static String folder = Skungee.getInstance().getDataFolder().getAbsolutePath() + File.separator + "variables" + File.separator;
-	private static File file;
-	private static final String NEW_LINE = "\n";
+	private final static String folder = Skungee.getInstance().getDataFolder().getAbsolutePath() + File.separator + "variables" + File.separator;
+	private static TreeMap<String, Object> variables = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
+	private final static GsonBuilder gsonBuilder = new GsonBuilder();
 	private static final String DELIMITER = ": ";
-	private static FileWriter writer = null;
-	private static GsonBuilder gsonBuilder = new GsonBuilder();
-	private static Gson gson;
-	public static TreeMap<String, Object> variables = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
+	private static final String NEW_LINE = "\n";
 	private static Boolean loadingHash = false;
+	private static FileWriter writer = null;
+	private static Gson gson;
+	private static File file;
 	
 	//TODO Make an effect to load all variables from a spigot server to the Bungeecord.
 	//TODO Add a read lock to the file.
