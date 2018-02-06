@@ -1,0 +1,189 @@
+# Skungee (Bungeecord) - The #1 Skript addon for Bungeecord.
+
+# The version is to help determine which version this config is. Please do not modify this value.
+version: "1.0.3d"
+
+# This is the main port for the Skungee network system. Skungee will setup this port on on this Bungeecord machine.
+# Make sure the port is put "port forward" or that you have access to this port to be running, if not change this to an avalible port.
+
+# If you don't know what ports you can access, contact your hosting company and ask for some ports.
+# You can say "May I get some Votifier ports" to make it more clear to them, and they should give you a few ports.
+# Or you can just use the ports without them knowing, either works, I do this. Just be advised if it doesn't work, the ports aren't avalible or are already in use.
+
+# Make sure all the port options of the Skungee's on the connected Spigot servers are matching this.
+port: 1337
+
+# Prints additional information in the console. The developers of Skungee may ask you to enable this when reporting an error.
+debug: false
+
+# All security options to protect your Skungee on Bungeecord and Spigot from possible external sources.
+# Everything in this section must match the same values as the Skungee config.yml on the Bungeecord.
+security:
+    password:
+        # Should all packets require a password in order to be processed.
+        enabled: false
+        # Password can't be "hashed" unless instructed too (read below)
+        password: "insert password"
+        # Should Skungee add a protected hash to the password using a one-way encryption.
+        # This makes the password nearly impossible to decode if an external source somehow gets it.
+        hash: true
+        # If the hashFile option is true, set the password and then restart the server.
+        # Skungee will create a hashed file in the Skungee folder location containing your password in a hashed format.
+        # Keep in mind that the hash option above needs to be set to true.
+        # After the file has been generated, set the password option above to "hashed" (Case sensitive)
+        # Skungee will remember your original password until you change the password to anything other than "hashed" and this will be repeated.
+        # This creates a more secure system so that if someone invades your servers files, your Skungee password is protected and all your Skungee servers are protected.
+        # If you require any assistance with this option, please contact a Skungee developer.
+        hashFile: false
+        # Choose which algorithm you would like to use for the hash.
+        # Algorithms at the time this was written: MD5, SHA-1 and SHA-256 (Strongest)
+        hashAlgorithm: "SHA-256"
+    encryption:
+        # Should Skungee encrypt all sent packets.
+        # Currently this only encrypts it in Base64. So the algorithm option below does nothing.
+        # Constantly keep nagging at the developers of Skungee to finish this. (Shh I didn't put this here)
+        enabled: false
+        # Set which Cipher algorithm you would like to use.
+        cipherAlgorithm: "AES/CTS/PKCS5Padding"
+        # Should Skungee print any errors that may happen.
+        # If you come across any errors with encryption, make sure you message the developers of Skungee, and not to users in a public setting.
+        printEncryptionErrors: true
+    breaches:
+        # Breaches are even more added security, Breaches require the password or encryption option to be enabled for this to work.
+        # Breaches is a system designed to stop constant failed attempts. Since there is no threshold for how many packets can be sent a tick, this option aims to add
+        # security for that. If a(n) IP/Server fails X amount of times, what should Skungee do to protect your server. Choose from the options below.
+        enabled: false
+        # The amount of times a(n) IP/Server can fail at successfully sending security details.
+        attempts: 30
+        # Should Skungee shutdown the server if there is such an issue of security breaching?
+        # Keep in mind that someone could use this to shutdown your server, this option should only be used if you really trust the security of your server
+        # or that you have files and data that you really want to protect. We suggest not enabling it, but it's here for anyone who wants hardcore security.
+        # This option is also good to be used if your server is private.
+        shutdown: false
+        # Should Skungee block the IP/Server from sending packets if it fails X amount of times?
+        # This only blocks the IP/Server until the server is restarted again.
+        blockAddress: true
+        # Should Skungee log all events that meet the settings above in a `log.txt` within the Skungee folder?
+        log: true
+        # If the log system has picked up any external sources address, you can put it in this list below, and Skungee will remember and always block that address.
+        # Don't include the port as they could use a different port.
+        blacklisted:
+            - 123.456.7.890
+
+# Disables the message saying Skungee was enabled.
+DisableRegisteredInfo: false
+
+# Disables all messages to the console. Only important stack traces and information logger will be sent.
+# If you don't like Skungee constantly notifing what is going on, you can disable this.
+DisableConsoleMessages: false
+
+Recievers:
+    # How many times should Skungee try to connect to a server's reciever?
+    allowedTrys: 10
+
+# The system that tracks and manages when servers go online and offline. This system determines many things and here are the configurations for it. 
+Tracker:
+    # How many times should Skungee (Bungeecord) check before determining a server is offline.
+    # The lower this is, the faster the syntax can determine it's offline state on the Spigot server.
+    allowedTrys: 4
+    # If a spigot server goes unresponsive and this is true, Skungee will stop tracking it.
+    DisableTracking: false
+    
+# If you have scripts in the folder plugins/Skungee/scripts/
+# Skungee will relay these scripts to all connected servers.
+# This acts like global scripts to keep all servers up to date.
+# All connected servers need to have the "Reciever" option enabled in the Skungee settings.
+GlobalScripts:
+    Enabled: true
+
+# Bungeecord events. This is in BETA and is extremely experimental.
+Events: false
+
+# Should Skungee use the UUID's that are incoming from Spigot servers.
+# If you run bungeecord in offline mode for cracked players, it's best to keep this on false.
+# If this option is false, only the name of players will be determined.
+
+# NOTE: Please make sure you have the option `bungeecord` set to true in the spigot.yml of all the servers connected to this bungeecord.
+# You also need to have the option `ip_forward` set to true in the config.yml of Bungeecord for this to work properly.
+IncomingUUIDs: true
+
+NetworkVariables:
+    # Backup the variable database.
+    # Allow variables to be re-writen if a server calls for it.
+    AllowOverrides: true
+    # Automatic sharing means that Skungee will try to make Skungee's (Spigot side) variables
+    # match the exact variables as Bungeecord.
+    # So basically if you update a global variable, Skungee will make every Spigot server variables match that.
+    # So all you need todo is
+    #
+    # set network variable {test} to "Hello world!"
+    #
+    # Then on every other server, the variable {test} will be be set to "Hello world!"
+    #
+    # WARNING: Keep in mind this will override any variable names that match Skungee's.
+    # If this is enabled Skungee variable names will be priority!
+    # It should be harmless if you don't care about your old data.
+    # And last thing, this is cap sensitive, can't change or fix that. That's Skript. (Has been taken into consideration and fixed in Bensku's edit)
+    AutomaticSharing: false
+    Backups:
+        Enabled: true
+        # Should Skungee notify the console when the variables gets saved.
+        ConsoleMessage: true
+        # Set the backup time in minutes.
+        IntervalTime: 60
+
+Misc:
+  # Whenever a message isn't set in a syntax, should Skungee grab a funny message to say to the user when kicked.
+  # This is best used if you make a Bungeecord ban manager lol.
+  UseFunnyKickMessages: false
+  FunnyKickMessages:
+    - This bungeecord server can't contain you
+    - What are you doing in my swamp!
+    - Don't let the door kick you on the way out!
+    - Have a nice flight!
+    - Hope to hear back from you soon!
+    - Bad news Batman.
+    - You have been kicked from the network!
+    - Bungeecord says no, you can't be here.
+    - You're needed elsewhere.
+    - Someones toy's in the water hole.
+    - You have been kicked my friend.
+    - I hope you find a good place in our heart.
+    - Get rekt, you have beed kicked from the network!
+    - We were playing hot potato and you lost.
+    - Can I get your number so I can never call again.
+    - When was the last time you washed your hands?\nWe keep it clean around here.
+    - Heaven sent an angel to kick you from our network.
+    - RIP you.
+    - RIP, you have been kicked.
+    - You have been kicked.
+    - An operator has kicked your hard.
+    - Someones not your friend.
+    - The server had an internal error with you.
+    - I guess that was the last straw.
+    - K\nI\nC\nK\nE\nD
+    - Your stupidity outweighs my inteligence
+    - The network cannot contain high levels of uglyness
+    - System overload with too much of you.
+    - i'd hang a medal off your ass, but my boot fits better.
+    - common sense eludes you doesn't it.
+    - ever had a foot in your ass?  YA DO NOW!
+    - apparently you don't learn.... do you?
+    - how about heres my finger hes my thumb this is my boot right up yer bum.
+    - thankyou please call again.
+    - I'm sorry but all our operators are busy at the moment, Try again later.
+    - that word's a no no, ya do do.
+    - This is a beauty parlour... you appear to have hit all 27 branches on the ugly tree... there is nothing we can do for you. Try the shop next door
+    - God loves you"...............................wait.......NO I don't.
+    - This is Alex from Target, You're not allowed in my store!
+    - Have a ride on the short bus?
+    - It's along walk home so grab your coat, yopur leaving.
+    - don't say i never gave you nothin (swift kick)\
+    - here a early Christmas prizent.
+    - insert own kick message cos your not worht the effort
+    - try that one again and il wear your ass for a slipper
+    - Get the hell of my network!
+    - My mother gave me life, i gave her the blues, my wife gave me hell i gave her herpies, youve given me nothing so consider this a gift
+    - Congratulations, you have been promoted to the rank kicked.
+    - You know what gives me depression? You.
+    - Im sorry for this inconvenience of you getting kicked, if you require help, please contact us at 1-800 I don't care..
