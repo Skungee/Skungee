@@ -445,6 +445,15 @@ public class PacketHandler {
 					return settings;
 				}
 				break;
+			case PLAYERVIEWDISTANCE:
+				if (!players.isEmpty()) {
+					Set<Number> distances = new HashSet<Number>();
+					for (ProxiedPlayer player : players) {
+						if (player.getViewDistance() > 0) distances.add(player.getViewDistance());
+					}
+					return distances;
+				}
+				break;
 			}
 		
 			/*

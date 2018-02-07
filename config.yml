@@ -6,7 +6,7 @@ version: "1.0.3d"
 # Print additional information in the console. The developers of FunkySk may ask you to enable this when reporting an error.
 debug: false
 
-# The details of the Skungee Bungeecord plugin. Place the same credentials as the Bungeecord Skungee here.
+# The details of the Skungee Bungeecord plugin. Place the same login credentials as the Bungeecord Skungee here.
 host: "127.0.0.1"
 port: 1337
 

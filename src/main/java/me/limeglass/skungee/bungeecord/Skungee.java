@@ -237,30 +237,41 @@ public class Skungee extends Plugin {
 	}
 }
 /*
-Added Current Server of Script expression:
+Added Current Server of Script expression (Returns String):
 
 	[name of] this [script[s]] [bungee[[ ]cord]] server
 	[bungee[[ ]cord]] server [name] of this script
 	
-	Fixed a bug where the evaluate effect would always send the evaluate to all servers if the server was a certian value.
+Fixed a bug where the evaluate effect would always send the evaluate to all servers if the server was a certian value.
+
+The evaluate now doesn't send the evaluate to all the servers if the server string is null.
+
+The server string of all syntax can now support IP's with ports so for example:
+
+	"127.0.0.1:25565,127.0.0.1:25566"
 	
-	The evaluate now doesn't send the evaluate to all the servers if the server string is null.
+	evaluate "broadcast ""&6Example""" on bungeecord servers "127.0.0.1:25565,127.0.0.1:25566,127.0.0.1:25567"
+	set {_value} to motds of bungeecord server "127.0.0.1"
 	
-	The server string of all syntax can now support IP's with ports so for example:
+Fixed a bug with handling the hashed password file
+
+Added chat mode of player (Returns chat mode type):
+	[(all [[of] the]|the)] bungee[[ ]cord] chat[ ](setting|mode)[s] (of|from) [(player|uuid)[s]] %strings/players%
 	
-		"127.0.0.1:25565,127.0.0.1:25566"
-		
-		evaluate "broadcast ""&6Example""" on bungeecord servers "127.0.0.1:25565,127.0.0.1:25566,127.0.0.1:25567"
-		set {_value} to motds of bungeecord server "127.0.0.1"
-		
-	Fixed a bug with handling the hashed password file
+Added chat mode type:
+	chatmode:
+		commands_only: commands only, commands
+		hidden: hidden, disabled
+		shown: shown, enabled
+
+Added hand settings of player (Returns hand setting type):
+	[(all [[of] the]|the)] bungee[[ ]cord] hand[ ](setting|mode)[s] (of|from) [(player|uuid)[s]] %strings/players%
 	
-	Added chat mode of player:
-		[(all [[of] the]|the)] bungee[[ ]cord] chat[ ](setting|mode)[s] (of|from) [(player|uuid)[s]] %strings/players%
-		
-	Added chat mode type:
-		chatmode:
-			commands_only: commands only, commands
-			hidden: hidden, disabled
-			shown: shown, enabled
+Added hand setting type:
+	handsetting:
+		right: right, right hand
+		left: left, left hand
+
+Added view distance of player (Returns number):
+	[(all [[of] the]|the)] bungee[[ ]cord] (render|view) distance[s] (of|from) [(player|uuid)[s]] %strings/players%
 */
