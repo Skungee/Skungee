@@ -16,7 +16,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 @Name("Bungeecord event players")
 @Description("Returns the Bungeecord player(s) invloved in the event.")
-@Patterns("[(all [[of] the]|the)] (skungee|bungee[[ ]cord]) [event] player[s]")
+@Patterns("[(all [[of] the]|the)] event (skungee|bungee[[ ]cord]) player[s]")
 @ExpressionProperty(ExpressionType.SIMPLE)
 @DetermineSingle("players")
 @Events({PlayerDisconnectEvent.class, PlayerSwitchServerEvent.class})

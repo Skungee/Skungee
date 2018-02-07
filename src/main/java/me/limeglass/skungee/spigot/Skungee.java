@@ -68,7 +68,7 @@ public class Skungee extends JavaPlugin {
 		metrics = new Metrics(this);
 		Register.metrics(metrics);
 		new Register();
-		encryption = new EncryptionUtil(this, true);
+		encryption = new EncryptionUtil(this, true).hashFile();
 		if (config.getBoolean("Reciever.enabled", false)) {
 			Reciever.setupReciever();
 		} else {

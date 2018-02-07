@@ -3,8 +3,10 @@ package me.limeglass.skungee.bungeecord.sockets;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -59,7 +61,8 @@ public class ServerTracker {
 	}
 	
 	public static Boolean update(String string) {
-		ConnectedServer server = get(string);
+		if (get(string) == null) return false;
+		ConnectedServer server = get(string)[0];
 		if (server != null) {
 			tracker.put(server, System.currentTimeMillis());
 			if (notRespondingServers.contains(server)) {
@@ -87,11 +90,37 @@ public class ServerTracker {
 		}
 	}
 	
-	public static ConnectedServer get(String name) {
+	public static ConnectedServer[] get(String name) {
 		if (isEmpty()) return null;
 		for (ConnectedServer server : servers) {
-			if (server.getName().equals(name)) {
-				return server;
+			if (server.getName().equalsIgnoreCase(name)) {
+				return new ConnectedServer[] {server};
+			}
+		}
+		if (name.contains(":")) {
+			Set<ConnectedServer> servers = new HashSet<ConnectedServer>();
+			String[] addresses = (name.contains(",")) ? name.split(",") : new String[]{name};
+			address : for (String address : addresses) {
+				if (!address.contains(":")) {
+					ConnectedServer possiblyNamed = get(address)[0];
+					if (possiblyNamed == null) servers.add(possiblyNamed);
+					continue address;
+				}
+				String[] ipPort = address.split(":");
+				try {
+					for (ConnectedServer server : servers) {
+						if (server.getAddress() == InetAddress.getByName(ipPort[0])) {
+							if (server.getPort() == Integer.parseInt(ipPort[1])) {
+								servers.add(server);
+							}
+						}
+					}
+				} catch (UnknownHostException e) {
+					Skungee.consoleMessage("There was no server found with the address: " + Arrays.toString(ipPort));
+				}
+			}
+			if (servers != null) {
+				return servers.toArray(new ConnectedServer[servers.size()]);
 			}
 		}
 		return null;

@@ -35,6 +35,10 @@ public class BungeeSockets {
 	}
 
 	public static Object send(ConnectedServer server, BungeePacket packet) {
+		if (server == null) {
+			Skungee.consoleMessage("The server argument was incorrect or not set while sending bungee " + UniversalSkungee.getPacketDebug(packet));
+			return null;
+		}
 		if (ServerTracker.isResponding(server) && server.hasReciever() && !checking) {
 			checking = true;
 			spigot = getSocketConnection(server);
@@ -81,11 +85,11 @@ public class BungeeSockets {
 		return null;
 	}
 	
-	public static void send(final BungeePacket packet, final ConnectedServer server) {
+	public static void send(final BungeePacket packet, final ConnectedServer... servers) {
 		ProxyServer.getInstance().getScheduler().runAsync(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				send(server, packet);
+				for (ConnectedServer server : servers) send(server, packet);
 			}
 		});
 	}

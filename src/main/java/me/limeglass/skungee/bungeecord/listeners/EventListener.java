@@ -29,7 +29,7 @@ public class EventListener implements Listener {
 		if (event.getPlayer() != null) {
 			SkungeePlayer player = new SkungeePlayer(false, event.getPlayer().getUniqueId(), event.getPlayer().getName());
 			if (event.getPlayer().getServer() != null) {
-				ConnectedServer server = ServerTracker.get(event.getPlayer().getServer().getInfo().getName());
+				ConnectedServer server = ServerTracker.get(event.getPlayer().getServer().getInfo().getName())[0];
 				BungeePacket packet = new BungeePacket(true, BungeePacketType.PLAYERDISCONNECT, server.getName(), player);
 				BungeeSockets.sendAll(packet);
 			}

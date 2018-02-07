@@ -1,3 +1,12 @@
 version: 1.0.3
 
 #@an makes the pattern allow for `an`.
+
+types:
+	chatmode: chat mode
+	
+# Represents the player's chat state.
+chatmode:
+	commands_only: commands only, commands
+	hidden: hidden, disabled
+	shown: shown, enabled

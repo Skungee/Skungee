@@ -38,7 +38,6 @@ public class EncryptionUtil {
 			algorithm = me.limeglass.skungee.bungeecord.Skungee.getConfig().getString("security.encryption.cipherAlgorithm", "AES/CTS/PKCS5Padding");
 			printErrors = me.limeglass.skungee.bungeecord.Skungee.getConfig().getBoolean("security.encryption.printEncryptionErrors", true);
 		}
-		hashFile();
 	}
 	
 	public EncryptionUtil(Skungee skungee, Boolean spigot) {
@@ -51,7 +50,6 @@ public class EncryptionUtil {
 			algorithm = me.limeglass.skungee.bungeecord.Skungee.getConfig().getString("security.encryption.cipherAlgorithm", "AES/CTS/PKCS5Padding");
 			printErrors = me.limeglass.skungee.bungeecord.Skungee.getConfig().getBoolean("security.encryption.printEncryptionErrors", true);
 		}
-		hashFile();
 	}
 
 	public final byte[] encrypt(byte[] input) {
@@ -70,7 +68,7 @@ public class EncryptionUtil {
 		return null;
 	}
 	
-	public final void hashFile() {
+	public final EncryptionUtil hashFile() {
 		if (spigot) {
 			if (Skungee.getInstance().getConfig().getBoolean("security.password.enabled", false) && Skungee.getInstance().getConfig().getBoolean("security.password.hash", true)
 			&& Skungee.getInstance().getConfig().getBoolean("security.password.hashFile", false) && !Skungee.getInstance().getConfig().getString("security.password.password").equals("hashed")) {
@@ -108,6 +106,7 @@ public class EncryptionUtil {
 				me.limeglass.skungee.bungeecord.Skungee.infoMessage("Password is succefully hashed to file!");
 			}
 		}
+		return this;
 	}
 	
 	public final Boolean isFileHashed() {

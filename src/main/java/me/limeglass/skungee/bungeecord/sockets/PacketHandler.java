@@ -17,9 +17,11 @@ import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.VariableStorage;
 import me.limeglass.skungee.objects.BungeePacket;
 import me.limeglass.skungee.objects.BungeePacketType;
+import me.limeglass.skungee.objects.ChatMode;
 import me.limeglass.skungee.objects.ConnectedServer;
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePlayer;
+import me.limeglass.skungee.spigot.utils.Utils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -323,26 +325,31 @@ public class PacketHandler {
 				if (packet.getObject() != null) {
 					Set<Number> limits = new HashSet<Number>();
 					for (String server : (String[]) packet.getObject()) {
-						ConnectedServer serverMax = ServerTracker.get(server);
-						if (serverMax != null && ServerTracker.isResponding(serverMax)) {
-							limits.add(serverMax.getMaxPlayers());
+						for (ConnectedServer serverMax : ServerTracker.get(server)) {
+							if (serverMax != null && ServerTracker.isResponding(serverMax)) {
+								limits.add(serverMax.getMaxPlayers());
+							}
 						}
 					}
 					return limits;
 				}
 				break;
 			case EVALUATE:
-				BungeePacket evalPacket = new BungeePacket(false, BungeePacketType.EVALUATE, (String[]) packet.getObject());
-				for (Entry<String, ServerInfo> entry : servers.entrySet()) {
-					BungeeSockets.send(evalPacket, ServerTracker.get(entry.getKey()));
+				String[] evaluations = (String[]) packet.getObject();
+				String[] evalServers = (String[]) packet.getSetObject();
+				if (evaluations == null || evalServers == null) return null;
+				BungeePacket evalPacket = new BungeePacket(false, BungeePacketType.EVALUATE, evaluations);
+				for (String server : evalServers) {
+					BungeeSockets.send(evalPacket, ServerTracker.get(server));
 				}
 				break;
 			case ISSERVERONLINE:
 				if (packet.getObject() != null) {
 					Set<Boolean> online = new HashSet<Boolean>();
 					for (String server : (String[]) packet.getObject()) {
-						ConnectedServer onlineServer = ServerTracker.get(server);
-						online.add(onlineServer != null && ServerTracker.isResponding(onlineServer));
+						for (ConnectedServer onlineServer : ServerTracker.get(server)) {
+							online.add(onlineServer != null && ServerTracker.isResponding(onlineServer));
+						}
 					}
 					return online;
 				}
@@ -351,9 +358,10 @@ public class PacketHandler {
 				if (packet.getObject() != null) {
 					Set<SkungeePlayer> whitelistedPlayers = new HashSet<SkungeePlayer>();
 					for (String server : (String[]) packet.getObject()) {
-						ConnectedServer serverWhitelisted = ServerTracker.get(server);
-						if (serverWhitelisted != null && ServerTracker.isResponding(serverWhitelisted)) {
-							whitelistedPlayers.addAll(serverWhitelisted.getWhitelistedPlayers());
+						for (ConnectedServer serverWhitelisted : ServerTracker.get(server)) {
+							if (serverWhitelisted != null && ServerTracker.isResponding(serverWhitelisted)) {
+								whitelistedPlayers.addAll(serverWhitelisted.getWhitelistedPlayers());
+							}
 						}
 					}
 					return whitelistedPlayers;
@@ -416,7 +424,18 @@ public class PacketHandler {
 				return null;
 			case CURRENTSERVER:
 				return (ServerTracker.getByAddress(address) != null) ? ServerTracker.getByAddress(address).getName() : null;
+			case PLAYERCHATMODE:
+				if (!players.isEmpty()) {
+					Set<ChatMode> modes = new HashSet<ChatMode>();
+					for (ProxiedPlayer player : players) {
+						ChatMode chatmode = Utils.getEnum(ChatMode.class, player.getChatMode().toString());
+						if (chatmode != null) modes.add(chatmode);
+					}
+					return modes;
+				}
+				break;
 			}
+		
 			/*
 			case REDISSERVERS:
 				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {

@@ -70,7 +70,7 @@ public class Skungee extends Plugin {
 				exception(e, "could not create and save config due to new version.");
 			}
 		}
-		encryption = new EncryptionUtil(this, false);
+		encryption = new EncryptionUtil(this, false).hashFile();
 		metrics = new BungecordMetrics(this);
 		metrics.addCustomChart(new BungecordMetrics.SimplePie("amount_of_plugins") {
 			@Override
@@ -241,4 +241,26 @@ Added Current Server of Script expression:
 
 	[name of] this [script[s]] [bungee[[ ]cord]] server
 	[bungee[[ ]cord]] server [name] of this script
+	
+	Fixed a bug where the evaluate effect would always send the evaluate to all servers if the server was a certian value.
+	
+	The evaluate now doesn't send the evaluate to all the servers if the server string is null.
+	
+	The server string of all syntax can now support IP's with ports so for example:
+	
+		"127.0.0.1:25565,127.0.0.1:25566"
+		
+		evaluate "broadcast ""&6Example""" on bungeecord servers "127.0.0.1:25565,127.0.0.1:25566,127.0.0.1:25567"
+		set {_value} to motds of bungeecord server "127.0.0.1"
+		
+	Fixed a bug with handling the hashed password file
+	
+	Added chat mode of player:
+		[(all [[of] the]|the)] bungee[[ ]cord] chat[ ](setting|mode)[s] (of|from) [(player|uuid)[s]] %strings/players%
+		
+	Added chat mode type:
+		chatmode:
+			commands_only: commands only, commands
+			hidden: hidden, disabled
+			shown: shown, enabled
 */
