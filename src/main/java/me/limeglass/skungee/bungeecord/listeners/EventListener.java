@@ -18,7 +18,7 @@ public class EventListener implements Listener {
 		if (event.getPlayer() != null) {
 			SkungeePlayer player = new SkungeePlayer(false, event.getPlayer().getUniqueId(), event.getPlayer().getName());
 			if (event.getPlayer().getServer() != null) {
-				BungeePacket packet = new BungeePacket(true, BungeePacketType.PLAYERSWITCH, event.getPlayer().getServer().getInfo().getName(), player);
+				BungeePacket packet = new BungeePacket(true, BungeePacketType.PLAYERSWITCH, event.getPlayer().getServer().getInfo().getName(), null, player);
 				BungeeSockets.sendAll(packet);
 			}
 		}
@@ -30,7 +30,7 @@ public class EventListener implements Listener {
 			SkungeePlayer player = new SkungeePlayer(false, event.getPlayer().getUniqueId(), event.getPlayer().getName());
 			if (event.getPlayer().getServer() != null) {
 				ConnectedServer server = ServerTracker.get(event.getPlayer().getServer().getInfo().getName())[0];
-				BungeePacket packet = new BungeePacket(true, BungeePacketType.PLAYERDISCONNECT, server.getName(), player);
+				BungeePacket packet = new BungeePacket(true, BungeePacketType.PLAYERDISCONNECT, server.getName(), null, player);
 				BungeeSockets.sendAll(packet);
 			}
 		}

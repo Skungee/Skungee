@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import me.limeglass.skungee.EncryptionUtil;
+import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
 import me.limeglass.skungee.objects.SkungeePlayer;
@@ -29,6 +30,8 @@ public class Sockets {
 	public static Socket bungeecord;
 	private static Boolean restart = true, checking = false;
 	private static int task, heartbeat, keepAlive;
+	public static Long lastSent = System.currentTimeMillis();
+	//private static EncryptionUtil encrypter = Skungee.getEncrypter();
 	
 	//TODO create a system to cache failed packets, It already does but it gives up after a few times and lets it go.
 	
@@ -37,8 +40,10 @@ public class Sockets {
 		task = Bukkit.getScheduler().scheduleAsyncRepeatingTask(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				Object answer = send(new SkungeePacket(true, SkungeePacketType.HEARTBEAT, Bukkit.getPort()));
-				if (answer != null && (Boolean)answer) stop(true);
+				Boolean answer = (Boolean) send(new SkungeePacket(true, SkungeePacketType.HEARTBEAT, Bukkit.getPort()));
+				if (answer != null && answer) {
+					stop(true);
+				}
 			}
 		}, 1, Skungee.getInstance().getConfig().getInt("heartbeat", 30));
 	}
@@ -53,7 +58,7 @@ public class Sockets {
 				try {
 					new Socket(Skungee.getInstance().getConfig().getString("host", "0.0.0.0"), Skungee.getInstance().getConfig().getInt("port", 1337));
 					Bukkit.getScheduler().cancelTask(keepAlive);
-					Skungee.consoleMessage("&6Connection established again!");
+					Skungee.consoleMessage("Connection established again!");
 					connect();
 				} catch (IOException e) {}
 			}
@@ -65,15 +70,6 @@ public class Sockets {
 		for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
 			whitelisted.add(new SkungeePlayer(true, player.getUniqueId(), player.getName()));
 		}
-		if (Skungee.getInstance().getConfig().getBoolean("Reciever.enabled", false) && Reciever.getReciever() == null) {
-			Bukkit.getScheduler().runTaskLaterAsynchronously(Skungee.getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					connect();
-				}
-			}, 3);
-			return;
-		}
 		ArrayList<Object> data = new ArrayList<Object>(Arrays.asList(Skungee.getInstance().getConfig().getBoolean("Reciever.enabled", false), Reciever.getReciever().getLocalPort(), Bukkit.getPort(), whitelisted, Skungee.getInstance().getConfig().getInt("heartbeat", 30) * 60, Bukkit.getMotd(), Bukkit.getMaxPlayers()));
 		Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), new Runnable() {
 			@Override
@@ -82,7 +78,7 @@ public class Sockets {
 					stop(false);
 					restart = true;
 				} else {
-					send(new SkungeePacket(false, SkungeePacketType.PING, data));
+					while (!send(new SkungeePacket(true, SkungeePacketType.PING, data)).equals("CONNECTED")){};
 					startHeartbeat();
 				}
 			}
@@ -101,14 +97,19 @@ public class Sockets {
 
 	public static Object send(SkungeePacket packet) {
 		if (packet.isReturnable()) return send_i(packet);
-		Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				send_i(packet);
-			}
-		});
+		if (Skungee.getInstance().getConfig().getBoolean("Queue.enabled", true)) {
+			PacketQueue.queue(packet);
+		} else {
+			Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					send_i(packet);
+				}
+			});
+		}
 		return null;
 	}
+	
 	public static Object send_i(SkungeePacket packet) {
 		try {
 			if (!checking) {
@@ -121,6 +122,11 @@ public class Sockets {
 					restart = false;
 				} else {
 					EncryptionUtil encrypter = new EncryptionUtil(Skungee.getInstance(), true);
+					if (!Skungee.getInstance().getConfig().getBoolean("IgnoreSpamPackets", true)) {
+						Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
+					} else if (!(packet.getType() == SkungeePacketType.HEARTBEAT)) {
+						Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
+					}
 					if (Skungee.getInstance().getConfig().getBoolean("security.password.enabled", false)) {
 						byte[] password = encrypter.serialize(Skungee.getInstance().getConfig().getString("security.password.password"));
 						if (Skungee.getInstance().getConfig().getBoolean("security.password.hash", true)) {
@@ -140,6 +146,7 @@ public class Sockets {
 					} else {
 						objectOutputStream.writeObject(packet);
 					}
+					lastSent = System.currentTimeMillis();
 					ObjectInputStream objectInputStream = new ObjectInputStream(bungeecord.getInputStream());
 					bungeecord.setSoTimeout(10000);
 					if (packet.isReturnable()) {

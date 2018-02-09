@@ -29,7 +29,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 @Name("Network variable")
 @Description("Returns a variable that is stored on the Bungeecord, can also be set, add, removed etc.")
-@Patterns("[the] [skungee] (global|network|bungee[[ ]cord]) [variable [(from|of)]] %object%")
+@Patterns("[the] [skungee] (global|network|bungee[[ ]cord]) variable [(from|of)] %object%")
 @ExpressionProperty(ExpressionType.COMBINED)
 @AllChangers
 public class ExprNetworkVariable extends SkungeeExpression<Object> {

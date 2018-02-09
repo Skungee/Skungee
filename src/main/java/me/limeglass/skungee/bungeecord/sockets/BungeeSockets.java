@@ -8,10 +8,12 @@ import java.net.Socket;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import me.limeglass.skungee.objects.BungeePacket;
+import me.limeglass.skungee.objects.BungeePacketType;
 import me.limeglass.skungee.objects.ConnectedServer;
 import net.md_5.bungee.api.ProxyServer;
 import me.limeglass.skungee.UniversalSkungee;
@@ -44,7 +46,11 @@ public class BungeeSockets {
 			spigot = getSocketConnection(server);
 			if (spigot == null) return null;
 			checking = false;
-			Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
+			if (!Skungee.getConfig().getBoolean("IgnoreSpamPackets", true)) {
+				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
+			} else if (!(packet.getType() == BungeePacketType.GLOBALSCRIPTS)) {
+				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
+			}
 			if (Skungee.getConfig().getBoolean("security.password.enabled", false)) {
 				byte[] password = Skungee.getEncrypter().serialize(Skungee.getConfig().getString("security.password.password"));
 				if (Skungee.getConfig().getBoolean("security.password.hash", true)) {
@@ -98,7 +104,9 @@ public class BungeeSockets {
 		ProxyServer.getInstance().getScheduler().runAsync(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				for (ConnectedServer server : ServerTracker.getAll()) {
+				Iterator<ConnectedServer> iterator = ServerTracker.getAll().iterator();
+				while (iterator.hasNext()) {
+					ConnectedServer server = iterator.next();
 					if (server.hasReciever()) {
 						send(server, packet);
 					}

@@ -19,7 +19,10 @@ import me.limeglass.skungee.objects.BungeePacket;
 import me.limeglass.skungee.objects.BungeePacketType;
 import me.limeglass.skungee.objects.ChatMode;
 import me.limeglass.skungee.objects.ConnectedServer;
+import me.limeglass.skungee.objects.HandSetting;
+import me.limeglass.skungee.objects.SkriptChangeMode;
 import me.limeglass.skungee.objects.SkungeePacket;
+import me.limeglass.skungee.objects.SkungeePacketType;
 import me.limeglass.skungee.objects.SkungeePlayer;
 import me.limeglass.skungee.spigot.utils.Utils;
 
@@ -41,7 +44,11 @@ public class PacketHandler {
 		if (packet.getType() == null) {
 			Skungee.consoleMessage("wat");
 		}
-		Skungee.debugMessage(UniversalSkungee.getPacketDebug(packet));
+		if (!Skungee.getConfig().getBoolean("IgnoreSpamPackets", true)) {
+			Skungee.debugMessage(UniversalSkungee.getPacketDebug(packet));
+		} else if (!(packet.getType() == SkungeePacketType.HEARTBEAT)) {
+			Skungee.debugMessage(UniversalSkungee.getPacketDebug(packet));
+		}
 		Set<ProxiedPlayer> players = new HashSet<ProxiedPlayer>();
 		if (packet.getPlayers() != null) {
 			for (SkungeePlayer player : packet.getPlayers()) {
@@ -292,7 +299,7 @@ public class PacketHandler {
 					Set<String> names = new HashSet<String>();
 					for (ProxiedPlayer player : players) {
 						names.add(player.getDisplayName());
-						if (packet.getObject() != null && packet.getSetObject() != null) {
+						if (packet.getObject() != null && packet.getChangeMode() != null) {
 							switch (packet.getChangeMode()) {
 								case SET:
 								case ADD:
@@ -432,6 +439,39 @@ public class PacketHandler {
 						if (chatmode != null) modes.add(chatmode);
 					}
 					return modes;
+				}
+				break;
+			case PLAYERHANDSETTING:
+				if (!players.isEmpty()) {
+					Set<HandSetting> settings = new HashSet<HandSetting>();
+					for (ProxiedPlayer player : players) {
+						HandSetting chatmode = Utils.getEnum(HandSetting.class, player.getMainHand().toString());
+						if (chatmode != null) settings.add(chatmode);
+					}
+					return settings;
+				}
+				break;
+			case PLAYERVIEWDISTANCE:
+				if (!players.isEmpty()) {
+					Set<Number> distances = new HashSet<Number>();
+					for (ProxiedPlayer player : players) {
+						if (player.getViewDistance() > 0) distances.add(player.getViewDistance());
+					}
+					return distances;
+				}
+				break;
+			case PLAYERRECONNECTSERVER:
+				if (!players.isEmpty()) {
+					Set<String> reconnected = new HashSet<String>();
+					for (ProxiedPlayer player : players) {
+						reconnected.add(player.getReconnectServer().getName());
+						if (packet.getObject() != null && packet.getChangeMode() != null) {
+							if (packet.getChangeMode() == SkriptChangeMode.SET) {
+								player.setReconnectServer(ProxyServer.getInstance().getServerInfo((String) packet.getObject()));
+							}
+						}
+					}
+					return reconnected;
 				}
 				break;
 			}

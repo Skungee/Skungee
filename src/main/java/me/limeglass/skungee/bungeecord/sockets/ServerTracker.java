@@ -61,7 +61,7 @@ public class ServerTracker {
 	}
 	
 	public static Boolean update(String string) {
-		if (get(string) == null) return false;
+		if (get(string) == null) return true;
 		ConnectedServer server = get(string)[0];
 		if (server != null) {
 			tracker.put(server, System.currentTimeMillis());
@@ -153,7 +153,11 @@ public class ServerTracker {
 	}
 
 	public static void add(ConnectedServer server) {
-		remove(server);
+		for (ConnectedServer connected : servers) {
+			if (connected.getName().equals(server.getName())) {
+				remove(connected);
+			}
+		}
 		servers.add(server);
 		Skungee.consoleMessage("Connected to server " + server.getName() + " with port " + server.getPort());
 	}

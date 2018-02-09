@@ -1,12 +1,16 @@
 # Skungee (Spigot) - The #1 Skript addon for Bungeecord.
 
 # The version is to help determine which version this config is. Please don't modify this value.
-version: "1.0.3d"
+version: "1.0.3e"
 
 # Print additional information in the console. The developers of FunkySk may ask you to enable this when reporting an error.
 debug: false
 
-# The details of the Skungee Bungeecord plugin. Place the same credentials as the Bungeecord Skungee here.
+# Ignores the packets that spam alot such as GLOBALSCRIPTS and HEARTBEAT in the debug.
+# Developers of Skungee may notify you to disable this option when reporting an error.
+IgnoreSpamPackets: true
+
+# The details of the Skungee Bungeecord plugin. Place the same login credentials as the Bungeecord Skungee here.
 host: "127.0.0.1"
 port: 1337
 
@@ -64,8 +68,10 @@ security:
         blacklisted:
             - 123.456.7.890
 
-# This is how fast the keeping alive packet should be sent back and forth to Skungee. The lower this is, the faster the accuracy. (A fast rate would be 5-10) This all depends on your server's network speeds.
-heartbeat: 30
+# This is how fast the keeping alive packet should be sent back and forth to Skungee.
+# The lower this is, the faster the accuracy. (A fast rate would be 5-10) This all depends on your server's network speeds.
+# Heartbeat is in ticks
+heartbeat: 50
 
 # Contantly keep trying to connect to the Skungee on the Bungeecord. This can spam if the Bungeecord is offline for a long period of time.
 # Skungee also makes a bunch of tests before determining if it should shut down when this option is false. So no worries.
@@ -77,6 +83,18 @@ keepAlive: 10
 
 # The max amount of times Skungee should try to connect to the Skungee on the Bungeecord.
 maxAttempts: 20
+
+# This is a queue system to make sure every single packet gets sent. This can cause some delay within the Skript calling code, but very minor. This guarentees every packet to be sent.
+# Packets that are expressions will not be put into the queued system as it depends on a returned value.
+# So making a queue system for those gets more complex. I might do something about that soon. This will mean that expressions will take priority over effects. Also all effects are sent asynchronous.
+Queue:
+    enabled: true
+    # delay is in milliseconds
+    delay: 15
+    # Should Skungee sync and control the queue depending on Expressions aswell.
+    # Expressions are sent directly when they're called. This option makes sure that Effects aren't sent at the same time as Expressions.
+    # If you have hundereds of packets sent within a minute then you might need to set this option to false, as some effects could get backed up.
+    sync: true
 
 # Broadcast all the syntax that didn't register to the console.
 NotRegisteredSyntax: false

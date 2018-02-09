@@ -68,7 +68,7 @@ public class EncryptionUtil {
 		return null;
 	}
 	
-	public final EncryptionUtil hashFile() {
+	public final void hashFile() {
 		if (spigot) {
 			if (Skungee.getInstance().getConfig().getBoolean("security.password.enabled", false) && Skungee.getInstance().getConfig().getBoolean("security.password.hash", true)
 			&& Skungee.getInstance().getConfig().getBoolean("security.password.hashFile", false) && !Skungee.getInstance().getConfig().getString("security.password.password").equals("hashed")) {
@@ -106,7 +106,6 @@ public class EncryptionUtil {
 				me.limeglass.skungee.bungeecord.Skungee.infoMessage("Password is succefully hashed to file!");
 			}
 		}
-		return this;
 	}
 	
 	public final Boolean isFileHashed() {

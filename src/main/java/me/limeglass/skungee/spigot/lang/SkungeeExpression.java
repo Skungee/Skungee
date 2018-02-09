@@ -60,8 +60,8 @@ public abstract class SkungeeExpression<T> extends SimpleExpression<T> implement
 	@Override
 	public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, ParseResult parser) {
 		if (getClass().isAnnotationPresent(Events.class)) {
-			if (!ScriptLoader.isCurrentEvent(getClass().getAnnotation(Events.class).value())) {
-				Skungee.debugMessage("The expression `" + getClass().getSimpleName() + "` can't be used in the event: " + ScriptLoader.getCurrentEventName());
+			if (contains()) {
+				Skungee.debugMessage("The expression `" + getClass().getSimpleName() + "` can't be used in the event: " + ScriptLoader.getCurrentEventName() + "it can only be used in: " + Arrays.toString(getClass().getAnnotation(Events.class).value()));
 				return false;
 			}
 		}
@@ -98,5 +98,14 @@ public abstract class SkungeeExpression<T> extends SimpleExpression<T> implement
 
 	public Boolean areNull(Event event) {
 		return areNull(event, expressions);
+	}
+	
+	private Boolean contains() {
+		for (Class<? extends Event> event : getClass().getAnnotation(Events.class).value()) {
+			if (Arrays.asList(ScriptLoader.getCurrentEvents()).contains(event)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

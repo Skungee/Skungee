@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.ChatMode;
+import me.limeglass.skungee.objects.HandSetting;
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
@@ -15,19 +15,19 @@ import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 import me.limeglass.skungee.spigot.utils.annotations.RegisterEnum;
 
-@Name("Bungeecord player chat mode")
-@Description("Returns the chat mode(s) of the defined Bungeecord player(s).")
-@Properties({"strings/players", "bungee[[ ]cord] chat[ ](setting|mode)[s]", "{1}[(all [[of] the]|the)]"})
+@Name("Bungeecord player hand setting")
+@Description("Returns the hand setting(s) of the defined Bungeecord player(s). This is either left or right")
+@Properties({"strings/players", "bungee[[ ]cord] hand[ ](setting|mode)[s]", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[(player|uuid)[s]]")
-@RegisterEnum("chatmode")
-public class ExprBungeePlayerChatMode extends SkungeePropertyExpression<Object, ChatMode> {
+@RegisterEnum("handsetting")
+public class ExprBungeePlayerHandSetting extends SkungeePropertyExpression<Object, HandSetting> {
 
 	@Override
-	protected ChatMode[] get(Event event, Object[] skungeePlayers) {
+	protected HandSetting[] get(Event event, Object[] skungeePlayers) {
 		if (isNull(event)) return null;
 		@SuppressWarnings("unchecked")
-		Set<ChatMode> modes = (Set<ChatMode>) Sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERCHATMODE, Utils.toSkungeePlayers(skungeePlayers)));
-		return (modes != null) ? modes.toArray(new ChatMode[modes.size()]) : null;
+		Set<HandSetting> settings = (Set<HandSetting>) Sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERHANDSETTING, Utils.toSkungeePlayers(skungeePlayers)));
+		return (settings != null) ? settings.toArray(new HandSetting[settings.size()]) : null;
 	}
 }
 
