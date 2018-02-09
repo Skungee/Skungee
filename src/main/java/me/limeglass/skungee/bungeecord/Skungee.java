@@ -321,4 +321,14 @@ Added title stuff:
 	(show|display|send) %skungeetitle% to bungee[[ ]cord]] [(player|uuid)][s] %strings/players%
 
 Added SkungeeTitle type. This is a custom title object that works on Spigot and Bungeecord. Mainly used internally.
+
+Added string of SkungeeTitle (Returns the main String of the title):
+
+	Has all changers but ADD.
+	[(all [[of] the]|the)] (message|string)[s] (of|from) [(skungee|bungee[[ ]cord])] title[s] %skungeetitles%
+
+Added subtitle of SkungeeTitle (Returns the subtitle String):
+
+	Has all changers but ADD.
+	[(all [[of] the]|the)] sub[-]title[s] (of|from) [(skungee|bungee[[ ]cord])] title[s] %skungeetitles%
 */
