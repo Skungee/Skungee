@@ -3,6 +3,8 @@ package me.limeglass.skungee.spigot.sockets;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import org.bukkit.Bukkit;
+
 import me.limeglass.skungee.spigot.Skungee;
 
 public class Reciever {
@@ -31,8 +33,13 @@ public class Reciever {
 				try {
 					reciever = (Skungee.getInstance().getConfig().getBoolean("Reciever.automatic", true)) ? automatic() : new ServerSocket(Skungee.getInstance().getConfig().getInt("Reciever.port", 1338), 69);
 					Skungee.consoleMessage("Reciever established on port " + reciever.getLocalPort());
-					Sockets.connect();
-					while(!reciever.isClosed()) {
+					Bukkit.getScheduler().runTaskLaterAsynchronously(Skungee.getInstance(), new Runnable() {
+						@Override
+						public void run() {
+							Sockets.connect();
+						}
+					}, 5);
+					while (!reciever.isClosed()) {
 						try {
 							new Thread(new SpigotRunnable(reciever.accept())).start();
 						} catch (IOException e) {

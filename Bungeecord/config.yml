@@ -1,7 +1,7 @@
 # Skungee (Bungeecord) - The #1 Skript addon for Bungeecord.
 
 # The version is to help determine which version this config is. Please do not modify this value.
-version: "1.0.3d"
+version: "1.0.3e"
 
 # This is the main port for the Skungee network system. Skungee will setup this port on on this Bungeecord machine.
 # Make sure the port is put "port forward" or that you have access to this port to be running, if not change this to an avalible port.
@@ -15,6 +15,10 @@ port: 1337
 
 # Prints additional information in the console. The developers of Skungee may ask you to enable this when reporting an error.
 debug: false
+
+# Ignores the packets that spam alot such as GLOBALSCRIPTS and HEARTBEAT in the debug.
+# Developers of Skungee may notify you to disable this option when reporting an error.
+IgnoreSpamPackets: true
 
 # All security options to protect your Skungee on Bungeecord and Spigot from possible external sources.
 # Everything in this section must match the same values as the Skungee config.yml on the Bungeecord.

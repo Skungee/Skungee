@@ -223,6 +223,7 @@ public class VariableStorage {
 	}
 	
 	public static void run() {
+		Long time = Skungee.getConfig().getLong("NetworkVariables.Backups.IntervalTime", 120);
 		ProxyServer.getInstance().getScheduler().schedule(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -231,6 +232,6 @@ public class VariableStorage {
 				}
 				save(true, true);
 			}
-		}, Skungee.getConfig().getLong("NetworkVariables.Backups.IntervalTime", 60), 1, TimeUnit.MINUTES);
+		}, time, time, TimeUnit.MINUTES);
 	}
 }

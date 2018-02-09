@@ -23,6 +23,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.spigot.elements.Register;
+import me.limeglass.skungee.spigot.sockets.PacketQueue;
 import me.limeglass.skungee.spigot.sockets.Reciever;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.ReflectionUtil;
@@ -65,10 +66,14 @@ public class Skungee extends JavaPlugin {
 		} catch (IOException | InvalidConfigurationException e) {
 			exception(e, "Error loading Skript addon classes or loading the syntax file.");
 		}
+		encryption = new EncryptionUtil(this, true);
+		encryption.hashFile();
+		if (config.getBoolean("Queue.enabled", true)) {
+			PacketQueue.start();
+		}
 		metrics = new Metrics(this);
 		Register.metrics(metrics);
 		new Register();
-		encryption = new EncryptionUtil(this, true).hashFile();
 		if (config.getBoolean("Reciever.enabled", false)) {
 			Reciever.setupReciever();
 		} else {

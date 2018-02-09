@@ -21,6 +21,7 @@ import java.util.Set;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.objects.BungeePacket;
+import me.limeglass.skungee.objects.BungeePacketType;
 import me.limeglass.skungee.objects.events.PlayerDisconnectEvent;
 import me.limeglass.skungee.objects.events.PlayerSwitchServerEvent;
 
@@ -37,7 +38,11 @@ public class SpigotPacketHandler {
 	//TODO Possible cleanup and place this into an abstract with different packet classes.
 	
 	public static Object handlePacket(BungeePacket packet, InetAddress address) {
-		Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
+		if (!Skungee.getInstance().getConfig().getBoolean("IgnoreSpamPackets", true)) {
+			Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
+		} else if (!(packet.getType() == BungeePacketType.GLOBALSCRIPTS)) {
+			Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
+		}
 		switch (packet.getType()) {
 			case PINGSERVER:
 				break;
@@ -57,12 +62,12 @@ public class SpigotPacketHandler {
 				break;
 			case PLAYERDISCONNECT:
 				if (packet.getObject() != null && packet.getPlayers() != null) {
-					Bukkit.getPluginManager().callEvent(new PlayerDisconnectEvent((String)packet.getObject(), packet.getPlayers()));
+					Bukkit.getPluginManager().callEvent(new PlayerDisconnectEvent((String)packet.getObject(), packet.getPlayers()[0]));
 				}
 				break;
 			case PLAYERSWITCH:
 				if (packet.getObject() != null && packet.getPlayers() != null) {
-					Bukkit.getPluginManager().callEvent(new PlayerSwitchServerEvent((String)packet.getObject(), packet.getPlayers()));
+					Bukkit.getPluginManager().callEvent(new PlayerSwitchServerEvent((String)packet.getObject(), packet.getPlayers()[0]));
 				}
 				break;
 			case PLAYERLOGIN:

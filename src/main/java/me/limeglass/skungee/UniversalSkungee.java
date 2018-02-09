@@ -1,6 +1,8 @@
 package me.limeglass.skungee;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import me.limeglass.skungee.objects.BungeePacket;
@@ -57,6 +59,15 @@ public class UniversalSkungee {
 			} else {
 				debug = debug + " with settable data: " + packet.getSetObject();
 			}
+		}
+		if (packet.getPlayers() != null) {
+			List<String> names = new ArrayList<String>();
+			for (SkungeePlayer player : packet.getPlayers()) {
+				if (player != null) {
+					names.add(player.getName());
+				}
+			}
+			debug = debug + " for players: " + names.toString();
 		}
 		return debug;
 	}

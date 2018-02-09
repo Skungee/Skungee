@@ -1,11 +1,13 @@
 package me.limeglass.skungee.spigot.elements.expressions;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
-import me.limeglass.skungee.objects.events.BungeecordEvent;
 import me.limeglass.skungee.objects.events.PlayerDisconnectEvent;
 import me.limeglass.skungee.objects.events.PlayerSwitchServerEvent;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
@@ -24,7 +26,12 @@ public class ExprEventBungeePlayers extends SkungeeExpression<Object> {
 	
 	@Override
 	protected Object[] get(Event event) {
-		if (((BungeecordEvent)event).getPlayers() == null) return null;
-		return ((BungeecordEvent)event).getConverted();
+		try {
+			Method method = event.getClass().getMethod("getConverted");
+			if (method == null) return null;
+			method.setAccessible(true);
+			return (Object[]) method.invoke(event.getClass());
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
+		return null;
 	}
 }
