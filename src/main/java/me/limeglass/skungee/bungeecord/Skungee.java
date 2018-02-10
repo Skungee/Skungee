@@ -309,4 +309,26 @@ Fixed the event values not working properly.
 Added debug option for which events are possible in the custom event values.
 
 Added debug option to view the players of a Bungee Packet.
+
+Added condition to check if a player has chat colours enable:
+	[bungee[[ ]cord]] [(player|uuid)] %string/player% (1¦(has|do[es])|2¦(has|do[es])(n't| not)) (have|got) chat colo[u]r[s] [(enabled|on)]
+
+Added title stuff:
+
+	(Returns SkungeeTitle)
+	[new] (skungee|bungee[[ ]cord]) title [with text] %string% [and] [with subtitle %-string%] [[that] lasts] for %timespan%[[,] [with] fade in %-timespan%][[,] [and] [with] fade out %-timespan%]
+	
+	(show|display|send) %skungeetitle% to bungee[[ ]cord]] [(player|uuid)][s] %strings/players%
+
+Added SkungeeTitle type. This is a custom title object that works on Spigot and Bungeecord. Mainly used internally.
+
+Added string of SkungeeTitle (Returns the main String of the title):
+
+	Has all changers but ADD.
+	[(all [[of] the]|the)] (message|string)[s] (of|from) [(skungee|bungee[[ ]cord])] title[s] %skungeetitles%
+
+Added subtitle of SkungeeTitle (Returns the subtitle String):
+
+	Has all changers but ADD.
+	[(all [[of] the]|the)] sub[-]title[s] (of|from) [(skungee|bungee[[ ]cord])] title[s] %skungeetitles%
 */

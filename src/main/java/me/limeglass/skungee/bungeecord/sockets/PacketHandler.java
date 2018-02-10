@@ -24,6 +24,7 @@ import me.limeglass.skungee.objects.SkriptChangeMode;
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
 import me.limeglass.skungee.objects.SkungeePlayer;
+import me.limeglass.skungee.objects.SkungeeTitle;
 import me.limeglass.skungee.spigot.utils.Utils;
 
 import java.util.concurrent.TimeUnit;
@@ -107,9 +108,9 @@ public class PacketHandler {
 				}
 				break;
 			case ISPLAYERONLINE:
-				return (players != null && players.toArray(new ProxiedPlayer[players.size()])[0].isConnected());
+				return (players != null && players.iterator().next().isConnected());
 			case ISUSINGFORGE:
-				return (players != null && players.toArray(new ProxiedPlayer[players.size()])[0].isForgeUser());
+				return (players != null && players.iterator().next().isForgeUser());
 			case ACTIONBAR:
 				if (!players.isEmpty()) {
 					for (ProxiedPlayer player : players) {
@@ -473,6 +474,29 @@ public class PacketHandler {
 					}
 					return reconnected;
 				}
+				break;
+			case PLAYERCOLOURS:
+				return (players != null && players.iterator().next().hasChatColors());
+			case PLAYERPERMISSIONS:
+				if (packet.getObject() != null && players != null) {
+					ProxiedPlayer player = players.iterator().next();
+					for (String permission : (String[]) packet.getObject()) {
+						if (!player.hasPermission(permission)) {
+							return false;
+						}
+					}
+				} else {
+					return false;
+				}
+				return true;
+			case TITLE:
+				if (packet.getObject() == null) return null;
+				SkungeeTitle title = (SkungeeTitle) packet.getObject();
+				title.setTitle(ProxyServer.getInstance().createTitle());
+				return title;
+			case PLAYERTITLE:
+				if (packet.getObject() == null || packet.getPlayers() == null) return null;
+				((SkungeeTitle)packet.getObject()).send(packet.getPlayers());
 				break;
 			}
 		

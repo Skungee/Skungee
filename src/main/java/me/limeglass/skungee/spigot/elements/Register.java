@@ -28,8 +28,7 @@ import me.limeglass.skungee.spigot.utils.annotations.*;
 public class Register {
 	
 	public Set<Class<?>> classes = new HashSet<>();
-	public Set<Class<?>> oldclasses = new HashSet<>(); 
-	private JarFile Stocksaddon;
+	private JarFile addon;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Register() {
@@ -37,8 +36,8 @@ public class Register {
 			Method method = JavaPlugin.class.getDeclaredMethod("getFile");
 			method.setAccessible(true);
 			File file = (File) method.invoke(Skungee.getInstance());
-			Stocksaddon = new JarFile(file);
-			for (Enumeration<JarEntry> jarEntry = Stocksaddon.entries(); jarEntry.hasMoreElements();) {
+			addon = new JarFile(file);
+			for (Enumeration<JarEntry> jarEntry = addon.entries(); jarEntry.hasMoreElements();) {
 				String name = jarEntry.nextElement().getName().replace("/", ".");
 				String className = name.substring(0, name.length() - 6);
 				className = className.replace('/', '.');
@@ -46,7 +45,7 @@ public class Register {
 					classes.add(Class.forName(className));
 				}
 			}
-			Stocksaddon.close();
+			addon.close();
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException | ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}
