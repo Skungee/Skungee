@@ -17,18 +17,18 @@ import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
-@Name("Bungeecord title fade in")
-@Description("Returns the fade in time(s) of defined skungee title(s).")
-@Properties({"skungeetitles", "fade in[ ][time][s]", "{1}[(all [[of] the]|the)]"})
+@Name("Bungeecord title time")
+@Description("Returns the time(s) of defined skungee title(s).")
+@Properties({"skungeetitles", "[stay] time[s]", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[(skungee|bungee[[ ]cord])] title[s]")
 @AllChangers
 @Disabled
-public class ExprBungeeTitleFadeIn extends SkungeePropertyExpression<SkungeeTitle, Timespan> {
+public class ExprBungeeTitleTime extends SkungeePropertyExpression<SkungeeTitle, Timespan> {
 
 	private Map<SkungeeTitle, Timespan> getTimespans(SkungeeTitle[] titles) {
 		Map<SkungeeTitle, Timespan> times = new HashMap<SkungeeTitle, Timespan>();
 		for (SkungeeTitle title : titles) {
-			times.put(title, new Timespan(title.getFadeIn()));
+			times.put(title, new Timespan(title.getStay()));
 		}
 		return times;
 	}
@@ -50,14 +50,14 @@ public class ExprBungeeTitleFadeIn extends SkungeePropertyExpression<SkungeeTitl
 			case ADD:
 				for (Entry<SkungeeTitle, Timespan> entry : times.entrySet()) {
 					if (entry.getValue().getTicks_i() == timespan.getTicks_i()) {
-						entry.getKey().setFadeIn((int)(entry.getValue().getTicks_i() + timespan.getTicks_i()));
+						entry.getKey().setStay((int)(entry.getValue().getTicks_i() + timespan.getTicks_i()));
 					}
 				}
 				break;
 			case REMOVE:
 				for (Entry<SkungeeTitle, Timespan> entry : times.entrySet()) {
 					if (entry.getValue().getTicks_i() == timespan.getTicks_i()) {
-						entry.getKey().setFadeIn((int)(entry.getValue().getTicks_i() - timespan.getTicks_i()));
+						entry.getKey().setStay((int)(entry.getValue().getTicks_i() - timespan.getTicks_i()));
 					}
 				}
 				break;
@@ -65,12 +65,12 @@ public class ExprBungeeTitleFadeIn extends SkungeePropertyExpression<SkungeeTitl
 			case REMOVE_ALL:
 			case RESET:
 				for (SkungeeTitle title : titles) {
-					title.setFadeIn(2);
+					title.setStay(2);
 				}
 				break;
 			case SET:
 				for (SkungeeTitle title : titles) {
-					title.setFadeIn((int)timespan.getTicks_i());
+					title.setStay((int)timespan.getTicks_i());
 				}
 				break;
 		}

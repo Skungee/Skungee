@@ -8,6 +8,7 @@ import me.limeglass.skungee.objects.SkungeePlayer;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
+import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 import org.bukkit.event.Event;
@@ -15,6 +16,7 @@ import org.bukkit.event.Event;
 @Name("Bungeecord send title")
 @Description("Sends a SkugneeTitle to the defined Bungeecord player(s).")
 @Patterns("(show|display|send) %skungeetitle% to bungee[[ ]cord]] [(player|uuid)][s] %strings/players%")
+@Disabled
 public class EffBungeePlayerTitle extends SkungeeEffect {
 
 	@Override

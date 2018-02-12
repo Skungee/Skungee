@@ -78,7 +78,10 @@ public class Sockets {
 					stop(false);
 					restart = true;
 				} else {
-					while (!send(new SkungeePacket(true, SkungeePacketType.PING, data)).equals("CONNECTED")){};
+					for (int i = 0; i < 10; i++) {
+						String state = (String) send(new SkungeePacket(true, SkungeePacketType.PING, data));
+						if (state != null && state.equals("CONNECTED")) break;
+					}
 					startHeartbeat();
 				}
 			}

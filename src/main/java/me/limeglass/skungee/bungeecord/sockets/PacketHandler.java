@@ -492,11 +492,11 @@ public class PacketHandler {
 			case TITLE:
 				if (packet.getObject() == null) return null;
 				SkungeeTitle title = (SkungeeTitle) packet.getObject();
-				title.setTitle(ProxyServer.getInstance().createTitle());
+				//title.setTitle(ProxyServer.getInstance().createTitle());
 				return title;
 			case PLAYERTITLE:
 				if (packet.getObject() == null || packet.getPlayers() == null) return null;
-				((SkungeeTitle)packet.getObject()).send(packet.getPlayers());
+				//((SkungeeTitle)packet.getObject()).send(packet.getPlayers());
 				break;
 			}
 		
