@@ -155,7 +155,9 @@ public class ServerTracker {
 	public static void add(ConnectedServer server) {
 		for (ConnectedServer connected : servers) {
 			if (connected.getName().equals(server.getName())) {
-				remove(connected);
+				if (connected.getPort() == server.getPort()) {
+					remove(connected);
+				}
 			}
 		}
 		servers.add(server);
