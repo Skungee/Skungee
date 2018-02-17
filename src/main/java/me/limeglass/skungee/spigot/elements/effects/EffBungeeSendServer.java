@@ -20,7 +20,7 @@ public class EffBungeeSendServer extends SkungeeEffect {
 	@Override
 	protected void execute(Event event) {
 		if (areNull(event)) return;
-		SkungeePlayer[] players = Utils.toSkungeePlayers(expressions.get(1).getAll(event));
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.CONNECTPLAYER, players));
+		SkungeePlayer[] players = Utils.toSkungeePlayers(expressions.get(0).getAll(event));
+		Sockets.send(new SkungeePacket(false, SkungeePacketType.CONNECTPLAYER, expressions.getSingle(event, String.class), null, players));
 	}
 }
