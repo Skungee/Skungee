@@ -84,6 +84,7 @@ public class Skungee extends JavaPlugin {
 	
 	public void onDisable() {
 		Sockets.onPluginDisabling();
+		PacketQueue.stop();
 	}
 
 	public final static void exception(Throwable cause, String... info) {

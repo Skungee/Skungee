@@ -2,17 +2,14 @@ package me.limeglass.skungee.objects;
 
 import java.io.Serializable;
 
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.Title;
-import net.md_5.bungee.api.chat.TextComponent;
-
 public class SkungeeTitle implements Serializable {
 
 	private static final long serialVersionUID = -7377209366283539512L;
 	private Boolean created = false, initialized = false;
 	private int fadeIn = 2, stay = 2, fadeOut = 2;
 	private String string, subtitle;
-	private Title title;
+	@SuppressWarnings("unused")
+	private Object title;
 
 	public SkungeeTitle(String string) {
 		this.string = string;
@@ -38,7 +35,7 @@ public class SkungeeTitle implements Serializable {
 		this.stay = stay;
 	}
  	
-	public void clear() {
+	/*public void clear() {
 		this.title.clear();
 	}
 	
@@ -51,7 +48,7 @@ public class SkungeeTitle implements Serializable {
 		for (SkungeePlayer player : players) {
 			getTitle().send(ProxyServer.getInstance().getPlayer(player.getUUID()));
 		}
-	}
+	}*/
 	
  	public void setFadeIn(int fadeIn) {
 		this.fadeIn = fadeIn;
@@ -98,11 +95,11 @@ public class SkungeeTitle implements Serializable {
 		this.created = false;
 	}
 	
-	public void setTitle(Title title) {
+	/*public void setTitle(Title title) {
 		this.initialized = true;
 		this.created = false;
 		this.title = title;
-	}
+	}*/
 	
 	public Boolean isCreated() {
 		return created;
@@ -112,9 +109,10 @@ public class SkungeeTitle implements Serializable {
 		return initialized;
 	}
 	
-	public Title getTitle() {
-		if (!isInitialized()) return null;
+	/*public void initializeTitle() {
+		if (!isInitialized()) return;
 		if (!isCreated()) {
+			title = (SkungeeTitle) Sockets.send(new SkungeePacket(true, SkungeePacketType.INITIALIZETITLE, this));
 			this.title.fadeIn(fadeIn);
 			this.title.stay(stay);
 			this.title.fadeOut(fadeOut);
@@ -122,6 +120,5 @@ public class SkungeeTitle implements Serializable {
 			if (subtitle != null) this.title.subTitle(new TextComponent(subtitle));
 			this.created = true;
 		}
-		return title;
-	}
+	}*/
 }

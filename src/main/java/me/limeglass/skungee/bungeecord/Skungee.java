@@ -238,81 +238,10 @@ public class Skungee extends Plugin {
 	}
 }
 /*
-Added Current Server of Script expression (Returns String):
-
-	[name of] this [script[s]] [bungee[[ ]cord]] server
-	[bungee[[ ]cord]] server [name] of this script
+Added more structure to the version of Bungeecord version expression:
+	[the] version of [the] bungee[[ ]cord]
+	[the] bungee[[ ]cord[[']s]] version
 	
-Fixed a bug where the evaluate effect would always send the evaluate to all servers if the server was a certian value.
-
-The evaluate now doesn't send the evaluate to all the servers if the server string is null.
-
-The server string of all syntax can now support IP's with ports so for example:
-
-	"127.0.0.1:25565,127.0.0.1:25566"
-	
-	evaluate "broadcast ""&6Example""" on bungeecord servers "127.0.0.1:25565,127.0.0.1:25566,127.0.0.1:25567"
-	set {_value} to motds of bungeecord server "127.0.0.1"
-	
-Fixed a bug with handling the hashed password file
-
-Added chat mode of player (Returns chat mode type):
-	[(all [[of] the]|the)] bungee[[ ]cord] chat[ ](setting|mode)[s] (of|from) [(player|uuid)[s]] %strings/players%
-	
-Added chat mode type:
-	chatmode:
-		commands_only: commands only, commands
-		hidden: hidden, disabled
-		shown: shown, enabled
-
-Added hand settings of player (Returns hand setting type):
-	[(all [[of] the]|the)] bungee[[ ]cord] hand[ ](setting|mode)[s] (of|from) [(player|uuid)[s]] %strings/players%
-	
-Added hand setting type:
-	handsetting:
-		right: right, right hand
-		left: left, left hand
-
-Added view distance of player (Returns number):
-	[(all [[of] the]|the)] bungee[[ ]cord] (render|view) distance[s] (of|from) [(player|uuid)[s]] %strings/players%
-	
-Added reconnected of player (Returns server name in String):
-	This is the server that the player reconnects to on their next login.
-
-	[(all [[of] the]|the)] bungee[[ ]cord] reconnect[ed] server[s] (of|from) [(player|uuid)[s]] %strings/players%
-	
-Added a queue system to make sure every single packet gets sent. This can cause some delay within the Skript calling code, but very minor. This guarentees every packet to be sent.
-Packets that are expressions will not be put into the queued system as it depends on a returned value.
-So making a queue system for those gets more complex. I might do something about that soon. This will mean that expressions will take priority over effects. Also all effects are sent asynchronous.
-
-Added a sync option to the Queue meaning that it will determine that time that expression packets were sent compared to effect packets and determine an appropriate time to evaluate and send those packets.
-
-Fixed a critical bug that told the Skungee (Spigot) to reset and re-initialize
-
-Fixed up events. They're now more stable and I will be adding more events in future updates.
-
-Fixed duplicated servers in the server tracker. Sometimes servers stayed in the tracker, which caused duplicated packets at times.
-
-Optimized for major networks where packets can be sent hundreds at a time
-
-Added functuality to the English enums, which can be edited in the english.lang attached to the jar.
-
-Added the ability to disable spammable packets. Packets that are common to spam. This option is on Bungeecord and Spigot.
-
-Added event value to get servers:
-	[(all [[of] the]|the)] event (skungee|bungee[[ ]cord]) server[s]
-
-Fixed some syntax overriding other Skungee syntax
-
-Fixed the event values not working properly.
-
-Added debug option for which events are possible in the custom event values.
-
-Added debug option to view the players of a Bungee Packet.
-
-Added condition to check if a player has chat colours enable:
-	[bungee[[ ]cord]] [(player|uuid)] %string/player% (1¦(has|do[es])|2¦(has|do[es])(n't| not)) (have|got) chat colo[u]r[s] [(enabled|on)]
-
 Added title stuff:
 
 	(Returns SkungeeTitle)

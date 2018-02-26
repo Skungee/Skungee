@@ -10,6 +10,7 @@ import ch.njol.skript.doc.Name;
 import me.limeglass.skungee.objects.SkungeeTitle;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Changers;
+import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
@@ -18,6 +19,7 @@ import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 @Properties({"skungeetitles", "(message|string)[s]", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[(skungee|bungee[[ ]cord])] title[s]")
 @Changers({ChangeMode.SET, ChangeMode.DELETE, ChangeMode.REMOVE, ChangeMode.REMOVE_ALL, ChangeMode.RESET})
+@Disabled
 public class ExprBungeeTitleString extends SkungeePropertyExpression<SkungeeTitle, String> {
 
 	@Override

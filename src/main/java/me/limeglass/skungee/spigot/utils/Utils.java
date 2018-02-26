@@ -27,6 +27,15 @@ public class Utils {
 		return Arrays.equals(arg1, arg2);
 	}
 	
+	public static <T> T indexOfSet(Set<T> set, int index) {
+		int i = 0;
+		for (T value : set) {
+			if (index == i) return value;
+			i++;
+		}
+		return null;
+	}
+	
 	public static Boolean isEnum(Class<?> clazz, String object) {
 		try {
 			final Method method = clazz.getMethod("valueOf", String.class);

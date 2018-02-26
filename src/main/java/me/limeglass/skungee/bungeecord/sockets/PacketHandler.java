@@ -108,9 +108,9 @@ public class PacketHandler {
 				}
 				break;
 			case ISPLAYERONLINE:
-				return (players != null && players.iterator().next().isConnected());
+				return (players != null && Utils.indexOfSet(players, 0).isConnected());
 			case ISUSINGFORGE:
-				return (players != null && players.iterator().next().isForgeUser());
+				return (players != null && Utils.indexOfSet(players, 0).isForgeUser());
 			case ACTIONBAR:
 				if (!players.isEmpty()) {
 					for (ProxiedPlayer player : players) {
@@ -476,12 +476,11 @@ public class PacketHandler {
 				}
 				break;
 			case PLAYERCOLOURS:
-				return (players != null && players.iterator().next().hasChatColors());
+				return (players != null && Utils.indexOfSet(players, 0).hasChatColors());
 			case PLAYERPERMISSIONS:
 				if (packet.getObject() != null && players != null) {
-					ProxiedPlayer player = players.iterator().next();
 					for (String permission : (String[]) packet.getObject()) {
-						if (!player.hasPermission(permission)) {
+						if (!Utils.indexOfSet(players, 0).hasPermission(permission)) {
 							return false;
 						}
 					}
@@ -492,12 +491,16 @@ public class PacketHandler {
 			case TITLE:
 				if (packet.getObject() == null) return null;
 				SkungeeTitle title = (SkungeeTitle) packet.getObject();
-				title.setTitle(ProxyServer.getInstance().createTitle());
+				//title.setTitle(ProxyServer.getInstance().createTitle());
 				return title;
 			case PLAYERTITLE:
 				if (packet.getObject() == null || packet.getPlayers() == null) return null;
-				((SkungeeTitle)packet.getObject()).send(packet.getPlayers());
+				//((SkungeeTitle)packet.getObject()).send(packet.getPlayers());
 				break;
+			case DISABLEDCOMMANDS:
+				return ProxyServer.getInstance().getDisabledCommands();
+			case BUNGEENAME:
+				return ProxyServer.getInstance().getName();
 			}
 		
 			/*

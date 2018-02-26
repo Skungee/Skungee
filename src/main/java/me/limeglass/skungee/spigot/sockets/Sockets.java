@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
@@ -70,6 +71,8 @@ public class Sockets {
 		for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
 			whitelisted.add(new SkungeePlayer(true, player.getUniqueId(), player.getName()));
 		}
+		FileConfiguration config = Skungee.getInstance().getConfig();
+		if (config == null) Skungee.consoleMessage("The configuration was null, try restarting the server and closing any configuration files that you may have open");
 		ArrayList<Object> data = new ArrayList<Object>(Arrays.asList(Skungee.getInstance().getConfig().getBoolean("Reciever.enabled", false), Reciever.getReciever().getLocalPort(), Bukkit.getPort(), whitelisted, Skungee.getInstance().getConfig().getInt("heartbeat", 30) * 60, Bukkit.getMotd(), Bukkit.getMaxPlayers()));
 		Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), new Runnable() {
 			@Override
@@ -78,7 +81,10 @@ public class Sockets {
 					stop(false);
 					restart = true;
 				} else {
-					while (!send(new SkungeePacket(true, SkungeePacketType.PING, data)).equals("CONNECTED")){};
+					for (int i = 0; i < 10; i++) {
+						String state = (String) send(new SkungeePacket(true, SkungeePacketType.PING, data));
+						if (state != null && state.equals("CONNECTED")) break;
+					}
 					startHeartbeat();
 				}
 			}
