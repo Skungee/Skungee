@@ -13,16 +13,16 @@ import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 import me.limeglass.skungee.spigot.utils.annotations.Single;
 
-@Name("Bungeecord version")
-@Description("Returns the version of the Bungeecord.")
-@Patterns({"[the] version of [the] bungee[[ ]cord]", "[the] bungee[[ ]cord[[']s]] version"})
+@Name("Bungeecord name")
+@Description("Returns the name of the Bungeecord.")
+@Patterns({"[the] name of [the] bungee[[ ]cord]", "[the] bungee[[ ]cord[[']s]] name"})
 @ExpressionProperty(ExpressionType.SIMPLE)
 @Single
-public class ExprBungeecordVersion extends SkungeeExpression<String> {
+public class ExprBungeecordName extends SkungeeExpression<String> {
 	
 	@Override
 	protected String[] get(Event event) {
-		String version = (String) Sockets.send(new SkungeePacket(true, SkungeePacketType.BUNGEEVERSION));
-		return (version != null) ? new String[]{version} : null;
+		String name = (String) Sockets.send(new SkungeePacket(true, SkungeePacketType.BUNGEENAME));
+		return (name != null) ? new String[]{name} : null;
 	}
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
@@ -28,6 +29,8 @@ import me.limeglass.skungee.objects.SkungeeTitle;
 import me.limeglass.skungee.spigot.utils.Utils;
 
 import java.util.concurrent.TimeUnit;
+
+import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
@@ -107,10 +110,6 @@ public class PacketHandler {
 					}
 				}
 				break;
-			case ISPLAYERONLINE:
-				return (players != null && players.iterator().next().isConnected());
-			case ISUSINGFORGE:
-				return (players != null && players.iterator().next().isForgeUser());
 			case ACTIONBAR:
 				if (!players.isEmpty()) {
 					for (ProxiedPlayer player : players) {
@@ -208,8 +207,6 @@ public class PacketHandler {
 					ProxyServer.getInstance().stop();
 				}
 				break;
-			case BUNGEEVERSION:
-				return ProxyServer.getInstance().getVersion();
 			case GLOBALPLAYERS:
 				Set<SkungeePlayer> allPlayers = new HashSet<SkungeePlayer>();
 				for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
@@ -318,8 +315,6 @@ public class PacketHandler {
 					return names;
 				}
 				break;
-			case BUNGEEPLAYERLIMIT:
-				return ProxyServer.getInstance().getConfig().getPlayerLimit();
 			case PLAYERPING:
 				if (!players.isEmpty()) {
 					Set<Number> pings = new HashSet<Number>();
@@ -430,8 +425,6 @@ public class PacketHandler {
 					}
 				}
 				return null;
-			case CURRENTSERVER:
-				return (ServerTracker.getByAddress(address) != null) ? ServerTracker.getByAddress(address).getName() : null;
 			case PLAYERCHATMODE:
 				if (!players.isEmpty()) {
 					Set<ChatMode> modes = new HashSet<ChatMode>();
@@ -475,13 +468,10 @@ public class PacketHandler {
 					return reconnected;
 				}
 				break;
-			case PLAYERCOLOURS:
-				return (players != null && players.iterator().next().hasChatColors());
 			case PLAYERPERMISSIONS:
 				if (packet.getObject() != null && players != null) {
-					ProxiedPlayer player = players.iterator().next();
 					for (String permission : (String[]) packet.getObject()) {
-						if (!player.hasPermission(permission)) {
+						if (!Utils.indexOfSet(players, 0).hasPermission(permission)) {
 							return false;
 						}
 					}
@@ -498,81 +488,113 @@ public class PacketHandler {
 				if (packet.getObject() == null || packet.getPlayers() == null) return null;
 				//((SkungeeTitle)packet.getObject()).send(packet.getPlayers());
 				break;
-			}
-		
-			/*
-			case REDISSERVERS:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getAllServers();
+			case PLAYERCOMMAND:
+				Set<Boolean> registered = new HashSet<Boolean>();
+				if (!players.isEmpty()) {
+					for (ProxiedPlayer player : players) {
+						for (String command : (String[]) packet.getObject()) {
+							registered.add(ProxyServer.getInstance().getPluginManager().dispatchCommand(player, command));
+						}
+					}
 				}
-				break;
+				return (registered != null) ? registered : null;
 			case REDISPLAYERS:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getPlayersOnline();
+				Set<SkungeePlayer> redisPlayers = new HashSet<SkungeePlayer>();
+				for (UUID uuid : RedisBungee.getApi().getPlayersOnline()) {
+					redisPlayers.add(new SkungeePlayer(false, uuid, ProxyServer.getInstance().getPlayer(uuid).getName()));
 				}
-				break;
-			case REDISPLAYERS2:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getHumanPlayersOnline();
-				}
-				break;
-			case REDISLASTLOGIN:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getLastOnline(player.getUniqueId());
-				}
-				break;
+				return redisPlayers;
 			case REDISPROXYPLAYERS:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getPlayersOnProxy((String) packet.getObject());
+				if (packet.getObject() == null) return null;
+				Set<SkungeePlayer> proxyPlayers = new HashSet<SkungeePlayer>();
+				for (String server : (String[]) packet.getObject()) {
+					for (UUID uuid : RedisBungee.getApi().getPlayersOnProxy(server)) {
+						proxyPlayers.add(new SkungeePlayer(false, uuid, ProxyServer.getInstance().getPlayer(uuid).getName()));
+					}
 				}
-				break;
+				return proxyPlayers;
 			case REDISSERVERPLAYERS:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getPlayersOnServer((String) packet.getObject());
+				if (packet.getObject() == null) return null;
+				Set<SkungeePlayer> serverPlayers = new HashSet<SkungeePlayer>();
+				for (String server : (String[]) packet.getObject()) {
+					for (UUID uuid : RedisBungee.getApi().getPlayersOnServer(server)) {
+						serverPlayers.add(new SkungeePlayer(false, uuid, ProxyServer.getInstance().getPlayer(uuid).getName()));
+					}
 				}
-				break;
-			case REDISPLAYERID:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getProxy(player.getUniqueId());
-				}
-				break;
-			case REDISPLAYERSERVER:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getServerFor(player.getUniqueId()).getName();
-				}
-				break;
+				return serverPlayers;
+			case REDISSERVERS:
+				return RedisBungee.getApi().getAllServers();
+			/*
 			case REDISSERVERID:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
+				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
 					return RedisBungee.getApi().getServerId();
 				}
 				break;
-			case REDISPLAYERNAME:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getNameFromUuid(player.getUniqueId());
-				}
-				break;
-			case REDISPLAYERNAMELOOKUP:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getNameFromUuid(player.getUniqueId(), true);
-				}
-				break;
-			case REDISISPLAYERONLINE:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().isPlayerOnline(player.getUniqueId());
-				}
-				break;
 			case REDISPROXYCOMMAND:
-				if (ProxyServer.getInstance().pluginManager.getPlugin("RedisBungee") != null) {
+				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
 					if (packet.getSetObject() != null) {
 						RedisBungee.getApi().sendProxyCommand((String) packet.getObject(), (String) packet.getSetObject());
 					} else {
 						RedisBungee.getApi().sendProxyCommand((String) packet.getObject());
 					}
 				}
-				break;*/
-		//default:
-		//	break;
-		//}
+				break;
+			case REDISPLAYERNAME:
+				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
+					return RedisBungee.getApi().getNameFromUuid(player.getUniqueId());
+				}
+				break;
+			case REDISPLAYERNAMELOOKUP:
+				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
+					return RedisBungee.getApi().getNameFromUuid(player.getUniqueId(), true);
+				}
+				break;
+			case REDISISPLAYERONLINE:
+				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
+					return RedisBungee.getApi().isPlayerOnline(player.getUniqueId());
+				}
+				break;
+			case REDISLASTLOGIN:
+				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
+					return RedisBungee.getApi().getLastOnline(player.getUniqueId());
+				}
+				break;
+			case REDISPLAYERID:
+				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
+					return RedisBungee.getApi().getProxy(player.getUniqueId());
+				}
+				break;
+			case REDISPLAYERSERVER:
+				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
+					return RedisBungee.getApi().getServerFor(player.getUniqueId()).getName();
+				}
+				break;
+			*/
+			case ISPLAYERONLINE:
+				return (players != null && Utils.indexOfSet(players, 0).isConnected());
+			case ISUSINGFORGE:
+				return (players != null && Utils.indexOfSet(players, 0).isForgeUser());
+			case BUNGEEVERSION:
+				return ProxyServer.getInstance().getVersion();
+			case CURRENTSERVER:
+				return (ServerTracker.getByAddress(address) != null) ? ServerTracker.getByAddress(address).getName() : null;
+			case PLAYERCOLOURS:
+				return (players != null && Utils.indexOfSet(players, 0).hasChatColors());
+			case DISABLEDCOMMANDS:
+				return ProxyServer.getInstance().getDisabledCommands();
+			case BUNGEENAME:
+				return ProxyServer.getInstance().getName();
+			case PLUGINS:
+				return ProxyServer.getInstance().getPluginManager().getPlugins();
+			case BUNGEEPLAYERLIMIT:
+				return ProxyServer.getInstance().getConfig().getPlayerLimit();
+			case BUNGEETHROTTLE:
+				return ProxyServer.getInstance().getConfig().getThrottle();
+			case BUNGEETIMEOUT:
+				return ProxyServer.getInstance().getConfig().getTimeout();
+			case BUNGEEONLINEMODE:
+				return ProxyServer.getInstance().getConfig().isOnlineMode();
+			}
 		return null;
 	}
 }

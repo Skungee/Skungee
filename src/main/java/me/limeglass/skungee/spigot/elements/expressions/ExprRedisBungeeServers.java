@@ -1,5 +1,6 @@
 package me.limeglass.skungee.spigot.elements.expressions;
 
+import java.util.List;
 import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
@@ -11,18 +12,17 @@ import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
-import me.limeglass.skungee.spigot.utils.annotations.Single;
 
-@Name("Bungeecord version")
-@Description("Returns the version of the Bungeecord.")
-@Patterns({"[the] version of [the] bungee[[ ]cord]", "[the] bungee[[ ]cord[[']s]] version"})
+@Name("RedisBungee servers")
+@Description("Returns a string list of all the RedisBungee servers.")
+@Patterns("[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] servers")
 @ExpressionProperty(ExpressionType.SIMPLE)
-@Single
-public class ExprBungeecordVersion extends SkungeeExpression<String> {
+public class ExprRedisBungeeServers extends SkungeeExpression<String> {
 	
 	@Override
 	protected String[] get(Event event) {
-		String version = (String) Sockets.send(new SkungeePacket(true, SkungeePacketType.BUNGEEVERSION));
-		return (version != null) ? new String[]{version} : null;
+		@SuppressWarnings("unchecked")
+		List<String> servers = (List<String>) Sockets.send(new SkungeePacket(true, SkungeePacketType.REDISSERVERS));
+		return (servers != null) ? servers.toArray(new String[servers.size()]) : null;
 	}
 }

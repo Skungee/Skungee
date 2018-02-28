@@ -18,11 +18,11 @@ import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
-@Name("Bungeecord server players")
-@Description("Returns the players(s) of the defined Bungeecord server(s).")
-@Patterns({"[(all [[of] the]|the)] bungee[[ ]cord] players (on|of|from) [the] [server[s]] %strings%", "[(all [[of] the]|the)] players (on|of|from) [the] bungee[[ ]cord] [server[s]] %strings%"})
+@Name("RedisBungee proxy players")
+@Description("Returns the players(s) of the defined RedisBungee proxy(s).")
+@Patterns({"[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] players (on|of|from) [the] prox(ies|y) %strings%", "[(all [[of] the]|the)] players (on|of|from) [the] redis[( |-)]bungee[[ ]cord] prox(ies|y) %strings%"})
 @ExpressionProperty(ExpressionType.PROPERTY)
-public class ExprBungeeServerPlayers extends SkungeeExpression<Object> implements Returnable {
+public class ExprRedisBungeeProxyPlayers extends SkungeeExpression<Object> implements Returnable {
 	
 	@Override
 	public Class<? extends Object> getReturnType() {
@@ -34,7 +34,7 @@ public class ExprBungeeServerPlayers extends SkungeeExpression<Object> implement
 	protected Object[] get(Event event) {
 		if (areNull(event) || returnable == null) return null;
 		@SuppressWarnings("unchecked")
-		Set<SkungeePlayer> players = (Set<SkungeePlayer>) Sockets.send(new SkungeePacket(true, SkungeePacketType.SERVERPLAYERS, expressions.getAll(event, String.class)));
+		Set<SkungeePlayer> players = (Set<SkungeePlayer>) Sockets.send(new SkungeePacket(true, SkungeePacketType.REDISPROXYPLAYERS, expressions.getAll(event, String.class)));
 		return (players != null) ? convert(players) : null;
 	}
 }

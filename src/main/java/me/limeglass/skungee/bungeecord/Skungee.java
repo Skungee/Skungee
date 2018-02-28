@@ -238,81 +238,63 @@ public class Skungee extends Plugin {
 	}
 }
 /*
-Added Current Server of Script expression (Returns String):
-
-	[name of] this [script[s]] [bungee[[ ]cord]] server
-	[bungee[[ ]cord]] server [name] of this script
+Added more structure to the version of Bungeecord version expression:
+	[the] version of [the] bungee[[ ]cord]
+	[the] bungee[[ ]cord[[']s]] version
 	
-Fixed a bug where the evaluate effect would always send the evaluate to all servers if the server was a certian value.
-
-The evaluate now doesn't send the evaluate to all the servers if the server string is null.
-
-The server string of all syntax can now support IP's with ports so for example:
-
-	"127.0.0.1:25565,127.0.0.1:25566"
+Added Bungeecord name expression, I don't see the usefulness of this but it's here:
+ 	#This returns the defined name of the bungeecord.
+	[the] name of [the] bungee[[ ]cord]
+	[the] bungee[[ ]cord[[']s]] name
 	
-	evaluate "broadcast ""&6Example""" on bungeecord servers "127.0.0.1:25565,127.0.0.1:25566,127.0.0.1:25567"
-	set {_value} to motds of bungeecord server "127.0.0.1"
+Added disabled commands, this returns all the defined commands that are disabled in the configuration of Bungeecord:
+	[(all [[of] the]|the)] bungee[[ ]cord] disabled commands
+	bungee[[ ]cord]'s disabled commands
+	[(all [[of] the]|the)] disabled commands (on|of|from) [the] bungee[[ ]cord]
 	
-Fixed a bug with handling the hashed password file
-
-Added chat mode of player (Returns chat mode type):
-	[(all [[of] the]|the)] bungee[[ ]cord] chat[ ](setting|mode)[s] (of|from) [(player|uuid)[s]] %strings/players%
+Added an expression that grabs the list of all plugins on the Bungeecord by name.
+	[(all [[of] the]|the)] bungee[[ ]cord][[']s] plugins
 	
-Added chat mode type:
-	chatmode:
-		commands_only: commands only, commands
-		hidden: hidden, disabled
-		shown: shown, enabled
+Added expression to get the throttle of the Bungeecord:
+	[the] bungee[[ ]cord[[']s]] throttle [connection] [delay]
 
-Added hand settings of player (Returns hand setting type):
-	[(all [[of] the]|the)] bungee[[ ]cord] hand[ ](setting|mode)[s] (of|from) [(player|uuid)[s]] %strings/players%
+Added expression to get the timeout of the Bungeecord:
+	[the] bungee[[ ]cord[[']s]] time[ ]out [connection] [delay]
+
+Added expression to get the online state of the Bungeecord:
+	[the] bungee[[ ]cord[[']s]] online mode
 	
-Added hand setting type:
-	handsetting:
-		right: right, right hand
-		left: left, left hand
-
-Added view distance of player (Returns number):
-	[(all [[of] the]|the)] bungee[[ ]cord] (render|view) distance[s] (of|from) [(player|uuid)[s]] %strings/players%
+Re-added all the Redis syntaxes
+Note that these syntaxes are untested due to not having setup a Redis network nor having the time to compile or purchase RedisBungee.
+If you run into any issues please let us know, but there shouldn't be any issues.
+Skungee may only error if RedisBungee is not installed or installed incorrectly.
+If the error contains a ClassNotFound or NoMethodFound exception related to RedisBungee, or the servers get halted due to RedisBungee not being found, you will not be receiving help.
+There is no check to make sure RedisBungee is installed or not, because it should be known to the user that you need RedisBungee to use RedisBungee syntaxes,
+and Skungee will work regardless if RedisBungee is installed or not, just the RedisBungee syntax won't return and probably error.
+This hook utilizes version 0.3.8-SNAPSHOT of RedisBungee because that's the latest RedisBungee Maven repository we could find,
+and the project seems to rarely get updated.
+	Expressions:
+		#Returns all the RedisBungee servers
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] servers
 	
-Added reconnected of player (Returns server name in String):
-	This is the server that the player reconnects to on their next login.
+		#Returns all the RedisBungee players
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] players
+		
+		#Returns all players on the defined RedisBungee proxies
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] players (on|of|from) [the] prox(ies|y) %strings%
+		[(all [[of] the]|the)] players (on|of|from) [the] redis[( |-)]bungee[[ ]cord] prox(ies|y) %strings%
 
-	[(all [[of] the]|the)] bungee[[ ]cord] reconnect[ed] server[s] (of|from) [(player|uuid)[s]] %strings/players%
+Fixed the player execution command effect so that the command actually executes bungeecord commands now
+rather than every spigot server. IMPORTANT due to this, you will need to delete your syntax.yml and let it regenerate
+with the new syntax so that old syntax don't override or stop this from working. This is only needed if you want this
+update to fix this issue. There is a new syntax to handle Commands which takes over the same syntax
+so you don't need to modify your scripts if that's the case. Just be sure to have saved the syntax.yml if you have modified syntax
+
+Fixed some nullpointers
+
+Fixed some issues where the configuration of Skungee would do some weird things, it may still happen for some reason.
+This is mainly due to having a configuration open from Skungee, and then updating Skungee and restarting the server.
 	
-Added a queue system to make sure every single packet gets sent. This can cause some delay within the Skript calling code, but very minor. This guarentees every packet to be sent.
-Packets that are expressions will not be put into the queued system as it depends on a returned value.
-So making a queue system for those gets more complex. I might do something about that soon. This will mean that expressions will take priority over effects. Also all effects are sent asynchronous.
-
-Added a sync option to the Queue meaning that it will determine that time that expression packets were sent compared to effect packets and determine an appropriate time to evaluate and send those packets.
-
-Fixed a critical bug that told the Skungee (Spigot) to reset and re-initialize
-
-Fixed up events. They're now more stable and I will be adding more events in future updates.
-
-Fixed duplicated servers in the server tracker. Sometimes servers stayed in the tracker, which caused duplicated packets at times.
-
-Optimized for major networks where packets can be sent hundreds at a time
-
-Added functuality to the English enums, which can be edited in the english.lang attached to the jar.
-
-Added the ability to disable spammable packets. Packets that are common to spam. This option is on Bungeecord and Spigot.
-
-Added event value to get servers:
-	[(all [[of] the]|the)] event (skungee|bungee[[ ]cord]) server[s]
-
-Fixed some syntax overriding other Skungee syntax
-
-Fixed the event values not working properly.
-
-Added debug option for which events are possible in the custom event values.
-
-Added debug option to view the players of a Bungee Packet.
-
-Added condition to check if a player has chat colours enable:
-	[bungee[[ ]cord]] [(player|uuid)] %string/player% (1¦(has|do[es])|2¦(has|do[es])(n't| not)) (have|got) chat colo[u]r[s] [(enabled|on)]
-
 Added title stuff:
 
 	(Returns SkungeeTitle)
