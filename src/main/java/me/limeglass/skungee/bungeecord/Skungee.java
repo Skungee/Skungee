@@ -242,6 +242,59 @@ Added more structure to the version of Bungeecord version expression:
 	[the] version of [the] bungee[[ ]cord]
 	[the] bungee[[ ]cord[[']s]] version
 	
+Added Bungeecord name expression, I don't see the usefulness of this but it's here:
+ 	#This returns the defined name of the bungeecord.
+	[the] name of [the] bungee[[ ]cord]
+	[the] bungee[[ ]cord[[']s]] name
+	
+Added disabled commands, this returns all the defined commands that are disabled in the configuration of Bungeecord:
+	[(all [[of] the]|the)] bungee[[ ]cord] disabled commands
+	bungee[[ ]cord]'s disabled commands
+	[(all [[of] the]|the)] disabled commands (on|of|from) [the] bungee[[ ]cord]
+	
+Added an expression that grabs the list of all plugins on the Bungeecord by name.
+	[(all [[of] the]|the)] bungee[[ ]cord][[']s] plugins
+	
+Added expression to get the throttle of the Bungeecord:
+	[the] bungee[[ ]cord[[']s]] throttle [connection] [delay]
+
+Added expression to get the timeout of the Bungeecord:
+	[the] bungee[[ ]cord[[']s]] time[ ]out [connection] [delay]
+
+Added expression to get the online state of the Bungeecord:
+	[the] bungee[[ ]cord[[']s]] online mode
+	
+Re-added all the Redis syntaxes
+Note that these syntaxes are untested due to not having setup a Redis network nor having the time to compile or purchase RedisBungee.
+If you run into any issues please let us know, but there shouldn't be any issues.
+Skungee may only error if RedisBungee is not installed or installed incorrectly.
+If the error contains a ClassNotFound or NoMethodFound exception related to RedisBungee, or the servers get halted due to RedisBungee not being found, you will not be receiving help.
+There is no check to make sure RedisBungee is installed or not, because it should be known to the user that you need RedisBungee to use RedisBungee syntaxes,
+and Skungee will work regardless if RedisBungee is installed or not, just the RedisBungee syntax won't return and probably error.
+This hook utilizes version 0.3.8-SNAPSHOT of RedisBungee because that's the latest RedisBungee Maven repository we could find,
+and the project seems to rarely get updated.
+	Expressions:
+		#Returns all the RedisBungee servers
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] servers
+	
+		#Returns all the RedisBungee players
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] players
+		
+		#Returns all players on the defined RedisBungee proxies
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] players (on|of|from) [the] prox(ies|y) %strings%
+		[(all [[of] the]|the)] players (on|of|from) [the] redis[( |-)]bungee[[ ]cord] prox(ies|y) %strings%
+
+Fixed the player execution command effect so that the command actually executes bungeecord commands now
+rather than every spigot server. IMPORTANT due to this, you will need to delete your syntax.yml and let it regenerate
+with the new syntax so that old syntax don't override or stop this from working. This is only needed if you want this
+update to fix this issue. There is a new syntax to handle Commands which takes over the same syntax
+so you don't need to modify your scripts if that's the case. Just be sure to have saved the syntax.yml if you have modified syntax
+
+Fixed some nullpointers
+
+Fixed some issues where the configuration of Skungee would do some weird things, it may still happen for some reason.
+This is mainly due to having a configuration open from Skungee, and then updating Skungee and restarting the server.
+	
 Added title stuff:
 
 	(Returns SkungeeTitle)

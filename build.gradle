@@ -6,14 +6,25 @@ jar.archiveName = project.name + '.jar'
 repositories {
     mavenCentral()
     jcenter()
+    
+    //Spigot
     maven {
         url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
+    
+    //Skript
     maven {
         url "https://raw.githubusercontent.com/bensku/mvn-repo/master"
     }
+    
+    //Bungeecord
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+    
+    //Redis-Bungee
+    maven {
+        url "http://repo.md-5.net/content/repositories/snapshots/"
     }
 }
 
@@ -32,4 +43,7 @@ dependencies {
 	
 	//Bungeecord
 	compile (group: 'net.md-5', name: 'bungeecord-api', version: '1.12-SNAPSHOT')
+	
+	//Redis-Bungee
+	compile (group: 'com.imaginarycode.minecraft', name: 'RedisBungee', version: '0.3.8-SNAPSHOT')
 }
