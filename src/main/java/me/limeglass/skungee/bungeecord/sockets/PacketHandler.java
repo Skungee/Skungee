@@ -524,12 +524,9 @@ public class PacketHandler {
 				return serverPlayers;
 			case REDISSERVERS:
 				return RedisBungee.getApi().getAllServers();
-			/*
 			case REDISSERVERID:
-				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getServerId();
-				}
-				break;
+				return RedisBungee.getApi().getServerId();
+			/*
 			case REDISPROXYCOMMAND:
 				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
 					if (packet.getSetObject() != null) {
