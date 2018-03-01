@@ -53,7 +53,7 @@ public class PacketHandler {
 		} else if (!(packet.getType() == SkungeePacketType.HEARTBEAT)) {
 			Skungee.debugMessage(UniversalSkungee.getPacketDebug(packet));
 		}
-		Set<ProxiedPlayer> players = new HashSet<ProxiedPlayer>();
+		List<ProxiedPlayer> players = new ArrayList<ProxiedPlayer>();
 		if (packet.getPlayers() != null) {
 			for (SkungeePlayer player : packet.getPlayers()) {
 				ProxiedPlayer proxiedPlayer = null;
@@ -62,11 +62,10 @@ public class PacketHandler {
 					if (proxiedPlayer == null) { //invalid UUID
 						proxiedPlayer = ProxyServer.getInstance().getPlayer(player.getName());
 					}
-					proxiedPlayer = ProxyServer.getInstance().getPlayer(player.getUUID());
 				} else if (player.getName() != null) {
 					proxiedPlayer = ProxyServer.getInstance().getPlayer(player.getName());
 				}
-				if (proxiedPlayer != null && proxiedPlayer.isConnected()) players.add(proxiedPlayer);
+				if (proxiedPlayer != null) players.add(proxiedPlayer);
 			}
 		}
 		Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
@@ -470,8 +469,9 @@ public class PacketHandler {
 				break;
 			case PLAYERPERMISSIONS:
 				if (packet.getObject() != null && players != null) {
+					if (players.isEmpty()) return false;
 					for (String permission : (String[]) packet.getObject()) {
-						if (!Utils.indexOfSet(players, 0).hasPermission(permission)) {
+						if (!players.get(0).hasPermission(permission)) {
 							return false;
 						}
 					}
@@ -568,15 +568,23 @@ public class PacketHandler {
 				break;
 			*/
 			case ISPLAYERONLINE:
-				return (players != null && Utils.indexOfSet(players, 0).isConnected());
+				if (players.isEmpty()) return false;
+				for (ProxiedPlayer player : players) {
+					Skungee.consoleMessage(player.getName());
+				}
+				Skungee.consoleMessage(players.get(0).getName());
+				if (players.isEmpty()) Skungee.consoleMessage("yes");
+				return (players != null && players.get(0).isConnected());
 			case ISUSINGFORGE:
-				return (players != null && Utils.indexOfSet(players, 0).isForgeUser());
+				if (players.isEmpty()) return false;
+				return (players != null && players.get(0).isForgeUser());
+			case PLAYERCOLOURS:
+				if (players.isEmpty()) return false;
+				return (players != null && players.get(0).hasChatColors());
 			case BUNGEEVERSION:
 				return ProxyServer.getInstance().getVersion();
 			case CURRENTSERVER:
 				return (ServerTracker.getByAddress(address) != null) ? ServerTracker.getByAddress(address).getName() : null;
-			case PLAYERCOLOURS:
-				return (players != null && Utils.indexOfSet(players, 0).hasChatColors());
 			case DISABLEDCOMMANDS:
 				return ProxyServer.getInstance().getDisabledCommands();
 			case BUNGEENAME:

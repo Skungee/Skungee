@@ -20,6 +20,6 @@ public class CondOnlinePlayer extends SkungeeCondition {
 	public boolean check(Event event) {
 		if (areNull(event)) return false;
 		SkungeePlayer[] players = Utils.toSkungeePlayers(expressions.get(0).getSingle(event));
-		return ((Boolean) Sockets.send(new SkungeePacket(true, SkungeePacketType.ISPLAYERONLINE, null, null, players))) ? isNegated() : !isNegated();
+		return ((Boolean) Sockets.send(new SkungeePacket(true, SkungeePacketType.ISPLAYERONLINE, players))) ? isNegated() : !isNegated();
 	}
 }
