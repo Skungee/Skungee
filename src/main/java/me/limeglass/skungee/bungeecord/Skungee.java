@@ -283,6 +283,26 @@ and the project seems to rarely get updated.
 		#Returns all players on the defined RedisBungee proxies
 		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] players (on|of|from) [the] prox(ies|y) %strings%
 		[(all [[of] the]|the)] players (on|of|from) [the] redis[( |-)]bungee[[ ]cord] prox(ies|y) %strings%
+		
+		#Returns all the players from a defined RedisBungee server
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] players (on|of|from) [the] [server[s]] %strings%
+		[(all [[of] the]|the)] players (on|of|from) [the] redis[( |-)]bungee[[ ]cord] [server[s]] %strings%
+		
+		#Returns the RedisBungee ID of the Bungeecord that is connected to this Skungee
+		[th(e|is)] [bungee[[ ]cord[[']s]]] redis[( |-)]bungee[[ ]cord] ID
+		
+		#Returns the RedisBungee names of the defined players.
+		[skungee] [(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] [user[ ]]name[s] (of|from) [(player|uuid)[s]] %strings/players%
+		[skungee] %strings/players%['s] [(player|uuid)[s]] redis[( |-)]bungee[[ ]cord] [user[ ]]name[s]
+
+	Effects:
+		#Execute a proxy command on a RedisBungee proxy
+		(run|execute) redis[( |-)]bungee[[ ][cord]] [(proxy|console)] command[s] %strings% [(on|of|from) [the] [server[s]] %-strings%]
+		make redis[( |-)]bungee[[ ][cord]] (run|execute) [(proxy|console)] command[s] %strings% [(on|of|from) [the] [server[s]] %-strings%]
+
+Fixed a bug within all player expression that was caused when the syntax was used as the player left the Bungeecord network.
+
+Fixed a bug where the SkungeePlayer transformer would make the UUID be default in cases where the name should be higher
 
 Fixed the player execution command effect so that the command actually executes bungeecord commands now
 rather than every spigot server. IMPORTANT due to this, you will need to delete your syntax.yml and let it regenerate

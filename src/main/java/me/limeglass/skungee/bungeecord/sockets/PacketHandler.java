@@ -497,13 +497,13 @@ public class PacketHandler {
 						}
 					}
 				}
-				return (registered != null) ? registered : null;
+				return (registered != null && !registered.isEmpty()) ? registered : null;
 			case REDISPLAYERS:
 				Set<SkungeePlayer> redisPlayers = new HashSet<SkungeePlayer>();
 				for (UUID uuid : RedisBungee.getApi().getPlayersOnline()) {
 					redisPlayers.add(new SkungeePlayer(false, uuid, ProxyServer.getInstance().getPlayer(uuid).getName()));
 				}
-				return redisPlayers;
+				return (redisPlayers != null && !redisPlayers.isEmpty()) ? redisPlayers : null;
 			case REDISPROXYPLAYERS:
 				if (packet.getObject() == null) return null;
 				Set<SkungeePlayer> proxyPlayers = new HashSet<SkungeePlayer>();
@@ -512,7 +512,7 @@ public class PacketHandler {
 						proxyPlayers.add(new SkungeePlayer(false, uuid, ProxyServer.getInstance().getPlayer(uuid).getName()));
 					}
 				}
-				return proxyPlayers;
+				return (proxyPlayers != null && !proxyPlayers.isEmpty()) ? proxyPlayers : null;
 			case REDISSERVERPLAYERS:
 				if (packet.getObject() == null) return null;
 				Set<SkungeePlayer> serverPlayers = new HashSet<SkungeePlayer>();
@@ -521,31 +521,27 @@ public class PacketHandler {
 						serverPlayers.add(new SkungeePlayer(false, uuid, ProxyServer.getInstance().getPlayer(uuid).getName()));
 					}
 				}
-				return serverPlayers;
-			case REDISSERVERS:
-				return RedisBungee.getApi().getAllServers();
-			case REDISSERVERID:
-				return RedisBungee.getApi().getServerId();
-			/*
+				return (serverPlayers != null && !serverPlayers.isEmpty()) ? serverPlayers : null;
 			case REDISPROXYCOMMAND:
-				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
+				if (packet.getObject() == null) return null;
+				for (String command : (String[]) packet.getObject()) {
 					if (packet.getSetObject() != null) {
-						RedisBungee.getApi().sendProxyCommand((String) packet.getObject(), (String) packet.getSetObject());
+						for (String server : (String[]) packet.getSetObject()) {
+							RedisBungee.getApi().sendProxyCommand(server, command);
+						}
 					} else {
-						RedisBungee.getApi().sendProxyCommand((String) packet.getObject());
+						RedisBungee.getApi().sendProxyCommand(command);
 					}
 				}
 				break;
 			case REDISPLAYERNAME:
-				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getNameFromUuid(player.getUniqueId());
+				if (packet.getObject() == null || players.isEmpty()) return null;
+				Set<SkungeePlayer> names = new HashSet<SkungeePlayer>();
+				for (ProxiedPlayer player : players) {
+					names.add(new SkungeePlayer(false, player.getUniqueId(), RedisBungee.getApi().getNameFromUuid(player.getUniqueId(), true)));
 				}
-				break;
-			case REDISPLAYERNAMELOOKUP:
-				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
-					return RedisBungee.getApi().getNameFromUuid(player.getUniqueId(), true);
-				}
-				break;
+				return (names != null && !names.isEmpty()) ? names : null;
+			/*
 			case REDISISPLAYERONLINE:
 				if (ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null) {
 					return RedisBungee.getApi().isPlayerOnline(player.getUniqueId());
@@ -569,11 +565,6 @@ public class PacketHandler {
 			*/
 			case ISPLAYERONLINE:
 				if (players.isEmpty()) return false;
-				for (ProxiedPlayer player : players) {
-					Skungee.consoleMessage(player.getName());
-				}
-				Skungee.consoleMessage(players.get(0).getName());
-				if (players.isEmpty()) Skungee.consoleMessage("yes");
 				return (players != null && players.get(0).isConnected());
 			case ISUSINGFORGE:
 				if (players.isEmpty()) return false;
@@ -581,6 +572,10 @@ public class PacketHandler {
 			case PLAYERCOLOURS:
 				if (players.isEmpty()) return false;
 				return (players != null && players.get(0).hasChatColors());
+			case REDISSERVERS:
+				return RedisBungee.getApi().getAllServers();
+			case REDISSERVERID:
+				return RedisBungee.getApi().getServerId();
 			case BUNGEEVERSION:
 				return ProxyServer.getInstance().getVersion();
 			case CURRENTSERVER:
@@ -603,4 +598,3 @@ public class PacketHandler {
 		return null;
 	}
 }
-	
