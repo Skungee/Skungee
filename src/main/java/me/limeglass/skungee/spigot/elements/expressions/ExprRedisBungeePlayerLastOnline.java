@@ -32,7 +32,7 @@ public class ExprRedisBungeePlayerLastOnline extends SkungeePropertyExpression<O
 			for (Number milliseconds : logins) {
 				timespans.add(new Timespan((long) milliseconds));
 			}
-			return (timespans != null) ? timespans.toArray(new Number[timespans.size()]) : null;
+			return (timespans != null) ? timespans.toArray(new Timespan[timespans.size()]) : null;
 		}
 		return (logins != null) ? logins.toArray(new Number[logins.size()]) : null;
 	}
