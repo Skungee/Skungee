@@ -13,17 +13,17 @@ import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
-@Name("Bungeecord player ping")
-@Description("Returns the ping(s) of the defined Bungeecord player(s).")
-@Properties({"strings/players", "bungee[[ ]cord] ping", "{1}[(all [[of] the]|the)]"})
+@Name("RedisBungee player name")
+@Description("Returns the name(s) of the defined RedisBungee player(s).")
+@Properties({"strings/players", "redis[( |-)]bungee[[ ]cord] [user[ ]]name[s]", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[(player|uuid)[s]]")
-public class ExprBungeePlayerPing extends SkungeePropertyExpression<Object, Number> {
+public class ExprRedisBungeePlayerNames extends SkungeePropertyExpression<Object, String> {
 
 	@Override
-	protected Number[] get(Event event, Object[] skungeePlayers) {
+	protected String[] get(Event event, Object[] skungeePlayers) {
 		if (isNull(event)) return null;
 		@SuppressWarnings("unchecked")
-		Set<String> pings = (Set<String>) Sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERPING, Utils.toSkungeePlayers(skungeePlayers)));
-		return (pings != null) ? pings.toArray(new Number[pings.size()]) : null;
+		Set<String> names = (Set<String>) Sockets.send(new SkungeePacket(true, SkungeePacketType.REDISPLAYERNAME, Utils.toSkungeePlayers(skungeePlayers)));
+		return (names != null) ? names.toArray(new String[names.size()]) : null;
 	}
 }

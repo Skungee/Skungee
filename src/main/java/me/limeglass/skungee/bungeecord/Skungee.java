@@ -263,7 +263,7 @@ Added expression to get the timeout of the Bungeecord:
 
 Added expression to get the online state of the Bungeecord:
 	[the] bungee[[ ]cord[[']s]] online mode
-	
+
 Re-added all the Redis syntaxes
 Note that these syntaxes are untested due to not having setup a Redis network nor having the time to compile or purchase RedisBungee.
 If you run into any issues please let us know, but there shouldn't be any issues.
@@ -283,14 +283,58 @@ and the project seems to rarely get updated.
 		#Returns all players on the defined RedisBungee proxies
 		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] players (on|of|from) [the] prox(ies|y) %strings%
 		[(all [[of] the]|the)] players (on|of|from) [the] redis[( |-)]bungee[[ ]cord] prox(ies|y) %strings%
+		
+		#Returns all the players from a defined RedisBungee server
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] players (on|of|from) [the] [server[s]] %strings%
+		[(all [[of] the]|the)] players (on|of|from) [the] redis[( |-)]bungee[[ ]cord] [server[s]] %strings%
+		
+		#Returns the RedisBungee ID of the Bungeecord that is connected to this Skungee
+		[th(e|is)] [bungee[[ ]cord[[']s]]] redis[( |-)]bungee[[ ]cord] ID
+		
+		#Returns the RedisBungee names of the defined players.
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] [user[ ]]name[s] (of|from) [(player|uuid)[s]] %strings/players%
+		%strings/players%['s] [(player|uuid)[s]] redis[( |-)]bungee[[ ]cord] [user[ ]]name[s]
+
+		#Returns the last known login time of a RedisBungee player.
+		#Returns -1 if the player is unknown or has never joined.
+		#This can be a Timespan or a Number, define so in the config.yml of Spigot side Skungee.
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] last [known] login[s] [time[s]] (of|from) [(player|uuid)[s]] %strings/players%
+		%strings/players%['s] [(player|uuid)[s]] redis[( |-)]bungee[[ ]cord] last [known] login[s] [time[s]]
+		
+		#Returns the proxy ID of the server that the defined RedisBungee player(s) are on.
+		[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] [player] [proxy] ID (of|from) [(player|uuid)[s]] %strings/players%
+		%strings/players%['s] [(player|uuid)[s]] redis[( |-)]bungee[[ ]cord] [player] [proxy] ID
+		
+		#Returns the server names of the servers that the defined RedisBungee player(s) are on.
+		[(all [[of] the]|the)] [(connected|current)] redis[( |-)]bungee[[ ]cord] server[s] (of|from) [(player|uuid)[s]] %strings/players%
+		%strings/players%['s] [(player|uuid)[s]] [(connected|current)] redis[( |-)]bungee[[ ]cord] server[s]
+		
+		#Returns the address(es) of the defined RedisBungee player(s).
+		[(all [[of] the]|the)] [(connected|current)] redis[( |-)]bungee[[ ]cord] ip [address[es]] (of|from) [(player|uuid)[s]] %strings/players%
+		%strings/players%['s] [(player|uuid)[s]] [(connected|current)] redis[( |-)]bungee[[ ]cord] ip [address[es]]
+
+	Effects:
+		#Execute a proxy command on a RedisBungee proxy
+		(run|execute) redis[( |-)]bungee[[ ][cord]] [(proxy|console)] command[s] %strings% [(on|of|from) [the] [server[s]] %-strings%]
+		make redis[( |-)]bungee[[ ][cord]] (run|execute) [(proxy|console)] command[s] %strings% [(on|of|from) [the] [server[s]] %-strings%]
+
+	Conditions:
+		redis[( |-)]bungee[[ ]cord] [(player|uuid)] %string/player% (1¦is|2¦is(n't| not)) online [the] redis[( |-)]bungee[[ ]cord]
+		[(player|uuid)] %string/player% (1¦is|2¦is(n't| not)) online [the] redis[( |-)]bungee[[ ]cord]
+
+Added new configuration option for Spigot side Skungee that allows appropriate syntax which return as numbers to be parsed as Timespans.
+
+Potentially fixed the server online condition always returning the same boolean for some.
+
+Fixed a bug within all player expression that was caused when the syntax was used as the player left the Bungeecord network.
+
+Fixed a bug where the SkungeePlayer transformer would make the UUID be default in cases where the name should be higher
 
 Fixed the player execution command effect so that the command actually executes bungeecord commands now
 rather than every spigot server. IMPORTANT due to this, you will need to delete your syntax.yml and let it regenerate
 with the new syntax so that old syntax don't override or stop this from working. This is only needed if you want this
 update to fix this issue. There is a new syntax to handle Commands which takes over the same syntax
 so you don't need to modify your scripts if that's the case. Just be sure to have saved the syntax.yml if you have modified syntax
-
-Fixed some nullpointers
 
 Fixed some issues where the configuration of Skungee would do some weird things, it may still happen for some reason.
 This is mainly due to having a configuration open from Skungee, and then updating Skungee and restarting the server.

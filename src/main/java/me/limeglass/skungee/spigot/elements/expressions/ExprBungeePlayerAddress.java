@@ -15,7 +15,7 @@ import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
 @Name("Bungeecord player address")
 @Description("Returns the ip address(es) of the defined Bungeecord player(s).")
-@Properties({"strings/players", "bungee[[ ]cord] ip [address]", "{1}[(all [[of] the]|the)]"})
+@Properties({"strings/players", "bungee[[ ]cord] ip [address[es]]", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[(player|uuid)[s]]")
 public class ExprBungeePlayerAddress extends SkungeePropertyExpression<Object, String> {
 

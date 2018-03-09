@@ -18,6 +18,6 @@ public class EffBungeeEvaluate extends SkungeeEffect {
 	@Override
 	protected void execute(Event event) {
 		if (areNull(event)) return;
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.EVALUATE, expressions.getAll(event, String.class, 0), expressions.getAll(event, String.class, 1)));
+		Sockets.send(new SkungeePacket(false, SkungeePacketType.EVALUATE, expressions.get(0).getAll(event), expressions.get(1).getAll(event)));
 	}
 }

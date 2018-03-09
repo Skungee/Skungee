@@ -1,7 +1,7 @@
 # Skungee (Spigot) - The #1 Skript addon for Bungeecord.
 
 # The version is to help determine which version this config is. Please don't modify this value.
-version: "1.0.4c"
+version: "1.0.5"
 
 # Print additional information in the console. The developers of FunkySk may ask you to enable this when reporting an error.
 debug: false
@@ -130,6 +130,9 @@ SkungeeReturn: "string"
 # If the UUID is present, should Skungee convert to the option above using the UUID. This makes the returned "players" more accurate and less prone to mistakes.
 # If you have a cracked offline Bungeecord network, and you're using the "OFFLINEPLAYER" option, set this option to false.
 SkungeeReturnUUID: true
+
+# If a syntax returns a number that can be parsed as a timespan, should Skungee convert it into a Timespan?
+Timespans: true
 
 # Reciever, this will allow for some syntax to work. Like "evaluate", "server is online", "global scripts" and "network variables".
 # This also needs to be enabled in order to run events below.

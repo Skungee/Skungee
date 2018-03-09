@@ -17,6 +17,6 @@ public class CondServerOnline extends SkungeeCondition {
 
 	public boolean check(Event event) {
 		if (areNull(event)) return false;
-		return ((Boolean) Sockets.send(new SkungeePacket(true, SkungeePacketType.ISSERVERONLINE, new String[]{expressions.getSingle(event, String.class)}))) ? isNegated() : !isNegated();
+		return ((Boolean) Sockets.send(new SkungeePacket(true, SkungeePacketType.ISSERVERONLINE, expressions.getSingle(event, String.class)))) ? isNegated() : !isNegated();
 	}
 }

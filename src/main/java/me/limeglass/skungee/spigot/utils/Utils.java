@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -25,15 +26,6 @@ public class Utils {
 		Arrays.sort(arg1);
 		Arrays.sort(arg2);
 		return Arrays.equals(arg1, arg2);
-	}
-	
-	public static <T> T indexOfSet(Set<T> set, int index) {
-		int i = 0;
-		for (T value : set) {
-			if (index == i) return value;
-			i++;
-		}
-		return null;
 	}
 	
 	public static Boolean isEnum(Class<?> clazz, String object) {
@@ -69,7 +61,8 @@ public class Utils {
 				try {
 					uuid = UUID.fromString((String) player);
 				} catch (IllegalArgumentException ex) {}
-				skungeePlayers.add(new SkungeePlayer(false, uuid, (String) player));
+				if (uuid != null) skungeePlayers.add(new SkungeePlayer(false, uuid, Bukkit.getPlayer(uuid).getName()));
+				else skungeePlayers.add(new SkungeePlayer(false, null, (String) player));
 			}
 		}
 		return skungeePlayers.toArray(new SkungeePlayer[skungeePlayers.size()]);
