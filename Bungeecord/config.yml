@@ -1,7 +1,7 @@
 # Skungee (Bungeecord) - The #1 Skript addon for Bungeecord.
 
 # The version is to help determine which version this config is. Please do not modify this value.
-version: "1.0.5-SNAPSHOT"
+version: "1.0.5a"
 
 # This is the main port for the Skungee network system. Skungee will setup this port on on this Bungeecord machine.
 # Make sure the port is put "port forward" or that you have access to this port to be running, if not change this to an avalible port.
@@ -73,6 +73,8 @@ security:
         # Don't include the port as they could use a different port.
         blacklisted:
             - 123.456.7.890
+        # Makes the blacklist a whitelist instead, meaning only server in this list may send packets.
+        blacklist-is-whitelist: false
 
 # Disables the message saying Skungee was enabled.
 DisableRegisteredInfo: false
