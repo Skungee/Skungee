@@ -250,6 +250,8 @@ Added a disconnect packet so the Bungeecord Skungee can tell when a server is di
 
 Added a port checker for the ServerTracker
 
+Added configuration option to make
+
 TODO:
 Added title stuff:
 

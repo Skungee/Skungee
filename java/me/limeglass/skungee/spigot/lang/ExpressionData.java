@@ -147,7 +147,7 @@ public class ExpressionData {
 	*/
 	@Nullable
 	public Object getAllOfFirst(Event event) {
-		return (expressions != null && expressions.length > 0) ? expressions[0].getAll(event) : null;
+		return (expressions != null && expressions.length > 0) ? expressions[0].getArray(event) : null;
 	}
 
 	/**
@@ -237,7 +237,7 @@ public class ExpressionData {
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public <T> T[] getAll(Event event, Class<T> type, int index) {
-		return (syntax.containsKey(type.getSimpleName().toLowerCase() + index)) ? (T[]) getExpression(type, index).getAll(event) : null;
+		return (syntax.containsKey(type.getSimpleName().toLowerCase() + index)) ? (T[]) getExpression(type, index).getArray(event) : null;
 	}
 	
 	/**
@@ -250,7 +250,7 @@ public class ExpressionData {
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public <T> T[] getAll(Event event, Class<T> type) {
-		return (syntax.containsKey(type.getSimpleName().toLowerCase() + 0)) ? (T[]) getExpression(type, 0).getAll(event) : null;
+		return (syntax.containsKey(type.getSimpleName().toLowerCase() + 0)) ? (T[]) getExpression(type, 0).getArray(event) : null;
 	}
 	
 	/**
@@ -262,7 +262,7 @@ public class ExpressionData {
 	*/
 	@Nullable
 	public <T> int getSize(Event event, Class<T> type, int index) {
-		return (syntax.containsKey(type.getSimpleName().toLowerCase() + index)) ? getExpression(type, index).getAll(event).length : null;
+		return (syntax.containsKey(type.getSimpleName().toLowerCase() + index)) ? getExpression(type, index).getArray(event).length : null;
 	}
 	
 	/**
@@ -273,7 +273,7 @@ public class ExpressionData {
 	*/
 	@Nullable
 	public <T> int getSize(Event event, Class<T> type) {
-		return (syntax.containsKey(type.getSimpleName().toLowerCase() + 0)) ? getExpression(type, 0).getAll(event).length : null;
+		return (syntax.containsKey(type.getSimpleName().toLowerCase() + 0)) ? getExpression(type, 0).getArray(event).length : null;
 	}
 	
 	/**
@@ -298,7 +298,7 @@ public class ExpressionData {
 	@Nullable
 	public <T> Map<Expression<?>, Object[]> getAllMap(Event event) {
 		Map<Expression<?>, Object[]> data = new HashMap<Expression<?>, Object[]>();
-		Arrays.asList(expressions).forEach(expression -> data.put(expression, expression.getAll(event)));
+		Arrays.asList(expressions).forEach(expression -> data.put(expression, expression.getArray(event)));
 		return (data.isEmpty()) ? null : data;
 	}
 	

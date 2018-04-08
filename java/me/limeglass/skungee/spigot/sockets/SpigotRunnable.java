@@ -17,7 +17,6 @@ import org.bukkit.Bukkit;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.limeglass.skungee.spigot.Skungee;
-import me.limeglass.skungee.bungeecord.sockets.BungeeSockets;
 import me.limeglass.skungee.objects.BungeePacket;
 
 public class SpigotRunnable implements Runnable {
@@ -35,7 +34,7 @@ public class SpigotRunnable implements Runnable {
 		if (Skungee.getInstance().getConfig().getBoolean("security.breaches.enabled", false)) {
 			List<String> addresses = Skungee.getInstance().getConfig().getStringList("security.breaches.blacklisted");
 			if (!Skungee.getInstance().getConfig().getBoolean("security.breaches.blacklist-is-whitelist", false)) {
-				if (BungeeSockets.blocked.contains(address) || addresses.contains(address.getHostName())) return;
+				if (Sockets.blocked.contains(address) || addresses.contains(address.getHostName())) return;
 			} else if (!addresses.contains(address.getHostName())) return;
 		}
 		try {
