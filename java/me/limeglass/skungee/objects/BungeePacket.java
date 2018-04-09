@@ -72,6 +72,13 @@ public class BungeePacket implements Serializable {
 	public SkungeePlayer[] getPlayers() {
 		return players;
 	}
+	
+	public SkungeePlayer getFirstPlayer() {
+		for (SkungeePlayer player : players) {
+			if (player != null) return player;
+		}
+		return null;
+	}
 
 	public void setPlayers(SkungeePlayer[] players) {
 		this.players = players;

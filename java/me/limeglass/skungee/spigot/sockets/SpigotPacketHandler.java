@@ -62,12 +62,12 @@ public class SpigotPacketHandler {
 				break;
 			case PLAYERDISCONNECT:
 				if (packet.getObject() != null && packet.getPlayers() != null) {
-					Bukkit.getPluginManager().callEvent(new PlayerDisconnectEvent((String)packet.getObject(), packet.getPlayers()[0]));
+					Bukkit.getPluginManager().callEvent(new PlayerDisconnectEvent((String)packet.getObject(), packet.getFirstPlayer()));
 				}
 				break;
 			case PLAYERSWITCH:
 				if (packet.getObject() != null && packet.getPlayers() != null) {
-					Bukkit.getPluginManager().callEvent(new PlayerSwitchServerEvent((String)packet.getObject(), packet.getPlayers()[0]));
+					Bukkit.getPluginManager().callEvent(new PlayerSwitchServerEvent((String)packet.getObject(), packet.getFirstPlayer()));
 				}
 				break;
 			case PLAYERLOGIN:

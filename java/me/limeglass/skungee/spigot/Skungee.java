@@ -28,6 +28,7 @@ import me.limeglass.skungee.spigot.elements.Register;
 import me.limeglass.skungee.spigot.sockets.PacketQueue;
 import me.limeglass.skungee.spigot.sockets.Reciever;
 import me.limeglass.skungee.spigot.sockets.Sockets;
+import me.limeglass.skungee.spigot.test.TestListener;
 import me.limeglass.skungee.spigot.utils.ReflectionUtil;
 import me.limeglass.skungee.spigot.utils.Utils;
 
@@ -51,6 +52,7 @@ public class Skungee extends JavaPlugin {
 		instance = this;
 		File file = new File(getDataFolder(), "config.yml");
 		syntaxFile = new File(getDataFolder(), "Syntax.yml");
+		getServer().getPluginManager().registerEvents(new TestListener(), this);
 		if (!Objects.equals(getDescription().getVersion(), config.getString("version"))) {
 			consoleMessage("&dNew update found! Updating files now...");
 			if (file.exists()) file.delete();

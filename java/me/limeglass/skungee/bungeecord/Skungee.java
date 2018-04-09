@@ -44,7 +44,6 @@ public class Skungee extends Plugin {
 		if (!getDataFolder().exists()) getDataFolder().mkdir();
 		SCRIPTS_FOLDER = new File(getDataFolder(), File.separator + "scripts");
 		if (!SCRIPTS_FOLDER.exists()) SCRIPTS_FOLDER.mkdir();
-		getProxy().getPluginManager().registerListener(this, new EventListener());
 		Boolean newConfig = false;
 		configFile = new File(getDataFolder(), "config.yml");
 		if (!configFile.exists()) {
@@ -91,6 +90,7 @@ public class Skungee extends Plugin {
 				return SCRIPTS_FOLDER.listFiles().length;
 			}
 		});
+		if (config.getBoolean("Events", false)) getProxy().getPluginManager().registerListener(this, new EventListener());
 		connect();
 		VariableStorage.setup();
 		if (!config.getBoolean("DisableRegisteredInfo", false)) consoleMessage("has been enabled!");
