@@ -103,12 +103,12 @@ public class ServerTracker {
 			}
 		}
 		if (name.contains(":")) {
-			Set<ConnectedServer> servers = new HashSet<ConnectedServer>();
+			Set<ConnectedServer> connectedservers = new HashSet<ConnectedServer>();
 			String[] addresses = (name.contains(",")) ? name.split(",") : new String[]{name};
 			address : for (String address : addresses) {
 				if (!address.contains(":")) {
 					ConnectedServer possiblyNamed = get(address)[0];
-					if (possiblyNamed == null) servers.add(possiblyNamed);
+					if (possiblyNamed == null) connectedservers.add(possiblyNamed);
 					continue address;
 				}
 				String[] ipPort = address.split(":");
@@ -116,7 +116,7 @@ public class ServerTracker {
 					for (ConnectedServer server : servers) {
 						if (server.getAddress().equals(InetAddress.getByName(ipPort[0]))) {
 							if (server.getPort() == Integer.parseInt(ipPort[1])) {
-								servers.add(server);
+								connectedservers.add(server);
 							}
 						}
 					}
@@ -124,8 +124,8 @@ public class ServerTracker {
 					Skungee.consoleMessage("There was no server found with the address: " + Arrays.toString(ipPort));
 				}
 			}
-			if (servers != null) {
-				return servers.toArray(new ConnectedServer[servers.size()]);
+			if (connectedservers != null) {
+				return connectedservers.toArray(new ConnectedServer[connectedservers.size()]);
 			}
 		}
 		return null;
@@ -159,10 +159,8 @@ public class ServerTracker {
 
 	public static void add(ConnectedServer server) {
 		for (ConnectedServer connected : servers) {
-			if (connected.getName().equals(server.getName())) {
-				if (connected.getPort() == server.getPort()) {
-					remove(connected);
-				}
+			if (connected.getAddress().equals(server.getAddress()) && connected.getPort().equals(server.getPort())) {
+				remove(connected);
 			}
 		}
 		servers.add(server);
@@ -173,6 +171,5 @@ public class ServerTracker {
 		tracker.remove(server);
 		notRespondingServers.remove(server);
 		servers.remove(server);
-		Skungee.debugMessage("Removed ConnectedServer " + server.getName() + " with port " + server.getPort());
 	}
 }

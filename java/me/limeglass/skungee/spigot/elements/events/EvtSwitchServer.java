@@ -11,7 +11,7 @@ import me.limeglass.skungee.objects.events.PlayerSwitchServerEvent;
 public class EvtSwitchServer extends SkriptEvent {
 	
 	static {
-		Events.registerEvent(EvtSwitchServer.class, PlayerSwitchServerEvent.class, "[bungee[[ ]cord]] [player] switch[ing [of]] server[s] [to %-string%]");
+		//Events.registerEvent(EvtSwitchServer.class, PlayerSwitchServerEvent.class, "[bungee[[ ]cord]] [player] switch[ing [of]] server[s] [to %-string%]");
 	}
 	
 	@Nullable

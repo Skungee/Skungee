@@ -114,14 +114,10 @@ public class BungeeSockets {
 			@Override
 			public void run() {
 				Iterator<ConnectedServer> iterator = ServerTracker.getAll().iterator();
-				ConnectedServer lastServer = null;
 				while (iterator.hasNext()) {
 					ConnectedServer server = iterator.next();
-					if (!server.equals(lastServer) || lastServer == null) {
-						lastServer = server;
-						if (server.hasReciever()) {
-							send(server, packet);
-						}
+					if (server.hasReciever()) {
+						send(server, packet);
 					}
 				}
 			}

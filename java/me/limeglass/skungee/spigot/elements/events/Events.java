@@ -19,7 +19,7 @@ import me.limeglass.skungee.spigot.utils.ReflectionUtil;
 public class Events {
 	
 	static {
-		registerEvent(SimpleEvent.class, PlayerDisconnectEvent.class, "bungee[[ ]cord] player disconnect");
+		registerEvent(null, PlayerDisconnectEvent.class, "bungee[[ ]cord] player disconnect");
 	}
 	
 	public static void registerEvent(@Nullable Class<? extends SkriptEvent> skriptEvent, Class<? extends Event> event, String... patterns) {
