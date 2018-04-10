@@ -158,10 +158,14 @@ public class ServerTracker {
 	}
 
 	public static void add(ConnectedServer server) {
+		Set<ConnectedServer> toRemove = new HashSet<ConnectedServer>();
 		for (ConnectedServer connected : servers) {
 			if (connected.getAddress().equals(server.getAddress()) && connected.getPort().equals(server.getPort())) {
-				remove(connected);
+				toRemove.add(connected);
 			}
+		}
+		for (ConnectedServer connected : toRemove) {
+			remove(connected);
 		}
 		servers.add(server);
 		Skungee.consoleMessage("Connected to server " + server.getName() + " with port " + server.getPort());

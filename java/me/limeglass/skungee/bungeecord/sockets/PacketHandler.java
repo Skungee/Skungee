@@ -345,8 +345,18 @@ public class PacketHandler {
 				break;
 			case ISSERVERONLINE:
 				if (packet.getObject() != null) {
-					ConnectedServer[] checkServers = ServerTracker.get((String)packet.getObject());
-					return (checkServers != null && ServerTracker.isResponding(checkServers[0]));
+					if (packet.getObject() instanceof String) {
+						ConnectedServer[] checkServers = ServerTracker.get((String)packet.getObject());
+						return (checkServers != null && ServerTracker.isResponding(checkServers[0]));
+					} else {
+						List<Boolean> list = new ArrayList<Boolean>();
+						String[] array = (String[])packet.getObject();
+						for (int i = 0; i < array.length; i++) {
+							ConnectedServer[] checkServers = ServerTracker.get(array[i]);
+							list.add(checkServers != null && ServerTracker.isResponding(checkServers[0]));
+						}
+						return (list.isEmpty()) ? null : list;
+					}
 				}
 				return false;
 			case WHITELISTED:
