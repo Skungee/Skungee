@@ -67,7 +67,12 @@ public class SpigotPacketHandler {
 				break;
 			case PLAYERSWITCH:
 				if (packet.getObject() != null && packet.getPlayers() != null) {
-					Bukkit.getPluginManager().callEvent(new PlayerSwitchServerEvent((String)packet.getObject(), packet.getFirstPlayer()));
+					Bukkit.getScheduler().runTask(Skungee.getInstance(), new Runnable() {
+						@Override
+						public void run() {
+							Bukkit.getPluginManager().callEvent(new PlayerSwitchServerEvent((String)packet.getObject(), packet.getFirstPlayer()));
+						}
+					});
 				}
 				break;
 			case PLAYERLOGIN:

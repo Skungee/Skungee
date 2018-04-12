@@ -15,8 +15,6 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.objects.SkungeePacket;
@@ -29,7 +27,7 @@ public class Sockets {
 	public static Map<InetAddress, Integer> attempts = new HashMap<InetAddress, Integer>();
 	public static Set<InetAddress> blocked = new HashSet<InetAddress>();
 	public static Socket bungeecord;
-	private static Boolean restart = true, checking = false;
+	private static Boolean restart = true, checking = false, isConnected = false;
 	private static int task, heartbeat, keepAlive;
 	public static Long lastSent = System.currentTimeMillis();
 	//private static EncryptionUtil encrypter = Skungee.getEncrypter();
@@ -71,8 +69,6 @@ public class Sockets {
 		for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
 			whitelisted.add(new SkungeePlayer(true, player.getUniqueId(), player.getName()));
 		}
-		FileConfiguration config = Skungee.getInstance().getConfig();
-		if (config == null) Skungee.consoleMessage("The configuration was null, try restarting the server and closing any configuration files that you may have open");
 		ArrayList<Object> data = new ArrayList<Object>(Arrays.asList(Skungee.getInstance().getConfig().getBoolean("Reciever.enabled", false), Reciever.getReciever().getLocalPort(), Bukkit.getPort(), whitelisted, Skungee.getInstance().getConfig().getInt("heartbeat", 30) * 60, Bukkit.getMotd(), Bukkit.getMaxPlayers()));
 		Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), new Runnable() {
 			@Override
@@ -83,7 +79,12 @@ public class Sockets {
 				} else {
 					for (int i = 0; i < 10; i++) {
 						String state = (String) send(new SkungeePacket(true, SkungeePacketType.PING, data));
-						if (state != null && state.equals("CONNECTED")) break;
+						if (state != null && state.equals("CONNECTED")) {
+							isConnected = true;
+							Skungee.consoleMessage("Successfully connected to the Bungeecord Skungee.");
+							break;
+						}
+						Skungee.debugMessage("Ping packet had no response, configurion for the connection to Bungeecord Skungee may not be valid or blocked. Attempting to try again... " + (i + 1) + "/10");
 					}
 					startHeartbeat();
 				}
@@ -102,7 +103,7 @@ public class Sockets {
 	}
 
 	public static Object send(SkungeePacket packet) {
-		if (packet.isReturnable()) return send_i(packet);
+		if (packet.isReturnable()) return (isConnected) ? send_i(packet) : (packet.getType() == SkungeePacketType.PING) ? send_i(packet) : null;
 		if (Skungee.getInstance().getConfig().getBoolean("Queue.enabled", true)) {
 			PacketQueue.queue(packet);
 		} else {
@@ -153,8 +154,8 @@ public class Sockets {
 						objectOutputStream.writeObject(packet);
 					}
 					lastSent = System.currentTimeMillis();
-					ObjectInputStream objectInputStream = new ObjectInputStream(bungeecord.getInputStream());
 					bungeecord.setSoTimeout(10000);
+					ObjectInputStream objectInputStream = new ObjectInputStream(bungeecord.getInputStream());
 					if (packet.isReturnable()) {
 						//TODO Add cipher encryption + change config message.
 						if (Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false)) {
@@ -198,6 +199,7 @@ public class Sockets {
 				Skungee.exception(e, "&cError closing main socket.");
 			}
 		}
+		isConnected = false;
 		if (reconnect) {
 			Skungee.consoleMessage("&6Attempting to reconnect to Skungee...");
 			connect();

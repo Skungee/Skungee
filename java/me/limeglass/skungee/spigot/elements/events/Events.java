@@ -13,7 +13,6 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import me.limeglass.skungee.objects.events.PlayerDisconnectEvent;
 import me.limeglass.skungee.spigot.Skungee;
-import me.limeglass.skungee.spigot.Syntax;
 import me.limeglass.skungee.spigot.utils.ReflectionUtil;
 
 public class Events {
@@ -31,12 +30,12 @@ public class Events {
 		Object[] values = new Object[] {true, patterns, getEventValues(event)};
 		String[] nodes = new String[] {"enabled", "patterns", "eventvalues"};
 		for (int i = 0; i < nodes.length; i++) {
-			if (!Skungee.getSyntaxData().isSet("Syntax.Events." + event.getSimpleName() + "." + nodes[i])) {
-				Skungee.getSyntaxData().set("Syntax.Events." + event.getSimpleName() + "." + nodes[i], values[i]);
+			if (!Skungee.getConfiguration("syntax").isSet("Syntax.Events." + event.getSimpleName() + "." + nodes[i])) {
+				Skungee.getConfiguration("syntax").set("Syntax.Events." + event.getSimpleName() + "." + nodes[i], values[i]);
 			}
 		}
-		Syntax.save();
-		if (Skungee.getSyntaxData().getBoolean("Syntax.Events." + event.getSimpleName() + ".enabled", true)) {
+		Skungee.save("syntax");
+		if (Skungee.getConfiguration("syntax").getBoolean("Syntax.Events." + event.getSimpleName() + ".enabled", true)) {
 			//TODO find a way to make the stupid Spigot Yaml read properly for user editing of event patterns.
 			Skript.registerEvent(event.getSimpleName(), skriptEvent, event, patterns);
 		}

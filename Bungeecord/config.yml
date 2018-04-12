@@ -1,14 +1,14 @@
 # Skungee (Bungeecord) - The #1 Skript addon for Bungeecord.
 
 # The version is to help determine which version this config is. Please do not modify this value.
-version: "1.0.5c"
+version: "1.0.5d"
 
-# This is the main port for the Skungee network system. Skungee will setup this port on on this Bungeecord machine.
-# Make sure the port is put "port forward" or that you have access to this port to be running, if not change this to an avalible port.
+# This is the main port for the Skungee network system. Skungee will setup this port on this Bungeecord machine.
+# Make sure the port is "port forward" or that you have access to this port to be running, if not change this to an available port.
 
 # If you don't know what ports you can access, contact your hosting company and ask for some ports.
-# You can say "May I get some Votifier ports" to make it more clear to them, and they should give you a few ports.
-# Or you can just use the ports without them knowing, either works, I do this. Just be advised if it doesn't work, the ports aren't avalible or are already in use.
+# You can say "May I get some Votifier ports" to make it more clear to them, and they should give you a few ports. Normally all 4 digit ports above 1000 are available to you.
+# Just be advised if it doesn't work, the ports aren't avalible or are already in use.
 
 # Make sure all the port options of the Skungee's on the connected Spigot servers are matching this.
 port: 1337
@@ -16,7 +16,7 @@ port: 1337
 # Prints additional information in the console. The developers of Skungee may ask you to enable this when reporting an error.
 debug: false
 
-# Ignores the packets that spam alot such as GLOBALSCRIPTS and HEARTBEAT in the debug.
+# Ignores the packets that spam such as GLOBALSCRIPTS and HEARTBEAT in the debug.
 # Developers of Skungee may notify you to disable this option when reporting an error.
 IgnoreSpamPackets: true
 
@@ -73,7 +73,8 @@ security:
         # Don't include the port as they could use a different port.
         blacklisted:
             - 123.456.7.890
-        # Makes the blacklist a whitelist instead, meaning only server in this list may send packets.
+        # Makes the blacklist a whitelist instead, meaning only addresses in the list above may send packets to this server.
+        # This option doesn't exist on the Spigot Skungee as it has a tendency to cause massive errors.
         blacklist-is-whitelist: false
 
 # Disables the message saying Skungee was enabled.
@@ -82,6 +83,9 @@ DisableRegisteredInfo: false
 # Disables all messages to the console. Only important stack traces and information logger will be sent.
 # If you don't like Skungee constantly notifing what is going on, you can disable this.
 DisableConsoleMessages: false
+
+# Disables the colour in the console.
+DisableConsoleColour: false
 
 Recievers:
     # How many times should Skungee try to connect to a server's reciever?
@@ -133,10 +137,10 @@ NetworkVariables:
     AutomaticSharing: false
     Backups:
         Enabled: true
-        # Should Skungee notify the console when the variables gets saved.
+        # Should Skungee send a message in the console when the variables get saved?
         ConsoleMessage: true
-        # Set the backup time in minutes.
-        IntervalTime: 60
+        # Set the backup time in minutes. (Default is 5 hours)
+        IntervalTime: 300
 
 Misc:
   # Whenever a message isn't set in a syntax, should Skungee grab a funny message to say to the user when kicked.

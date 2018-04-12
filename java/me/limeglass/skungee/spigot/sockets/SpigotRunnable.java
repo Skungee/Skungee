@@ -33,9 +33,7 @@ public class SpigotRunnable implements Runnable {
 	public void run() {
 		if (Skungee.getInstance().getConfig().getBoolean("security.breaches.enabled", false)) {
 			List<String> addresses = Skungee.getInstance().getConfig().getStringList("security.breaches.blacklisted");
-			if (!Skungee.getInstance().getConfig().getBoolean("security.breaches.blacklist-is-whitelist", false)) {
-				if (Sockets.blocked.contains(address) || addresses.contains(address.getHostName())) return;
-			} else if (!addresses.contains(address.getHostName())) return;
+			if (Sockets.blocked.contains(address) || addresses.contains(address.getHostName())) return;
 		}
 		try {
 			ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());

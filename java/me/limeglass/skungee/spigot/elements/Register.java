@@ -25,13 +25,13 @@ import me.limeglass.skungee.spigot.utils.EnumClassInfo;
 import me.limeglass.skungee.spigot.utils.TypeClassInfo;
 import me.limeglass.skungee.spigot.utils.annotations.*;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class Register {
 	
-	public Set<Class<?>> classes = new HashSet<>();
-	private JarFile addon;
+	private static Set<Class<?>> classes = new HashSet<>();
+	private static JarFile addon;
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Register() {
+	static {
 		try {
 			Method method = JavaPlugin.class.getDeclaredMethod("getFile");
 			method.setAccessible(true);
@@ -120,6 +120,18 @@ public class Register {
 			@Override
 			public String getValue() {
 				return Skript.getVersion().toString();
+			}
+		});
+		metrics.addCustomChart(new Metrics.SimplePie("use_encryption") {
+			@Override
+			public String getValue() {
+				return Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false) + "";
+			}
+		});
+		metrics.addCustomChart(new Metrics.SimplePie("use_breaches") {
+			@Override
+			public String getValue() {
+				return Skungee.getInstance().getConfig().getBoolean("security.breaches.enabled", false) + "";
 			}
 		});
 		Skungee.debugMessage("Metrics registered!");

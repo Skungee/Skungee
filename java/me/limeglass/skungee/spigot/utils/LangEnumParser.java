@@ -8,7 +8,6 @@ import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.localization.Language;
 import ch.njol.skript.util.EnumUtils;
 import me.limeglass.skungee.spigot.Skungee;
-import me.limeglass.skungee.spigot.Syntax;
 import me.limeglass.skungee.spigot.lang.SkungeeParser;
 
 public class LangEnumParser<T extends Enum<T>> extends SkungeeParser<T> {
@@ -27,11 +26,11 @@ public class LangEnumParser<T extends Enum<T>> extends SkungeeParser<T> {
 			for (final T e : clazz.getEnumConstants()) {
 				enumNames.addAll(Arrays.asList(Language.get_(variableNamePattern + "s" + "." + e.name())));
 			}
-			Skungee.getSyntaxData().set("Syntax.Enums." + clazz.getSimpleName() + ".names", enumNames);
+			Skungee.getConfiguration("syntax").set("Syntax.Enums." + clazz.getSimpleName() + ".names", enumNames);
 		} catch (NullPointerException error) {
 			Skungee.consoleMessage("&cThe class: " + clazz.getName() +  " for classinfo name: " + variableNamePattern + " isn't an Enum!");
 		}
-		Syntax.save();
+		Skungee.save("syntax");
 	}
 
 	@Nullable

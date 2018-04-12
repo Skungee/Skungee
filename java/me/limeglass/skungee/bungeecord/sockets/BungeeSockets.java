@@ -63,6 +63,7 @@ public class BungeeSockets {
 				if (password != null) packet.setPassword(password);
 			}
 			try {
+				spigot.setSoTimeout(10000);
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(spigot.getOutputStream());
 				//TODO Add cipher encryption + change config message.
 				if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {

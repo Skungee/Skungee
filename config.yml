@@ -1,7 +1,7 @@
 # Skungee (Spigot) - The #1 Skript addon for Bungeecord.
 
 # The version is to help determine which version this config is. Please don't modify this value.
-version: "1.0.5c"
+version: "1.0.5d"
 
 # Print additional information in the console. The developers of FunkySk may ask you to enable this when reporting an error.
 debug: false
@@ -67,8 +67,6 @@ security:
         # Don't include the port as they could use a different port.
         blacklisted:
             - 123.456.7.890
-        # Makes the blacklist a whitelist instead, meaning only server in this list may send packets.
-        blacklist-is-whitelist: false
 
 # This is how fast the keeping alive packet should be sent back and forth to Skungee.
 # The lower this is, the faster the accuracy. (A fast rate would be 5-10) This all depends on your server's network speeds.
@@ -110,6 +108,9 @@ DisableRegisteredInfo: false
 # Disables all messages to the console. Only important stack traces and information logger will be sent.
 # If you don't like Skungee constantly notifing what is going on, you can disable this.
 DisableConsoleMessages: false
+
+# Disables the colour in the console.
+DisableConsoleColour: false
 
 # Sends a message to console stating that a script has been automatically reloaded or created. (This happens when the file on the Bungeecord gets edited/saved)
 GlobalScriptMessages: true

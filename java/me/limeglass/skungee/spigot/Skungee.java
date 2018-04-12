@@ -31,63 +31,62 @@ import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.test.TestListener;
 import me.limeglass.skungee.spigot.utils.ReflectionUtil;
 import me.limeglass.skungee.spigot.utils.Utils;
+import net.md_5.bungee.api.ChatColor;
 
 public class Skungee extends JavaPlugin {
 	
 	//Spigot
 	
-	private Metrics metrics;
-	private SkriptAddon addonInstance;
-	private static Skungee instance;
-	public FileConfiguration config = getConfig();
-	public static File syntaxFile;
-	private static FileConfiguration syntaxData;
+	private static Map<String, FileConfiguration> files = new HashMap<String, FileConfiguration>();
 	private static String packageName = "me.limeglass.skungee.spigot";
 	private static String prefix = "&8[&cSkungee&8] &e";
 	private static String nameplate = "[Skungee] ";
 	private static EncryptionUtil encryption;
+	private static SkriptAddon addonInstance;
+	private static Skungee instance;
+	private Metrics metrics;
 	
 	public void onEnable(){
 		addonInstance = Skript.registerAddon(this).setLanguageFileDirectory("lang");
 		instance = this;
-		File file = new File(getDataFolder(), "config.yml");
-		syntaxFile = new File(getDataFolder(), "Syntax.yml");
+		saveDefaultConfig();
+		File config = new File(getDataFolder(), "config.yml");
 		getServer().getPluginManager().registerEvents(new TestListener(), this);
-		if (!Objects.equals(getDescription().getVersion(), config.getString("version"))) {
+		if (!Objects.equals(getDescription().getVersion(), getConfig().getString("version"))) {
 			consoleMessage("&dNew update found! Updating files now...");
-			if (file.exists()) file.delete();
+			if (config.exists()) config.delete();
 		}
-		for (File f : Arrays.asList(file, syntaxFile)) {
-			if (!f.exists()) {
-				f.getParentFile().mkdirs();
-				saveResource(f.getName(), false);
+		for (String name : Arrays.asList("config", "syntax")) { //replace config with future files here
+			File file = new File(getDataFolder(), name + ".yml");
+			if (!file.exists()) {
+				file.getParentFile().mkdirs();
+				saveResource(file.getName(), false);
 			}
-		}
-		syntaxData = new YamlConfiguration();
-		try {
-			syntaxData.load(syntaxFile);
-			addonInstance.loadClasses(getPackageName(), "elements");
-		} catch (IOException | InvalidConfigurationException e) {
-			exception(e, "Error loading Skript addon classes or loading the syntax file.");
+			FileConfiguration configuration = new YamlConfiguration();
+			try {
+				configuration.load(file);
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+			files.put(name, configuration);
 		}
 		encryption = new EncryptionUtil(this, true);
 		encryption.hashFile();
-		if (config.getBoolean("Queue.enabled", true)) {
+		if (getConfig().getBoolean("Queue.enabled", true)) {
 			PacketQueue.start();
 		}
 		metrics = new Metrics(this);
 		Register.metrics(metrics);
-		new Register();
-		if (config.getBoolean("Reciever.enabled", false)) {
+		if (getConfig().getBoolean("Reciever.enabled", false)) {
 			Reciever.setupReciever();
 		} else {
 			Sockets.connect();
 		}
-		if (!config.getBoolean("DisableRegisteredInfo", false)) Bukkit.getLogger().info(nameplate + "has been enabled!");
+		if (!getConfig().getBoolean("DisableRegisteredInfo", false)) Bukkit.getLogger().info(nameplate + "has been enabled!");
 	}
 	
 	public void onDisable() {
-		Sockets.send(new SkungeePacket(true, SkungeePacketType.DISCONNECT, Bukkit.getPort()));
+		Sockets.send(new SkungeePacket(false, SkungeePacketType.DISCONNECT, Bukkit.getPort()));
 		Sockets.onPluginDisabling();
 		PacketQueue.stop();
 	}
@@ -187,12 +186,22 @@ public class Skungee extends JavaPlugin {
 		return prefix;
 	}
 	
-	public static FileConfiguration getSyntaxData() {
-		return syntaxData;
+	//Grabs a FileConfiguration of a defined name. The name can't contain .yml in it.
+	public static FileConfiguration getConfiguration(String file) {
+		return (files.containsKey(file)) ? files.get(file) : null;
+	}
+	
+	public static void save(String configuration) {
+		try {
+			File configurationFile = new File(instance.getDataFolder(), configuration + ".yml");
+			getConfiguration(configuration).save(configurationFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void debugMessage(@Nullable String... messages) {
-		if (getInstance().getConfig().getBoolean("debug")) {
+		if (instance.getConfig().getBoolean("debug")) {
 			for (String text : messages) consoleMessage("&b" + text);
 		}
 	}
@@ -206,9 +215,12 @@ public class Skungee extends JavaPlugin {
 	}
 
 	public static void consoleMessage(@Nullable String... messages) {
-		if (Skungee.getInstance().getConfig().getBoolean("DisableConsoleMessages", false)) return;
+		if (instance.getConfig().getBoolean("DisableConsoleMessages", false)) return;
 		if (messages != null && messages.length > 0) {
-			for (String text : messages) Bukkit.getConsoleSender().sendMessage(Utils.cc(prefix + text));
+			for (String text : messages) {
+				if (instance.getConfig().getBoolean("DisableConsoleColour", false)) infoMessage(ChatColor.stripColor(Utils.cc(text)));
+				else Bukkit.getConsoleSender().sendMessage(Utils.cc(prefix + text));
+			}
 		} else {
 			Bukkit.getLogger().info("");
 		}

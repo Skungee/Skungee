@@ -6,8 +6,6 @@ import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
 import me.limeglass.skungee.spigot.Skungee;
-import me.limeglass.skungee.spigot.Syntax;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,7 +88,7 @@ public class EnumClassInfo<E extends Enum<E>> {
 				for (final E e : enumType.getEnumConstants()) {
 					enums.add(e.name());
 				}
-				Skungee.getSyntaxData().set("Syntax.Enums." + enumType.getSimpleName() + ".enums", enums);
+				Skungee.getConfiguration("syntax").set("Syntax.Enums." + enumType.getSimpleName() + ".enums", enums);
 			}
 			enumDebug("&5Registered Enum '" + codeName + "' with return class " + enumType.getName(), codeName, enumType);
 		}
@@ -99,7 +97,7 @@ public class EnumClassInfo<E extends Enum<E>> {
 	private void enumDebug(String message, String codeName, Class<?> clazz) {
 		if (codeName.equalsIgnoreCase(Skungee.getInstance().getConfig().getString("syntaxDebug"))) Skungee.debugMessage("&eRegistered syntaxDebug found enum classinfo: " + codeName + " (" + clazz.getCanonicalName() + ")");
 		else Skungee.debugMessage("&5Registered Enum '" + codeName + "' with return class " + enumType.getName());
-		Skungee.getSyntaxData().set("Syntax.Enums." + clazz.getSimpleName() + ".user", user);
-		Syntax.save();
+		Skungee.getConfiguration("syntax").set("Syntax.Enums." + clazz.getSimpleName() + ".user", user);
+		Skungee.save("syntax");
 	}
 }

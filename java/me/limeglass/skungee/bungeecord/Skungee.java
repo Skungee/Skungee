@@ -17,6 +17,7 @@ import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
 import me.limeglass.skungee.bungeecord.sockets.SocketRunnable;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginDescription;
@@ -131,8 +132,7 @@ public class Skungee extends Plugin {
 			}
 		}
 		infoMessage();
-		infoMessage(getNameplate() + "Severe Error:");
-		infoMessage(info);
+		infoMessage(getNameplate() + "Severe Error: " + info);
 		infoMessage();
 		infoMessage("Something went wrong within Skungee.");
 		infoMessage("Please report this error to the developers of Skungee so we can fix this from happening in the future.");
@@ -179,6 +179,7 @@ public class Skungee extends Plugin {
 		infoMessage("  OS: " + System.getProperty("os.name") + " " + System.getProperty("os.arch") + " " + System.getProperty("os.version"));
 		infoMessage();
 		infoMessage("Thread: " + Thread.currentThread());
+		infoMessage("Cause: " + info);
 		infoMessage();
 		infoMessage("End of Error.");
 		infoMessage();
@@ -217,7 +218,7 @@ public class Skungee extends Plugin {
 	}
 	
 	public static String cc(String string) {
-		return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes((char)'&', (String)string);
+		return ChatColor.translateAlternateColorCodes((char)'&', string);
 	}
 	
 	public static void infoMessage(@Nullable String... messages) {
@@ -231,7 +232,10 @@ public class Skungee extends Plugin {
 	public static void consoleMessage(@Nullable String... messages) {
 		if (config.getBoolean("DisableConsoleMessages", false)) return;
 		if (messages != null && messages.length > 0) {
-			for (String text : messages) ProxyServer.getInstance().getLogger().info(cc(prefix + text));
+			for (String text : messages) {
+				if (config.getBoolean("DisableConsoleColour", false)) infoMessage(ChatColor.stripColor(cc(text)));
+				else ProxyServer.getInstance().getLogger().info(cc(prefix + text));
+			}
 		} else {
 			ProxyServer.getInstance().getLogger().info("");
 		}
