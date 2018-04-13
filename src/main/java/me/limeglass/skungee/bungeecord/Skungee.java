@@ -11,15 +11,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
-import me.limeglass.skungee.bungeecord.servers.ServerManager;
-import me.limeglass.skungee.bungeecord.servers.WrappedServer;
+import me.limeglass.skungee.bungeecord.serverinstances.Premium;
 import me.limeglass.skungee.bungeecord.sockets.SocketRunnable;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -38,50 +35,18 @@ public class Skungee extends Plugin {
 	private final static String nameplate = "[Skungee] ";
 	private static EncryptionUtil encryption;
 	private static BungecordMetrics metrics;
-	private File SCRIPTS_FOLDER;
 	private ServerSocket serverSocket;
 	private static Skungee instance;
+	private File SCRIPTS_FOLDER;
 	
 	public void onEnable(){
 		instance = this;
 		if (!getDataFolder().exists()) getDataFolder().mkdir();
 		UniversalSkungee.setBungeecord(true);
-		ServerManager.setup();
 		SCRIPTS_FOLDER = new File(getDataFolder(), File.separator + "scripts");
 		if (!SCRIPTS_FOLDER.exists()) SCRIPTS_FOLDER.mkdir();
-		for (String name : Arrays.asList("config", "serverinstances")) {
-			try (InputStream in = getResourceAsStream("Bungeecord/" + name + ".yml")) {
-				File file = new File(getDataFolder(), name + ".yml");
-				if (!file.exists()) Files.copy(in, new File(getDataFolder(), name + ".yml").toPath());
-				Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
-				files.put(name, configuration);
-			} catch (IOException e) {
-				exception(e, "Could not create file: " + name + ".yml");
-			}
-		}
-		//TODO Move this to it's own update checker soon.
-		File config = new File(getDataFolder(), "config.yml");
-		if (!getDescription().getVersion().equals(getConfig().getString("version"))) {
-			consoleMessage("&eThere is a new Skungee version. Generating new config...");
-			try (InputStream in = getResourceAsStream("Bungeecord/config.yml")) {
-				Files.delete(config.toPath());
-				Files.copy(in, config.toPath());
-				files.put("config", ConfigurationProvider.getProvider(YamlConfiguration.class).load(config));
-			} catch (IOException e) {
-				exception(e, "Could not create and save config due to new version.");
-			}
-		}
-		File serverinstances = new File(getDataFolder(), "serverinstances.yml");
-		if (getConfiguration("serverinstances").getInt("configuration-version", 0) < 1) {
-			consoleMessage("&eThere is a new Skungee serverinstances configuration. Generating new serverinstances.yml...");
-			try (InputStream in = getResourceAsStream("Bungeecord/serverinstances.yml")) {
-				Files.delete(serverinstances.toPath());
-				Files.copy(in, serverinstances.toPath());
-				files.put("serverinstances", ConfigurationProvider.getProvider(YamlConfiguration.class).load(serverinstances));
-			} catch (IOException e) {
-				exception(e, "Could not create and save serverinstances due to new configuration.");
-			}
-		}
+		loadConfiguration();
+		Premium.check();
 		encryption = new EncryptionUtil(this, false);
 		encryption.hashFile();
 		metrics = new BungecordMetrics(this);
@@ -106,14 +71,24 @@ public class Skungee extends Plugin {
 		if (getConfig().getBoolean("Events", false)) getProxy().getPluginManager().registerListener(this, new EventListener());
 		VariableStorage.setup();
 		connect();
-		final WrappedServer server = new WrappedServer("Test");
-		ProxyServer.getInstance().getScheduler().schedule(instance, new Runnable() {
-			@Override
-			public void run() {
-				server.shutdown();
-			}
-		}, 1, TimeUnit.MINUTES);
 		if (!getConfig().getBoolean("DisableRegisteredInfo", false)) consoleMessage("has been enabled!");
+	}
+	
+	private void loadConfiguration() {
+		File config = new File(Skungee.getInstance().getDataFolder(), "config.yml");
+		try (InputStream in = getResourceAsStream("Bungeecord/config.yml")) {
+			if (!config.exists()) Files.copy(in, config.toPath());
+			Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(config);
+			if (!getDescription().getVersion().equals(configuration.getString("version"))) {
+				consoleMessage("&eThere is a new Skungee version. Generating new config...");
+				Files.delete(config.toPath());
+				loadConfiguration();
+				return;
+			}
+			addConfiguration("config", configuration);
+		} catch (IOException e) {
+			Skungee.exception(e, "Could not create and save serverinstances due to new configuration.");
+		}
 	}
 	
 	private void connect () {
@@ -231,6 +206,14 @@ public class Skungee extends Plugin {
 	
 	public File getScriptsFolder() {
 		return SCRIPTS_FOLDER;
+	}
+	
+	public Map<String, Configuration> getFiles() {
+		return files;
+	}
+	
+	public static void addConfiguration(String name, Configuration configuration) {
+		files.put(name, configuration);
 	}
 	
 	public static void debugMessage(String text) {
