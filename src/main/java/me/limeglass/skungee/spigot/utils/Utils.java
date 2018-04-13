@@ -1,5 +1,11 @@
 package me.limeglass.skungee.spigot.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -85,5 +91,24 @@ public class Utils {
 			return time.getTicks();
 		}
 	}
-	
+
+	public static void copyDirectory(File source, File destination) throws IOException {
+		if (source.isDirectory()) {
+			if (!destination.exists()) destination.mkdir();
+			String files[] = source.list();
+			for(int i = 0; i < files.length; i++) {
+				copyDirectory(new File(source, files[i]), new File(destination, files[i]));
+			}
+		} else if (source.exists()) {
+			InputStream in = new FileInputStream(source);
+			OutputStream out = new FileOutputStream(destination);
+			byte[] buf = new byte[1024];
+			int len;
+			while ((len = in.read(buf)) > 0) {
+				out.write(buf, 0, len);
+			}
+			in.close();
+			out.close();
+		}
+	}
 }

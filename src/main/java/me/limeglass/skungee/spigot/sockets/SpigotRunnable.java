@@ -45,7 +45,7 @@ public class SpigotRunnable implements Runnable {
 				try {
 					if (Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false)) {
 						byte[] decoded = Base64.getDecoder().decode((byte[]) object);
-						packet = (BungeePacket) Skungee.getEncrypter().deserialize(decoded);
+						packet = (BungeePacket) Skungee.getInstance().getEncrypter().deserialize(decoded);
 					} else {
 						packet = (BungeePacket) object;
 					}
@@ -56,17 +56,17 @@ public class SpigotRunnable implements Runnable {
 				}
 				if (packet.getPassword() != null) {
 					if (Skungee.getInstance().getConfig().getBoolean("security.password.hash", true)) {
-						if (Skungee.getInstance().getConfig().getBoolean("security.password.hashFile", false) && Skungee.getEncrypter().isFileHashed()) {
-							if (!Arrays.equals(Skungee.getEncrypter().getHashFromFile(), packet.getPassword())) {
+						if (Skungee.getInstance().getConfig().getBoolean("security.password.hashFile", false) && Skungee.getInstance().getEncrypter().isFileHashed()) {
+							if (!Arrays.equals(Skungee.getInstance().getEncrypter().getHashFromFile(), packet.getPassword())) {
 								incorrectPassword(packet);
 								return;
 							}
-						} else if (!Arrays.equals(Skungee.getEncrypter().hash(), packet.getPassword())) {
+						} else if (!Arrays.equals(Skungee.getInstance().getEncrypter().hash(), packet.getPassword())) {
 							incorrectPassword(packet);
 							return;
 						}
 					} else {
-						String password = (String) Skungee.getEncrypter().deserialize(packet.getPassword());
+						String password = (String) Skungee.getInstance().getEncrypter().deserialize(packet.getPassword());
 						if (!password.equals(Skungee.getInstance().getConfig().getString("security.password.password"))){
 							incorrectPassword(packet);
 							return;
@@ -81,7 +81,7 @@ public class SpigotRunnable implements Runnable {
 				if (packetData != null) {
 					//TODO Add cipher encryption + change config message.
 					if (Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false)) {
-						byte[] serialized = Skungee.getEncrypter().serialize(packetData);
+						byte[] serialized = Skungee.getInstance().getEncrypter().serialize(packetData);
 						objectOutputStream.writeObject(Base64.getEncoder().encode(serialized));
 					} else {
 						objectOutputStream.writeObject(packetData);

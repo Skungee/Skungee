@@ -82,9 +82,9 @@ public class ServerTracker {
 	}
 	
 	public static void globalScripts(ConnectedServer server) {
-		if (Skungee.getConfig().getBoolean("GlobalScripts.Enabled", true) && Skungee.getScriptsFolder().listFiles().length > 0) {
+		if (Skungee.getConfig().getBoolean("GlobalScripts.Enabled", true) && Skungee.getInstance().getScriptsFolder().listFiles().length > 0) {
 			Map<String, List<String>> data = new HashMap<String, List<String>>();
-			for (File script : Skungee.getScriptsFolder().listFiles()) {
+			for (File script : Skungee.getInstance().getScriptsFolder().listFiles()) {
 				try {
 					data.put(script.getName(), Files.readAllLines(script.toPath(), Charset.defaultCharset()));
 				} catch (IOException e) {

@@ -5,17 +5,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
+import me.limeglass.skungee.bungeecord.servers.ServerManager;
+import me.limeglass.skungee.bungeecord.servers.WrappedServer;
 import me.limeglass.skungee.bungeecord.sockets.SocketRunnable;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -29,45 +33,53 @@ public class Skungee extends Plugin {
 	
 	//Bungeecord
 	
+	private static Map<String, Configuration> files = new HashMap<String, Configuration>();
 	private final static String prefix = "&8[&cSkungee&8] &e";
 	private final static String nameplate = "[Skungee] ";
 	private static EncryptionUtil encryption;
 	private static BungecordMetrics metrics;
-	private static Configuration config;
-	private static File SCRIPTS_FOLDER;
+	private File SCRIPTS_FOLDER;
 	private ServerSocket serverSocket;
 	private static Skungee instance;
-	private static File configFile;
 	
 	public void onEnable(){
 		instance = this;
-		UniversalSkungee.setBungeecord(true);
 		if (!getDataFolder().exists()) getDataFolder().mkdir();
+		UniversalSkungee.setBungeecord(true);
+		ServerManager.setup();
 		SCRIPTS_FOLDER = new File(getDataFolder(), File.separator + "scripts");
 		if (!SCRIPTS_FOLDER.exists()) SCRIPTS_FOLDER.mkdir();
-		Boolean newConfig = false;
-		configFile = new File(getDataFolder(), "config.yml");
-		if (!configFile.exists()) {
-			try (InputStream in = getResourceAsStream("Bungeecord/config.yml")) {
-				newConfig = true;
-				Files.copy(in, configFile.toPath());
+		for (String name : Arrays.asList("config", "serverinstances")) {
+			try (InputStream in = getResourceAsStream("Bungeecord/" + name + ".yml")) {
+				File file = new File(getDataFolder(), name + ".yml");
+				if (!file.exists()) Files.copy(in, new File(getDataFolder(), name + ".yml").toPath());
+				Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
+				files.put(name, configuration);
 			} catch (IOException e) {
-				exception(e, "could not create config.");
+				exception(e, "Could not create file: " + name + ".yml");
 			}
 		}
-		try {
-			config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
-		} catch (IOException e) {
-			exception(e, "could not save config.");
-		}
-		if (newConfig) consoleMessage("&cNo config was found, generating a new config...");
-		if (!getDescription().getVersion().equals(config.getString("version"))) {
+		//TODO Move this to it's own update checker soon.
+		File config = new File(getDataFolder(), "config.yml");
+		if (!getDescription().getVersion().equals(getConfig().getString("version"))) {
 			consoleMessage("&eThere is a new Skungee version. Generating new config...");
 			try (InputStream in = getResourceAsStream("Bungeecord/config.yml")) {
-				Files.delete(configFile.toPath());
-				Files.copy(in, configFile.toPath());
+				Files.delete(config.toPath());
+				Files.copy(in, config.toPath());
+				files.put("config", ConfigurationProvider.getProvider(YamlConfiguration.class).load(config));
 			} catch (IOException e) {
-				exception(e, "could not create and save config due to new version.");
+				exception(e, "Could not create and save config due to new version.");
+			}
+		}
+		File serverinstances = new File(getDataFolder(), "serverinstances.yml");
+		if (getConfiguration("serverinstances").getInt("configuration-version", 0) < 1) {
+			consoleMessage("&eThere is a new Skungee serverinstances configuration. Generating new serverinstances.yml...");
+			try (InputStream in = getResourceAsStream("Bungeecord/serverinstances.yml")) {
+				Files.delete(serverinstances.toPath());
+				Files.copy(in, serverinstances.toPath());
+				files.put("serverinstances", ConfigurationProvider.getProvider(YamlConfiguration.class).load(serverinstances));
+			} catch (IOException e) {
+				exception(e, "Could not create and save serverinstances due to new configuration.");
 			}
 		}
 		encryption = new EncryptionUtil(this, false);
@@ -79,22 +91,29 @@ public class Skungee extends Plugin {
 				return getProxy().getPluginManager().getPlugins().size() + "";
 			}
 		});
-		/*metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_network_variables") {
+		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_network_variables") {
 			@Override
 			public int getValue() {
 				return VariableStorage.getSize();
 			}
-		});*/
+		});
 		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_global_scripts") {
 			@Override
 			public int getValue() {
 				return SCRIPTS_FOLDER.listFiles().length;
 			}
 		});
-		if (config.getBoolean("Events", false)) getProxy().getPluginManager().registerListener(this, new EventListener());
-		connect();
+		if (getConfig().getBoolean("Events", false)) getProxy().getPluginManager().registerListener(this, new EventListener());
 		VariableStorage.setup();
-		if (!config.getBoolean("DisableRegisteredInfo", false)) consoleMessage("has been enabled!");
+		connect();
+		final WrappedServer server = new WrappedServer("Test");
+		ProxyServer.getInstance().getScheduler().schedule(instance, new Runnable() {
+			@Override
+			public void run() {
+				server.shutdown();
+			}
+		}, 1, TimeUnit.MINUTES);
+		if (!getConfig().getBoolean("DisableRegisteredInfo", false)) consoleMessage("has been enabled!");
 	}
 	
 	private void connect () {
@@ -118,6 +137,7 @@ public class Skungee extends Plugin {
 		}
 	}
 	
+	//TODO Move this to UniversalSkungee soon
 	@SuppressWarnings("deprecation")
 	public final static void exception(Throwable cause, String... info) {
 		Map<String, PluginDescription> plugins = new HashMap<String, PluginDescription>();
@@ -132,11 +152,10 @@ public class Skungee extends Plugin {
 			}
 		}
 		infoMessage();
-		infoMessage(getNameplate() + "Severe Error: " + info);
+		infoMessage(getNameplate() + "Severe Error: " + Arrays.toString(info));
 		infoMessage();
 		infoMessage("Something went wrong within Skungee.");
 		infoMessage("Please report this error to the developers of Skungee so we can fix this from happening in the future.");
-		infoMessage();
 		Set<PluginDescription> stackPlugins = new HashSet<>();
 		for (StackTraceElement stackTrace : Thread.currentThread().getStackTrace()) {
 			for (Entry<String, PluginDescription> entry : plugins.entrySet()) {
@@ -146,6 +165,7 @@ public class Skungee extends Plugin {
 			}
 		}
 		if (!stackPlugins.isEmpty()) {
+			infoMessage();
 			infoMessage("It looks like you are using some plugin(s) that aren't allowing Skungee to work properly.");
 			infoMessage("Following plugins are probably related to this error in some way:");
 			StringBuilder pluginsMessage = new StringBuilder();
@@ -158,7 +178,7 @@ public class Skungee extends Plugin {
 			infoMessage("If the error doesn't disappear even after disabling all listed plugins, it is probably a Skungee issue.");
 		}
 		infoMessage();
-		infoMessage("Please report this on the Skungee discussion page on SkUnity or Spigot. You can also message one of the Skungee developers.");
+		infoMessage("Report this on the Skungee discussion page on SkUnity or Spigot. You can also message one of the Skungee developers.");
 		infoMessage();
 		infoMessage("Stack trace:");
 		boolean first = true;
@@ -179,7 +199,7 @@ public class Skungee extends Plugin {
 		infoMessage("  OS: " + System.getProperty("os.name") + " " + System.getProperty("os.arch") + " " + System.getProperty("os.version"));
 		infoMessage();
 		infoMessage("Thread: " + Thread.currentThread());
-		infoMessage("Cause: " + info);
+		infoMessage("Cause: " + Arrays.toString(info));
 		infoMessage();
 		infoMessage("End of Error.");
 		infoMessage();
@@ -190,7 +210,7 @@ public class Skungee extends Plugin {
 	}
 	
 	public static Configuration getConfig() {
-		return config;
+		return getConfiguration("config");
 	}
 	
 	public static BungecordMetrics getMetrics() {
@@ -209,14 +229,19 @@ public class Skungee extends Plugin {
 		return prefix;
 	}
 	
-	public static File getScriptsFolder() {
+	public File getScriptsFolder() {
 		return SCRIPTS_FOLDER;
 	}
 	
 	public static void debugMessage(String text) {
-		if (config.getBoolean("debug")) consoleMessage("&b" + text);
+		if (getConfig().getBoolean("debug")) consoleMessage("&b" + text);
 	}
 	
+	//Grabs a Configuration of a defined name. The name can't contain .yml in it.
+	public static Configuration getConfiguration(String file) {
+		return (files.containsKey(file)) ? files.get(file) : null;
+	}
+
 	public static String cc(String string) {
 		return ChatColor.translateAlternateColorCodes((char)'&', string);
 	}
@@ -230,10 +255,10 @@ public class Skungee extends Plugin {
 	}
 
 	public static void consoleMessage(@Nullable String... messages) {
-		if (config.getBoolean("DisableConsoleMessages", false)) return;
+		if (getConfig().getBoolean("DisableConsoleMessages", false)) return;
 		if (messages != null && messages.length > 0) {
 			for (String text : messages) {
-				if (config.getBoolean("DisableConsoleColour", false)) infoMessage(ChatColor.stripColor(cc(text)));
+				if (getConfig().getBoolean("DisableConsoleColour", false)) infoMessage(ChatColor.stripColor(cc(text)));
 				else ProxyServer.getInstance().getLogger().info(cc(prefix + text));
 			}
 		} else {
@@ -242,20 +267,6 @@ public class Skungee extends Plugin {
 	}
 }
 /*
-Fixed some debug messages not having proper english statements, and also removed some development debug messages.
-
-Fixed Conditions and Effects returning the modified syntax if the user has modified it in debug messages.
-
-Fixed Expression CurrentServer from potentially returning the incorrect server due to two servers on the same server machine.
-
-Fixed two expression where the ServerTracker could not understand servers that share a similar server machine.
-
-Added a disconnect packet so the Bungeecord Skungee can tell when a server is disconnected quicker.
-
-Added a port checker for the ServerTracker
-
-Added configuration option to make
-
 TODO:
 Added title stuff:
 

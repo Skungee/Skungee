@@ -1,2 +1,0 @@
-#Tue Jan 09 21:48:14 MST 2018
-gradle.version=3.5

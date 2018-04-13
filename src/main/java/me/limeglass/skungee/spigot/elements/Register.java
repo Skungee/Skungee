@@ -41,7 +41,7 @@ public class Register {
 				String name = jarEntry.nextElement().getName().replace("/", ".");
 				String className = name.substring(0, name.length() - 6);
 				className = className.replace('/', '.');
-				if (name.startsWith(Skungee.getPackageName()) && name.endsWith(".class")) {
+				if (name.startsWith(Skungee.getInstance().getPackageName()) && name.endsWith(".class")) {
 					classes.add(Class.forName(className));
 				}
 			}
