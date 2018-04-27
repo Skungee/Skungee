@@ -165,6 +165,11 @@ public class SpigotPacketHandler {
 				String ID = (String) packet.getObject();
 				Variables.setVariable(ID, packet.getSetObject(), null, false);
 				break;
+		case SHUTDOWN:
+			Bukkit.shutdown();
+			break;
+		default:
+			break;
 		}
 		return null;
 	}

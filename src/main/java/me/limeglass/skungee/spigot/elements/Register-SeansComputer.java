@@ -25,32 +25,32 @@ import me.limeglass.skungee.spigot.utils.EnumClassInfo;
 import me.limeglass.skungee.spigot.utils.TypeClassInfo;
 import me.limeglass.skungee.spigot.utils.annotations.*;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class Register {
 	
-	private static Set<Class<?>> classes = new HashSet<>();
-	private static JarFile addon;
+	public Set<Class<?>> classes = new HashSet<>();
+	public Set<Class<?>> oldclasses = new HashSet<>(); 
+	private JarFile Stocksaddon;
 	
-	static {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Register() {
 		try {
 			Method method = JavaPlugin.class.getDeclaredMethod("getFile");
 			method.setAccessible(true);
 			File file = (File) method.invoke(Skungee.getInstance());
-			addon = new JarFile(file);
-			for (Enumeration<JarEntry> jarEntry = addon.entries(); jarEntry.hasMoreElements();) {
+			Stocksaddon = new JarFile(file);
+			for (Enumeration<JarEntry> jarEntry = Stocksaddon.entries(); jarEntry.hasMoreElements();) {
 				String name = jarEntry.nextElement().getName().replace("/", ".");
 				String className = name.substring(0, name.length() - 6);
 				className = className.replace('/', '.');
-				if (name.startsWith(Skungee.getInstance().getPackageName()) && name.endsWith(".class")) {
+				if (name.startsWith(Skungee.getPackageName()) && name.endsWith(".class")) {
 					classes.add(Class.forName(className));
 				}
 			}
-			addon.close();
+			Stocksaddon.close();
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException | ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}
 		run : for (Class clazz : classes) {
-			if (clazz.getName().contains("serverinstances") && !Skungee.getConfiguration("config").getBoolean("ServerInstances", false)) continue run;
 			if (!clazz.isAnnotationPresent(Disabled.class)) {
 				String[] syntax = null;
 				ExpressionType type = ExpressionType.COMBINED;
@@ -114,6 +114,7 @@ public class Register {
 				}
 			}
 		}
+		new Events();
 	}
 	
 	public static void metrics(Metrics metrics) {
@@ -121,18 +122,6 @@ public class Register {
 			@Override
 			public String getValue() {
 				return Skript.getVersion().toString();
-			}
-		});
-		metrics.addCustomChart(new Metrics.SimplePie("use_encryption") {
-			@Override
-			public String getValue() {
-				return Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false) + "";
-			}
-		});
-		metrics.addCustomChart(new Metrics.SimplePie("use_breaches") {
-			@Override
-			public String getValue() {
-				return Skungee.getInstance().getConfig().getBoolean("security.breaches.enabled", false) + "";
 			}
 		});
 		Skungee.debugMessage("Metrics registered!");

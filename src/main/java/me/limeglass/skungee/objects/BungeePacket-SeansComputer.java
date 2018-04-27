@@ -5,11 +5,11 @@ import java.io.Serializable;
 public class BungeePacket implements Serializable {
 
 	private static final long serialVersionUID = -7377209366283539512L;
-	private final BungeePacketType type;
 	private final Boolean returnable;
+	private final BungeePacketType type;
+	private Object settable = null, object = null;
+	private byte[] password = null;
 	private SkungeePlayer[] players;
-	private Object settable, object;
-	private byte[] password;
 
 	public BungeePacket(Boolean returnable, BungeePacketType type, Object object) {
 		this.returnable = returnable;
@@ -71,13 +71,6 @@ public class BungeePacket implements Serializable {
 
 	public SkungeePlayer[] getPlayers() {
 		return players;
-	}
-	
-	public SkungeePlayer getFirstPlayer() {
-		for (SkungeePlayer player : players) {
-			if (player != null) return player;
-		}
-		return null;
 	}
 
 	public void setPlayers(SkungeePlayer[] players) {

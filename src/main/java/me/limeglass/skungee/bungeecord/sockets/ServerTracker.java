@@ -3,10 +3,13 @@ package me.limeglass.skungee.bungeecord.sockets;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -137,6 +140,24 @@ public class ServerTracker {
 			if (server.getAddress().equals(address) && server.getPort() == serverPort) {
 				return server;
 			}
+		}
+		return null;
+	}
+	
+	public static ConnectedServer getLocalByPort(int port) {
+		if (isEmpty()) return null;
+		try {
+			for (ConnectedServer server : servers) {
+				for (Enumeration<NetworkInterface> entry = NetworkInterface.getNetworkInterfaces(); entry.hasMoreElements();) {
+					for (Enumeration<InetAddress> addresses = entry.nextElement().getInetAddresses(); addresses.hasMoreElements();) {
+						if (addresses.nextElement().getHostAddress().equals(server.getAddress().getHostAddress()) && port == server.getPort()) {
+							return server;
+						}
+					}
+				}
+			}
+		} catch (SocketException exception) {
+			Skungee.exception(exception, "Could not find the system's local host.");
 		}
 		return null;
 	}

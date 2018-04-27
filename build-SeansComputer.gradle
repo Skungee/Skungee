@@ -1,0 +1,35 @@
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
+
+jar.archiveName = project.name + '.jar'
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        url "https://raw.githubusercontent.com/bensku/mvn-repo/master"
+    }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+dependencies {
+    
+    //Skript
+    api (group: 'ch.njol', name: 'Skript', version: '2.2-dev26') {
+        transitive = false
+	}
+	
+	//Nullable annotation
+	compile (group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '1.1.0')
+	
+	//Spigot/Bukkit
+	compile (group: 'org.spigotmc', name: 'spigot-api', version: '1.12.2-R0.1-SNAPSHOT')
+	
+	//Bungeecord
+	compile (group: 'net.md-5', name: 'bungeecord-api', version: '1.12-SNAPSHOT')
+}

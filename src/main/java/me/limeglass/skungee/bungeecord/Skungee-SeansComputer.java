@@ -5,21 +5,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
-import me.limeglass.skungee.bungeecord.serverinstances.Premium;
-import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
 import me.limeglass.skungee.bungeecord.sockets.SocketRunnable;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginDescription;
@@ -31,23 +28,45 @@ public class Skungee extends Plugin {
 	
 	//Bungeecord
 	
-	private static Map<String, Configuration> files = new HashMap<String, Configuration>();
-	private final static String prefix = "&8[&cSkungee&8] &e";
-	private final static String nameplate = "[Skungee] ";
-	private static EncryptionUtil encryption;
 	private static BungecordMetrics metrics;
-	private ServerSocket serverSocket;
 	private static Skungee instance;
-	private File SCRIPTS_FOLDER;
+	private static String prefix = "&8[&cSkungee&8] &e";
+	private static String nameplate = "[Skungee] ";
+	private static File configFile;
+	private static Configuration config;
+	private ServerSocket serverSocket;
+	private static EncryptionUtil encryption;
 	
 	public void onEnable(){
 		instance = this;
-		if (!getDataFolder().exists()) getDataFolder().mkdir();
 		UniversalSkungee.setBungeecord(true);
-		SCRIPTS_FOLDER = new File(getDataFolder(), File.separator + "scripts");
-		if (!SCRIPTS_FOLDER.exists()) SCRIPTS_FOLDER.mkdir();
-		loadConfiguration();
-		Premium.check();
+		if (!getDataFolder().exists()) getDataFolder().mkdir();
+		getProxy().getPluginManager().registerListener(this, new EventListener());
+		Boolean newConfig = false;
+		configFile = new File(getDataFolder(), "config.yml");
+		if (!configFile.exists()) {
+			try (InputStream in = getResourceAsStream("Bungeecord/config.yml")) {
+				newConfig = true;
+				Files.copy(in, configFile.toPath());
+			} catch (IOException e) {
+				exception(e, "could not create config.");
+			}
+		}
+		try {
+			config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
+		} catch (IOException e) {
+			exception(e, "could not save config.");
+		}
+		if (newConfig) consoleMessage("&cNo config was found, generating a new config...");
+		if (!getDescription().getVersion().equals(config.getString("version"))) {
+			consoleMessage("&eThere is a new Skungee version. Generating new config...");
+			try (InputStream in = getResourceAsStream("Bungeecord/config.yml")) {
+				Files.delete(configFile.toPath());
+				Files.copy(in, configFile.toPath());
+			} catch (IOException e) {
+				exception(e, "could not create and save config due to new version.");
+			}
+		}
 		encryption = new EncryptionUtil(this, false);
 		encryption.hashFile();
 		metrics = new BungecordMetrics(this);
@@ -57,7 +76,7 @@ public class Skungee extends Plugin {
 				return getProxy().getPluginManager().getPlugins().size() + "";
 			}
 		});
-		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_network_variables") {
+		/*metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_network_variables") {
 			@Override
 			public int getValue() {
 				return VariableStorage.getSize();
@@ -66,34 +85,12 @@ public class Skungee extends Plugin {
 		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_global_scripts") {
 			@Override
 			public int getValue() {
-				return SCRIPTS_FOLDER.listFiles().length;
+				return getScripts().size();
 			}
-		});
-		if (getConfig().getBoolean("Events", false)) getProxy().getPluginManager().registerListener(this, new EventListener());
-		VariableStorage.setup();
+		});*/
 		connect();
-		if (!getConfig().getBoolean("DisableRegisteredInfo", false)) consoleMessage("has been enabled!");
-	}
-	
-	public void onDisable() {
-		ServerInstancesSockets.shutdown();
-	}
-	
-	private void loadConfiguration() {
-		File config = new File(Skungee.getInstance().getDataFolder(), "config.yml");
-		try (InputStream in = getResourceAsStream("Bungeecord/config.yml")) {
-			if (!config.exists()) Files.copy(in, config.toPath());
-			Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(config);
-			if (!getDescription().getVersion().equals(configuration.getString("version"))) {
-				consoleMessage("&eThere is a new Skungee version. Generating new config...");
-				Files.delete(config.toPath());
-				loadConfiguration();
-				return;
-			}
-			addConfiguration("config", configuration);
-		} catch (IOException e) {
-			Skungee.exception(e, "Could not create and save serverinstances due to new configuration.");
-		}
+		VariableStorage.setup();
+		if (!config.getBoolean("DisableRegisteredInfo", false)) consoleMessage("has been enabled!");
 	}
 	
 	private void connect () {
@@ -103,7 +100,7 @@ public class Skungee extends Plugin {
 			ProxyServer.getInstance().getScheduler().runAsync(getInstance(), new Runnable() {
 				@Override
 				public void run() {
-					while (!serverSocket.isClosed()) {
+					while(!serverSocket.isClosed()) {
 						try {
 							new Thread(new SocketRunnable(serverSocket.accept())).start();
 						} catch (IOException e) {
@@ -117,7 +114,6 @@ public class Skungee extends Plugin {
 		}
 	}
 	
-	//TODO Move this to UniversalSkungee soon
 	@SuppressWarnings("deprecation")
 	public final static void exception(Throwable cause, String... info) {
 		Map<String, PluginDescription> plugins = new HashMap<String, PluginDescription>();
@@ -132,10 +128,12 @@ public class Skungee extends Plugin {
 			}
 		}
 		infoMessage();
-		infoMessage(getNameplate() + "Severe Error: " + Arrays.toString(info));
+		infoMessage(getNameplate() + "Severe Error:");
+		infoMessage(info);
 		infoMessage();
 		infoMessage("Something went wrong within Skungee.");
 		infoMessage("Please report this error to the developers of Skungee so we can fix this from happening in the future.");
+		infoMessage();
 		Set<PluginDescription> stackPlugins = new HashSet<>();
 		for (StackTraceElement stackTrace : Thread.currentThread().getStackTrace()) {
 			for (Entry<String, PluginDescription> entry : plugins.entrySet()) {
@@ -145,7 +143,6 @@ public class Skungee extends Plugin {
 			}
 		}
 		if (!stackPlugins.isEmpty()) {
-			infoMessage();
 			infoMessage("It looks like you are using some plugin(s) that aren't allowing Skungee to work properly.");
 			infoMessage("Following plugins are probably related to this error in some way:");
 			StringBuilder pluginsMessage = new StringBuilder();
@@ -158,7 +155,7 @@ public class Skungee extends Plugin {
 			infoMessage("If the error doesn't disappear even after disabling all listed plugins, it is probably a Skungee issue.");
 		}
 		infoMessage();
-		infoMessage("Report this on the Skungee discussion page on SkUnity or Spigot. You can also message one of the Skungee developers.");
+		infoMessage("Please report this on the Skungee discussion page on SkUnity or Spigot. You can also message one of the Skungee developers.");
 		infoMessage();
 		infoMessage("Stack trace:");
 		boolean first = true;
@@ -179,7 +176,6 @@ public class Skungee extends Plugin {
 		infoMessage("  OS: " + System.getProperty("os.name") + " " + System.getProperty("os.arch") + " " + System.getProperty("os.version"));
 		infoMessage();
 		infoMessage("Thread: " + Thread.currentThread());
-		infoMessage("Cause: " + Arrays.toString(info));
 		infoMessage();
 		infoMessage("End of Error.");
 		infoMessage();
@@ -190,7 +186,7 @@ public class Skungee extends Plugin {
 	}
 	
 	public static Configuration getConfig() {
-		return getConfiguration("config");
+		return config;
 	}
 	
 	public static BungecordMetrics getMetrics() {
@@ -209,29 +205,8 @@ public class Skungee extends Plugin {
 		return prefix;
 	}
 	
-	public File getScriptsFolder() {
-		return SCRIPTS_FOLDER;
-	}
-	
-	public Map<String, Configuration> getFiles() {
-		return files;
-	}
-	
-	public static void addConfiguration(String name, Configuration configuration) {
-		files.put(name, configuration);
-	}
-	
 	public static void debugMessage(String text) {
-		if (getConfig().getBoolean("debug")) consoleMessage("&b" + text);
-	}
-	
-	//Grabs a Configuration of a defined name. The name can't contain .yml in it.
-	public static Configuration getConfiguration(String file) {
-		return (files.containsKey(file)) ? files.get(file) : null;
-	}
-
-	public static String cc(String string) {
-		return ChatColor.translateAlternateColorCodes('&', string);
+		if (config.getBoolean("debug")) consoleMessage("&b" + text);
 	}
 	
 	public static void infoMessage(@Nullable String... messages) {
@@ -243,35 +218,20 @@ public class Skungee extends Plugin {
 	}
 
 	public static void consoleMessage(@Nullable String... messages) {
-		if (getConfig().getBoolean("DisableConsoleMessages", false)) return;
+		if (config.getBoolean("DisableConsoleMessages", false)) return;
 		if (messages != null && messages.length > 0) {
-			for (String text : messages) {
-				if (getConfig().getBoolean("DisableConsoleColour", false)) infoMessage(ChatColor.stripColor(cc(text)));
-				else ProxyServer.getInstance().getLogger().info(cc(prefix + text));
-			}
+			for (String text : messages) ProxyServer.getInstance().getLogger().info(cc(prefix + text));
 		} else {
 			ProxyServer.getInstance().getLogger().info("");
 		}
 	}
+	
+	private static String cc(String string) {
+		return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes((char)'&', (String)string);
+	}
 }
 /*
-TODO:
-Added title stuff:
 
-	(Returns SkungeeTitle)
-	[new] (skungee|bungee[[ ]cord]) title [with text] %string% [and] [with subtitle %-string%] [[that] lasts] for %timespan%[[,] [with] fade in %-timespan%][[,] [and] [with] fade out %-timespan%]
-	
-	(show|display|send) %skungeetitle% to bungee[[ ]cord]] [(player|uuid)][s] %strings/players%
 
-Added SkungeeTitle type. This is a custom title object that works on Spigot and Bungeecord. Mainly used internally.
 
-Added string of SkungeeTitle (Returns the main String of the title):
-
-	Has all changers but ADD.
-	[(all [[of] the]|the)] (message|string)[s] (of|from) [(skungee|bungee[[ ]cord])] title[s] %skungeetitles%
-
-Added subtitle of SkungeeTitle (Returns the subtitle String):
-
-	Has all changers but ADD.
-	[(all [[of] the]|the)] sub[-]title[s] (of|from) [(skungee|bungee[[ ]cord])] title[s] %skungeetitles%
 */

@@ -1,21 +1,13 @@
 package me.limeglass.skungee.spigot.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.ServerSocket;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -68,8 +60,7 @@ public class Utils {
 				try {
 					uuid = UUID.fromString((String) player);
 				} catch (IllegalArgumentException ex) {}
-				if (uuid != null) skungeePlayers.add(new SkungeePlayer(false, uuid, Bukkit.getPlayer(uuid).getName()));
-				else skungeePlayers.add(new SkungeePlayer(false, null, (String) player));
+				skungeePlayers.add(new SkungeePlayer(false, uuid, (String) player));
 			}
 		}
 		return skungeePlayers.toArray(new SkungeePlayer[skungeePlayers.size()]);
@@ -92,48 +83,5 @@ public class Utils {
 			return time.getTicks();
 		}
 	}
-
-	public static void copyDirectory(File source, File destination) throws IOException {
-		if (source.isDirectory()) {
-			if (!destination.exists()) destination.mkdir();
-			String files[] = source.list();
-			for(int i = 0; i < files.length; i++) {
-				copyDirectory(new File(source, files[i]), new File(destination, files[i]));
-			}
-		} else if (source.exists()) {
-			InputStream in = new FileInputStream(source);
-			OutputStream out = new FileOutputStream(destination);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
-		}
-	}
 	
-	public static int findPort(int start, int max) {
-		int port = start;
-		Throwable lastException = null;
-		while (port < max) {
-			ServerSocket socket = null;
-			try {
-				socket = new ServerSocket(port);
-				socket.setReuseAddress(true);
-				return port;
-			} catch (IOException e) {
-				lastException = e;
-			} finally {
-				if (socket != null) {
-					try {
-						socket.close();
-					} catch (IOException e) {}
-				}
-			}
-			port++;
-		}
-		if (lastException != null) Skungee.exception(lastException, "Couldn't find a port between " + start + " and " + port);
-		return -1;
-	}
 }

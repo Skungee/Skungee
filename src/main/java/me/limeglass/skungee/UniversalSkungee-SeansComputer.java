@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import me.limeglass.skungee.objects.BungeePacket;
-import me.limeglass.skungee.objects.BungeePacketType;
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePlayer;
 
@@ -21,7 +20,7 @@ public class UniversalSkungee {
 	}
 	
 	public static String getPacketDebug(SkungeePacket packet) {
-		String debug = "packet: " + packet.getType();
+		String debug = "Recieved packet: " + packet.getType();
 		if (packet.getObject() != null) {
 			if (packet.getObject().getClass().isArray()) {
 				debug = debug + " with data: " + Arrays.toString((Object[])packet.getObject());
@@ -44,7 +43,7 @@ public class UniversalSkungee {
 	
 	public static String getPacketDebug(BungeePacket packet) {
 		String debug = "packet: " + packet.getType();
-		if (packet.getObject() != null && packet.getType() != BungeePacketType.GLOBALSCRIPTS) {
+		if (packet.getObject() != null) {
 			if (packet.getObject().getClass().isArray()) {
 				debug = debug + " with data: " + Arrays.toString((Object[])packet.getObject());
 			} else {
@@ -57,9 +56,6 @@ public class UniversalSkungee {
 			} else {
 				debug = debug + " with settable data: " + packet.getSetObject();
 			}
-		}
-		if (packet.getPlayers() != null) {
-			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).map(SkungeePlayer::getName).collect(Collectors.toList());
 		}
 		return debug;
 	}

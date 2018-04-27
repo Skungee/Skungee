@@ -8,12 +8,10 @@ import java.net.Socket;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import me.limeglass.skungee.objects.BungeePacket;
-import me.limeglass.skungee.objects.BungeePacketType;
 import me.limeglass.skungee.objects.ConnectedServer;
 import net.md_5.bungee.api.ProxyServer;
 import me.limeglass.skungee.UniversalSkungee;
@@ -37,20 +35,12 @@ public class BungeeSockets {
 	}
 
 	public static Object send(ConnectedServer server, BungeePacket packet) {
-		if (server == null) {
-			Skungee.consoleMessage("The server argument was incorrect or not set while sending bungee " + UniversalSkungee.getPacketDebug(packet));
-			return null;
-		}
 		if (ServerTracker.isResponding(server) && server.hasReciever() && !checking) {
 			checking = true;
 			spigot = getSocketConnection(server);
 			if (spigot == null) return null;
 			checking = false;
-			if (!Skungee.getConfig().getBoolean("IgnoreSpamPackets", true)) {
-				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
-			} else if (!(packet.getType() == BungeePacketType.GLOBALSCRIPTS)) {
-				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
-			}
+			Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
 			if (Skungee.getConfig().getBoolean("security.password.enabled", false)) {
 				byte[] password = Skungee.getEncrypter().serialize(Skungee.getConfig().getString("security.password.password"));
 				if (Skungee.getConfig().getBoolean("security.password.hash", true)) {
@@ -63,7 +53,6 @@ public class BungeeSockets {
 				if (password != null) packet.setPassword(password);
 			}
 			try {
-				spigot.setSoTimeout(10000);
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(spigot.getOutputStream());
 				//TODO Add cipher encryption + change config message.
 				if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {
@@ -87,25 +76,16 @@ public class BungeeSockets {
 				spigot.close();
 			} catch (IOException | ClassNotFoundException e) {}
 		} else {
-			//TODO wait until it becomes available
+			//TODO wait until it becomes avalible
 		}
 		return null;
 	}
 	
-	public static void send(final BungeePacket packet, final ConnectedServer... servers) {
+	public static void send(final BungeePacket packet, final ConnectedServer server) {
 		ProxyServer.getInstance().getScheduler().runAsync(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				StringBuilder builder = new StringBuilder();
-				Boolean found = false;
-				for (ConnectedServer server : servers) {
-					builder.append(server.getName() + "-" + server.getAddress() + ":" + server.getPort());
-					if (server != null && packet != null) {
-						found = true;
-						send(server, packet);
-					}
-				}
-				if (!found) Skungee.debugMessage("Could not find servers by the name: " + builder.toString());
+				send(server, packet);
 			}
 		});
 	}
@@ -114,9 +94,7 @@ public class BungeeSockets {
 		ProxyServer.getInstance().getScheduler().runAsync(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				Iterator<ConnectedServer> iterator = ServerTracker.getAll().iterator();
-				while (iterator.hasNext()) {
-					ConnectedServer server = iterator.next();
+				for (ConnectedServer server : ServerTracker.getAll()) {
 					if (server.hasReciever()) {
 						send(server, packet);
 					}
@@ -126,6 +104,7 @@ public class BungeeSockets {
 	}
 	
 	@SuppressWarnings("null")
+	//Always run async
 	public static Object[] get(BungeePacket packet, ConnectedServer... servers) {
 		Object[] returns = null;
 		int i = 0;
