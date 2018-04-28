@@ -27,10 +27,10 @@ public class ExprEventBungeeServers extends SkungeeExpression<String> {
 	@Override
 	protected String[] get(Event event) {
 		try {
-			Method method = (isSingle()) ? event.getClass().getMethod("getServer") : event.getClass().getMethod("getServers");
+			Method method = (isSingle()) ? event.getClass().getDeclaredMethod("getServer") : event.getClass().getDeclaredMethod("getServers");
 			if (method == null) return null;
 			method.setAccessible(true);
-			String[] servers = getServers(method.invoke(event.getClass()));
+			String[] servers = getServers(method.invoke(event));
 			return servers;
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
 		return null;

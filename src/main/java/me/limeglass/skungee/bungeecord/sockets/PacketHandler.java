@@ -631,6 +631,9 @@ public class PacketHandler {
 				return ProxyServer.getInstance().getConfig().getTimeout();
 			case BUNGEEONLINEMODE:
 				return ProxyServer.getInstance().getConfig().isOnlineMode();
+			case SHUTDOWNSERVER:
+				//TODO
+				break;
 		}
 		return null;
 	}

@@ -85,7 +85,7 @@ public class EncryptionUtil {
 				}
 			}
 			if (isFileHashed()) {
-				Skungee.infoMessage("Password is succefully hashed to file!");
+				Skungee.infoMessage("Password is successfully hashed to file!");
 			}
 		} else {
 			if (me.limeglass.skungee.bungeecord.Skungee.getConfig().getBoolean("security.password.enabled", false) && me.limeglass.skungee.bungeecord.Skungee.getConfig().getBoolean("security.password.hash", true)
@@ -103,7 +103,7 @@ public class EncryptionUtil {
 				}
 			}
 			if (isFileHashed()) {
-				me.limeglass.skungee.bungeecord.Skungee.infoMessage("Password is succefully hashed to file!");
+				me.limeglass.skungee.bungeecord.Skungee.infoMessage("Password is successfully hashed to file!");
 			}
 		}
 	}

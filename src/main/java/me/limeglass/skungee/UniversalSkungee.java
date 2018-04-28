@@ -37,7 +37,7 @@ public class UniversalSkungee {
 			}
 		}
 		if (packet.getPlayers() != null) {
-			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).map(SkungeePlayer::getName).collect(Collectors.toList());
+			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(SkungeePlayer::getName).collect(Collectors.toList());
 		}
 		return debug;
 	}
@@ -59,7 +59,7 @@ public class UniversalSkungee {
 			}
 		}
 		if (packet.getPlayers() != null) {
-			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).map(SkungeePlayer::getName).collect(Collectors.toList());
+			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(SkungeePlayer::getName).collect(Collectors.toList());
 		}
 		return debug;
 	}

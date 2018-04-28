@@ -27,11 +27,13 @@ public class ExprEventBungeePlayers extends SkungeeExpression<Object> {
 	@Override
 	protected Object[] get(Event event) {
 		try {
-			Method method = event.getClass().getMethod("getConverted");
+			Method method = event.getClass().getDeclaredMethod("getConverted");
 			if (method == null) return null;
 			method.setAccessible(true);
-			return (Object[]) method.invoke(event.getClass());
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
+			return (Object[]) method.invoke(event);
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

@@ -3,6 +3,7 @@ package me.limeglass.skungee.spigot.elements.events;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.Nullable;
@@ -18,7 +19,7 @@ import me.limeglass.skungee.spigot.utils.ReflectionUtil;
 public class Events {
 	
 	static {
-		registerEvent(null, PlayerDisconnectEvent.class, "bungee[[ ]cord] player disconnect");
+		registerEvent(null, PlayerDisconnectEvent.class, "bungee[[ ]cord] disconnect");
 	}
 	
 	public static void registerEvent(@Nullable Class<? extends SkriptEvent> skriptEvent, Class<? extends Event> event, String... patterns) {
@@ -37,7 +38,8 @@ public class Events {
 		Skungee.save("syntax");
 		if (Skungee.getConfiguration("syntax").getBoolean("Syntax.Events." + event.getSimpleName() + ".enabled", true)) {
 			//TODO find a way to make the stupid Spigot Yaml read properly for user editing of event patterns.
-			Skript.registerEvent(event.getSimpleName(), skriptEvent, event, patterns);
+			Skript.registerEvent("Skungee " + event.getSimpleName(), skriptEvent, event, patterns);
+			Skungee.debugMessage("&5Registered Event " + event.getSimpleName() + " (" + skriptEvent.getCanonicalName() + ") with syntax " + Arrays.toString(patterns));
 		}
 	}
 	

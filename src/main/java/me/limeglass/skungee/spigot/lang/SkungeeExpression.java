@@ -60,7 +60,7 @@ public abstract class SkungeeExpression<T> extends SimpleExpression<T> implement
 	@Override
 	public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, ParseResult parser) {
 		if (getClass().isAnnotationPresent(Events.class)) {
-			if (contains()) {
+			if (!contains()) {
 				Skungee.debugMessage("The expression `" + getClass().getSimpleName() + "` can't be used in the event: " + ScriptLoader.getCurrentEventName() + "it can only be used in: " + Arrays.toString(getClass().getAnnotation(Events.class).value()));
 				return false;
 			}

@@ -28,7 +28,6 @@ import me.limeglass.skungee.spigot.elements.Register;
 import me.limeglass.skungee.spigot.sockets.PacketQueue;
 import me.limeglass.skungee.spigot.sockets.Reciever;
 import me.limeglass.skungee.spigot.sockets.Sockets;
-import me.limeglass.skungee.spigot.test.TestListener;
 import me.limeglass.skungee.spigot.utils.ReflectionUtil;
 import me.limeglass.skungee.spigot.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
@@ -51,7 +50,6 @@ public class Skungee extends JavaPlugin {
 		instance = this;
 		saveDefaultConfig();
 		File config = new File(getDataFolder(), "config.yml");
-		getServer().getPluginManager().registerEvents(new TestListener(), this);
 		if (!Objects.equals(getDescription().getVersion(), getConfig().getString("version"))) {
 			consoleMessage("&dNew update found! Updating files now...");
 			if (config.exists()) config.delete();
