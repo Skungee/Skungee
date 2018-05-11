@@ -338,4 +338,12 @@ public class ExpressionData {
 		}
 		return (data.isEmpty()) ? null : data;
 	}
+	
+	public String toString(Event event, boolean debug) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getClass().getName());
+		for (Expression<?> expression : expressions)
+			builder.append(expression.toString(event, debug));
+		return builder.toString();
+	}
 }

@@ -33,4 +33,8 @@ public class SkungeePlayer implements Serializable {
 	public String getName() {
 		return name;
 	}
+	
+	public String toString() {
+		return (uuid != null) ? name + ":" + uuid : name;
+	}
 }

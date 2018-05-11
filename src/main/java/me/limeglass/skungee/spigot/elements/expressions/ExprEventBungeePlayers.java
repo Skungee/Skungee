@@ -31,9 +31,7 @@ public class ExprEventBungeePlayers extends SkungeeExpression<Object> {
 			if (method == null) return null;
 			method.setAccessible(true);
 			return (Object[]) method.invoke(event);
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
 		return null;
 	}
 }

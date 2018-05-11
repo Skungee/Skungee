@@ -40,7 +40,7 @@ public class Skungee extends JavaPlugin {
 	private String packageName = "me.limeglass.skungee.spigot";
 	private static String prefix = "&8[&cSkungee&8] &e";
 	private static String nameplate = "[Skungee] ";
-	private EncryptionUtil encryption;
+	private static EncryptionUtil encryption;
 	private static Skungee instance;
 	private SkriptAddon addon;
 	private Metrics metrics;
@@ -84,9 +84,9 @@ public class Skungee extends JavaPlugin {
 	}
 	
 	public void onDisable() {
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.DISCONNECT, Bukkit.getPort()));
-		Sockets.onPluginDisabling();
+		Sockets.send(new SkungeePacket(true, SkungeePacketType.DISCONNECT, Bukkit.getPort()));
 		PacketQueue.stop();
+		Sockets.onPluginDisabling();
 	}
 
 	public final static void exception(Throwable cause, String... info) {

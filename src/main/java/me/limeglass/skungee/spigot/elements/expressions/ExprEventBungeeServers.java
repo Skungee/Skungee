@@ -24,6 +24,8 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 @Events({PlayerDisconnectEvent.class, PlayerSwitchServerEvent.class})
 public class ExprEventBungeeServers extends SkungeeExpression<String> {
 	
+	//TODO get rid of the other stuff thing ya
+	
 	@Override
 	protected String[] get(Event event) {
 		try {

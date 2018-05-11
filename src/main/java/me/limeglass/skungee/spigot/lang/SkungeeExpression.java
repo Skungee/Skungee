@@ -28,11 +28,11 @@ import me.limeglass.skungee.spigot.utils.annotations.Single;
 
 public abstract class SkungeeExpression<T> extends SimpleExpression<T> implements DataChecker {
 
-	private Class<T> expressionClass;
-	protected ExpressionData expressions;
-	protected int patternMark;
-	protected ParseResult parser;
 	private List<Object> values = new ArrayList<Object>();
+	protected ExpressionData expressions;
+	private Class<T> expressionClass;
+	protected ParseResult parser;
+	protected int patternMark;
 	
 	@SuppressWarnings("unchecked")
 	@Override

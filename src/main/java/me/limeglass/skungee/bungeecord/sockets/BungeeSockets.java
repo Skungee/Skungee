@@ -5,12 +5,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import me.limeglass.skungee.objects.BungeePacket;
 import me.limeglass.skungee.objects.BungeePacketType;
@@ -92,7 +95,14 @@ public class BungeeSockets {
 		return null;
 	}
 	
-	public static void send(final BungeePacket packet, final ConnectedServer... servers) {
+	public static List<Object> send(final BungeePacket packet, final ConnectedServer... servers) {
+		if (packet.isReturnable()) {
+			List<Object> values = new ArrayList<Object>();
+			for (ConnectedServer server : servers) {
+				values.add(send(server, packet));
+			}
+			return values;
+		}
 		ProxyServer.getInstance().getScheduler().runAsync(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -105,12 +115,14 @@ public class BungeeSockets {
 						send(server, packet);
 					}
 				}
-				if (!found) Skungee.debugMessage("Could not find servers by the name: " + builder.toString());
+				if (!found) Skungee.debugMessage("Could not find servers by the names: " + builder.toString());
 			}
 		});
+		return null;
 	}
 	
-	public static void sendAll(final BungeePacket packet) {
+	public static List<Object> sendAll(final BungeePacket packet) {
+		if (packet.isReturnable()) return ServerTracker.getAll().parallelStream().filter(server -> server.hasReciever()).map(server -> send(server, packet)).collect(Collectors.toList());
 		ProxyServer.getInstance().getScheduler().runAsync(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -123,6 +135,7 @@ public class BungeeSockets {
 				}
 			}
 		});
+		return null;
 	}
 	
 	@SuppressWarnings("null")
