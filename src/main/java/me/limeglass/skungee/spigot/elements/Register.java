@@ -135,6 +135,12 @@ public class Register {
 				return Skungee.getInstance().getConfig().getBoolean("security.breaches.enabled", false) + "";
 			}
 		});
+		metrics.addCustomChart(new Metrics.SimplePie("use_password") {
+			@Override
+			public String getValue() {
+				return Skungee.getInstance().getConfig().getBoolean("security.password.enabled", false) + "";
+			}
+		});
 		Skungee.debugMessage("Metrics registered!");
 	}
 }

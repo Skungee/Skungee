@@ -40,7 +40,7 @@ public class Skungee extends JavaPlugin {
 	private String packageName = "me.limeglass.skungee.spigot";
 	private static String prefix = "&8[&cSkungee&8] &e";
 	private static String nameplate = "[Skungee] ";
-	private static EncryptionUtil encryption;
+	private EncryptionUtil encryption;
 	private static Skungee instance;
 	private SkriptAddon addon;
 	private Metrics metrics;

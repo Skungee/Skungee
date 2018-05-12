@@ -1,17 +1,12 @@
 package me.limeglass.skungee.objects;
 
-import net.md_5.bungee.api.Favicon;
-import net.md_5.bungee.api.ServerPing.Players;
-import net.md_5.bungee.api.ServerPing.Protocol;
-import net.md_5.bungee.api.chat.BaseComponent;
-
 public class ServerPingPacket extends BungeePacket {
 
 	private static final long serialVersionUID = 1374798819485573682L;
-	private BaseComponent description;
-	private Protocol version;
-	private Favicon favicon;
-	private Players players;
+	private String description;
+	private String version;
+	//private Favicon favicon;
+	//private Players players;
 
 	public ServerPingPacket(Boolean returnable, BungeePacketType type, Object object) {
 		super(returnable, type, object);
@@ -33,23 +28,23 @@ public class ServerPingPacket extends BungeePacket {
 		super(returnable, type, object, settable, players);
 	}
 
-	public BaseComponent getDescription() {
+	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(BaseComponent description) {
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	public Protocol getVersion() {
+	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(Protocol version) {
+	public void setVersion(String version) {
 		this.version = version;
 	}
 
-	public Favicon getFavicon() {
+	/*public Favicon getFavicon() {
 		return favicon;
 	}
 
@@ -63,5 +58,5 @@ public class ServerPingPacket extends BungeePacket {
 
 	public void setPingPlayers(Players players) {
 		this.players = players;
-	}
+	}*/
 }

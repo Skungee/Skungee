@@ -76,7 +76,7 @@ public class BungeeSockets {
 					objectOutputStream.writeObject(packet);
 				}
 				ObjectInputStream objectInputStream = new ObjectInputStream(spigot.getInputStream());
-				if(packet.isReturnable()) {
+				if (packet.isReturnable()) {
 					//TODO Add cipher encryption + change config message.
 					if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {
 						byte[] decoded = Base64.getDecoder().decode((byte[]) objectInputStream.readObject());

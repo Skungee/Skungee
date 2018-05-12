@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.util.Arrays;
@@ -118,13 +116,13 @@ public class SpigotPacketHandler {
 							out.close();
 							for (File similar : scripts.stream().filter(file -> file.getName().equals(entry.getKey())).collect(Collectors.toSet())) {
 								if (!Arrays.equals(Files.readAllBytes(script.toPath()), Files.readAllBytes(similar.toPath()))) {
-									try {
+									/*try {
 										Method method = ScriptLoader.class.getDeclaredMethod("unloadScript", File.class);
 										method.setAccessible(true);
 										method.invoke(ScriptLoader.class, similar);
 									} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException error) {
-										Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/sk unload " + entry.getKey());
-									}
+										Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload " + entry.getKey());
+									}*/
 									Files.deleteIfExists(similar.toPath());
 									reload = true;
 								}
@@ -132,9 +130,10 @@ public class SpigotPacketHandler {
 							if (reload) {
 								File newScript = new File(scriptsFolder + File.separator + entry.getKey());
 								com.google.common.io.Files.move(script, newScript);
-								String name = scriptsFolder + File.separator + newScript.getName();
-								Config config = new Config(new FileInputStream(newScript), name, newScript, true, false, ":");
-								ScriptLoader.loadScripts(config);
+								//String name = scriptsFolder + File.separator + newScript.getName();
+								//Config config = new Config(new FileInputStream(newScript), name, newScript, true, false, ":");
+								//ScriptLoader.loadScripts(config);
+								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload " + entry.getKey());
 								if (Skungee.getInstance().getConfig().getBoolean("GlobalScriptMessages", true)) {
 									Skungee.consoleMessage("&6GlobalScripts: reloaded script " + entry.getKey() + " for this server!");
 								}
@@ -166,7 +165,7 @@ public class SpigotPacketHandler {
 				Bukkit.shutdown();
 				break;
 			case SERVERLISTPING:
-				if (packet instanceof ServerPingPacket && packet.getObject() != null) {
+				if (packet instanceof ServerPingPacket) {
 					PingEvent event = new PingEvent((ServerPingPacket) packet);
 					Bukkit.getPluginManager().callEvent(event);
 					return event.getPacket();

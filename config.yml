@@ -1,7 +1,7 @@
 # Skungee (Spigot) - The #1 Skript addon for Bungeecord.
 
 # The version is to help determine which version this config is. Please don't modify this value.
-version: "1.0.6"
+version: "1.0.6a"
 
 # Print additional information in the console. The developers of FunkySk may ask you to enable this when reporting an error.
 debug: false
@@ -137,10 +137,6 @@ SkungeeReturnUUID: true
 # If a syntax returns a number that can be parsed as a timespan, should Skungee convert it into a Timespan?
 Timespans: true
 
-# If you have bought the ServerInstances expansion pack for Skungee you can enable the syntax here.
-# This node does nothing without the ServerInstances expansion pack already purchased and installed.
-ServerInstances: false
-
 # Reciever, this will allow for some syntax to work. Like "evaluate", "server is online", "global scripts" and "network variables".
 # This also needs to be enabled in order to run events below.
 # Keep in mind that this port must not already be in use. If you run all your servers on the same machine, you will need to make
@@ -156,8 +152,15 @@ Reciever:
     maxPort: 65534
     startingPort: 1000
   
-# BETA feature. This isn't properly working at the moment. Use at own risk.
-Events: false
+# Bungeecord events.
+Events: true
+
+# You can enable this to allow "set bungeecord server list version protocol to X" to work with any protocol version, X being any protocol ID
+# You may look for protocol IDs here http://wiki.vg/index.php?title=Protocol_History&printable=yes
+# Keeping this false will make Skungee recommend using the supported Bungeecord protocols and cancel any other inputed protocol.
+# This is handy if you want to make some cool text around your version/ping icon. (Example: https://imgur.com/a/t3EvLye)
+# The image was done by setting the protocol to a version that the client is older than, and then setting the name of the protocol.
+PingEventProtocolOverride: false
 
 # If you have purchased the ServerInstances expansion you will need to enable this so the Syntax can get registered to Skript.
 # This option does nothing without the expansion purchased and installed on the Bungeecord.

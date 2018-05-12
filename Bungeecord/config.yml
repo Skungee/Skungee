@@ -1,7 +1,7 @@
 # Skungee (Bungeecord) - The #1 Skript addon for Bungeecord.
 
 # The version is to help determine which version this configuration is. Please do not modify this value.
-version: "1.0.6"
+version: "1.0.6a"
 
 # This is the main port for the Skungee network system. Skungee will setup this port on this Bungeecord machine.
 # Make sure the port is "port forward" or that you have access to this port to be running, if not change this to an available port.
@@ -106,8 +106,8 @@ Tracker:
 GlobalScripts:
     Enabled: true
 
-# Bungeecord events. This is in BETA and is extremely experimental.
-Events: false
+# Bungeecord events.
+Events: true
 
 # Should Skungee use the UUID's that are incoming from Spigot servers.
 # If you run bungeecord in offline mode for cracked players, it's best to keep this on false.

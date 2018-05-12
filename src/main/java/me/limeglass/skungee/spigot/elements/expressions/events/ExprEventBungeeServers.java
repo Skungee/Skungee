@@ -1,4 +1,4 @@
-package me.limeglass.skungee.spigot.elements.expressions;
+package me.limeglass.skungee.spigot.elements.expressions.events;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,22 +16,36 @@ import me.limeglass.skungee.spigot.utils.annotations.Events;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
-@Name("Bungeecord event players")
-@Description("Returns the Bungeecord player(s) invloved in the event.")
-@Patterns("[(all [[of] the]|the)] event (skungee|bungee[[ ]cord]) player[s]")
+@Name("Bungeecord event servers")
+@Description("Returns the Bungeecord server(s) invloved in the event.")
+@Patterns("[(all [[of] the]|the)] event (skungee|bungee[[ ]cord]) server[s]")
 @ExpressionProperty(ExpressionType.SIMPLE)
-@DetermineSingle("players")
+@DetermineSingle("servers")
 @Events({PlayerDisconnectEvent.class, PlayerSwitchServerEvent.class})
-public class ExprEventBungeePlayers extends SkungeeExpression<Object> {
+public class ExprEventBungeeServers extends SkungeeExpression<String> {
+	
+	//TODO get rid of the other stuff thing ya
 	
 	@Override
-	protected Object[] get(Event event) {
+	protected String[] get(Event event) {
 		try {
-			Method method = event.getClass().getDeclaredMethod("getConverted");
+			Method method = (isSingle()) ? event.getClass().getDeclaredMethod("getServer") : event.getClass().getDeclaredMethod("getServers");
 			if (method == null) return null;
 			method.setAccessible(true);
-			return (Object[]) method.invoke(event);
+			String[] servers = getServers(method.invoke(event));
+			return servers;
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
 		return null;
+	}
+	
+	private String[] getServers(Object servers) {
+		if (servers instanceof String) {
+			return getServers_i((String)servers);
+		}
+		return getServers_i((String[])servers);
+	}
+	
+	private String[] getServers_i(String... servers) {
+		return servers;
 	}
 }
