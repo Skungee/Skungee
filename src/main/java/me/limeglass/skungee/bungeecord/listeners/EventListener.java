@@ -56,7 +56,7 @@ public class EventListener implements Listener {
 	
 	@EventHandler
     public void onPing(ProxyPingEvent event) {
-		if (event.getResponse() != null) {
+		if (event.getResponse() != null && !Skungee.getConfig().getBoolean("DisablePingEvent", false)) {
 			ServerPing ping = event.getResponse();
 			//This will return all the modified ping event-values from all the scripts on every server.
 			//If a script wants the motd to be something but another server wants differently, this will default to the last server as that's not possible. The Bungeecord only has one motd.

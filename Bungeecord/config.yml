@@ -109,6 +109,14 @@ GlobalScripts:
 # Bungeecord events.
 Events: true
 
+# To be honest the "[on] bungee[[ ]cord] [server list] ping" event can be very laggy on your server, if you have a high player database Skungee will be working hard.
+# Everytime a user clicks the "Refresh" button in the multiplayer server list or that lists updates, this event will get called as the client is trying to get the motd.
+# This can add up to be alot of event calls. If you have a high core machine you may not have to worry as Skungee handles most of itself in async threads.
+# But this configuration node also determines the Spigot side Skungee event handler, the event is handled async and Spigot handles it back to the synced thread.
+# So it's up to you, you have been informed about the side effects of using this event, it may also appear slower than normal in the server list for some users.
+# This slowness is something that can't really be changed due to how Skungee has to work with Skript. We have tested on a 1,000 player database which is small, and it kept up.
+DisablePingEvent: false
+
 # Should Skungee use the UUID's that are incoming from Spigot servers.
 # If you run bungeecord in offline mode for cracked players, it's best to keep this on false.
 # If this option is false, only the name of players will be determined.
