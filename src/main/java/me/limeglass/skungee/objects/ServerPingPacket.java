@@ -3,9 +3,7 @@ package me.limeglass.skungee.objects;
 public class ServerPingPacket extends BungeePacket {
 
 	private static final long serialVersionUID = 1374798819485573682L;
-	private String description;
-	private String version;
-	//private Favicon favicon;
+	private String description, version, favicon;
 	//private Players players;
 
 	public ServerPingPacket(Boolean returnable, BungeePacketType type, Object object) {
@@ -44,19 +42,11 @@ public class ServerPingPacket extends BungeePacket {
 		this.version = version;
 	}
 
-	/*public Favicon getFavicon() {
+	public String getFavicon() {
 		return favicon;
 	}
 
-	public void setFavicon(Favicon favicon) {
+	public void setFavicon(String favicon) {
 		this.favicon = favicon;
 	}
-
-	public Players getPingPlayers() {
-		return players;
-	}
-
-	public void setPingPlayers(Players players) {
-		this.players = players;
-	}*/
 }
