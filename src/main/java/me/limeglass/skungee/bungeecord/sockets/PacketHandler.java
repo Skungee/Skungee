@@ -609,6 +609,12 @@ public class PacketHandler {
 					ServerInstancesSockets.send(new ServerInstancesPacket(false, ServerInstancesPacketType.CREATESERVER, packet.getObject(), packet.getSetObject()));
 				}
 				break;
+			case SKUNGEEMESSAGES:
+				if (packet.getObject() == null || packet.getSetObject() == null) return null;
+				String[] messages = (String[]) packet.getObject();
+				String[] channels = (String[]) packet.getSetObject();
+				BungeeSockets.sendAll(new BungeePacket(false, BungeePacketType.SKUNGEEMESSAGES, messages, channels));
+				break;
 			case REDISSERVERS:
 				return RedisBungee.getApi().getAllServers();
 			case REDISSERVERID:

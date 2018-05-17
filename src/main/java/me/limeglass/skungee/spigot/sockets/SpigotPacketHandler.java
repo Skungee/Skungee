@@ -24,6 +24,7 @@ import me.limeglass.skungee.objects.ServerPingPacket;
 import me.limeglass.skungee.objects.events.PingEvent;
 import me.limeglass.skungee.objects.events.PlayerDisconnectEvent;
 import me.limeglass.skungee.objects.events.PlayerSwitchServerEvent;
+import me.limeglass.skungee.objects.events.SkungeeMessageEvent;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -169,6 +170,13 @@ public class SpigotPacketHandler {
 					PingEvent event = new PingEvent((ServerPingPacket) packet);
 					Bukkit.getPluginManager().callEvent(event);
 					return event.getPacket();
+				}
+				break;
+			case SKUNGEEMESSAGES:
+				if (packet.getObject() != null && packet.getSetObject() != null) {
+					for (String channel : (String[])packet.getSetObject()) {
+						Bukkit.getPluginManager().callEvent(new SkungeeMessageEvent(channel, (String[])packet.getObject()));
+					}
 				}
 				break;
 		}
