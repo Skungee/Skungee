@@ -6,12 +6,21 @@ import org.eclipse.jdt.annotation.Nullable;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
+import ch.njol.skript.registrations.EventValues;
+import ch.njol.skript.util.Getter;
 import me.limeglass.skungee.objects.events.SkungeeMessageEvent;
 
 public class EvtSkungeeMessage extends SkriptEvent {
 	
 	static {
-		Events.registerEvent(EvtSkungeeMessage.class, SkungeeMessageEvent.class, "(bungeecord|skungee) message from [channel[s]] %strings%");
+		Events.registerEvent(EvtSkungeeMessage.class, SkungeeMessageEvent.class, "(bungeecord|skungee) message [from [channel[s]] %strings%]");
+		EventValues.registerEventValue(SkungeeMessageEvent.class, String.class, new Getter<String, SkungeeMessageEvent>() {
+			@Override
+			@Nullable
+			public String get(final SkungeeMessageEvent event) {
+				return event.getChannel();
+			}
+		}, 0);
 	}
 	
 	@Nullable
@@ -20,7 +29,7 @@ public class EvtSkungeeMessage extends SkriptEvent {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Literal<?>[] args, int matchedPattern, ParseResult parseResult) {
-		if (args == null || args.length <= 0) return false;
+		if (args == null || args.length == 0) return true;
 		channels = (Literal<String>) args[0];
 		return true;
 	}
@@ -31,7 +40,7 @@ public class EvtSkungeeMessage extends SkriptEvent {
 	}
 
 	public boolean check(Event event) {
-		if (channels == null || channels.getSingle(event) == null) return false;
+		if (channels == null || channels.getSingle(event) == null) return true;
 		for (String channel : channels.getArray()) {
 			if (((SkungeeMessageEvent)event).getChannel().equals(channel)) return true;
 		}
