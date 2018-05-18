@@ -51,10 +51,10 @@ public class Skungee extends Plugin {
 		encryption = new EncryptionUtil(this, false);
 		encryption.hashFile();
 		metrics = new BungecordMetrics(this);
-		metrics.addCustomChart(new BungecordMetrics.SimplePie("amount_of_plugins") {
+		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_plugins") {
 			@Override
-			public String getValue() {
-				return getProxy().getPluginManager().getPlugins().size() + "";
+			public int getValue() {
+				return getProxy().getPluginManager().getPlugins().size();
 			}
 		});
 		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_network_variables") {
@@ -85,9 +85,9 @@ public class Skungee extends Plugin {
 			if (!config.exists()) Files.copy(in, config.toPath());
 			Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(config);
 			if (!getDescription().getVersion().equals(configuration.getString("version"))) {
-				consoleMessage("&eThere is a new Skungee version. Generating new config...");
 				Files.delete(config.toPath());
 				loadConfiguration();
+				consoleMessage("&eThere is a new Skungee version. Generating new config...");
 				return;
 			}
 			addConfiguration("config", configuration);

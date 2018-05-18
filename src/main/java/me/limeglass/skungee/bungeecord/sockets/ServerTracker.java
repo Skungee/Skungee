@@ -84,11 +84,19 @@ public class ServerTracker {
 		}
 	}
 	
-	public static void globalScripts(ConnectedServer server) {
+	private static void globalScripts(ConnectedServer server) {
 		if (Skungee.getConfig().getBoolean("GlobalScripts.Enabled", true) && Skungee.getInstance().getScriptsFolder().listFiles().length > 0) {
 			Map<String, List<String>> data = new HashMap<String, List<String>>();
-			for (File script : Skungee.getInstance().getScriptsFolder().listFiles()) {
+			file : for (File script : Skungee.getInstance().getScriptsFolder().listFiles()) {
 				try {
+					if (script.isDirectory()) {
+						if (script.getName().equalsIgnoreCase(server.getName())) {
+							for (File directory : script.listFiles()) {
+								data.put(directory.getName(), Files.readAllLines(directory.toPath(), Charset.defaultCharset()));
+							}
+						}
+						continue file;
+					}
 					data.put(script.getName(), Files.readAllLines(script.toPath(), Charset.defaultCharset()));
 				} catch (IOException e) {
 					e.printStackTrace();
