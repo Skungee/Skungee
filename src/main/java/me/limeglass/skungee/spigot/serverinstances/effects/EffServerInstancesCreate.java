@@ -15,7 +15,7 @@ import org.bukkit.event.Event;
 
 @Name("ServerInstances - Create server")
 @Description("Creates a new server on the Bungeecord proxy based off your templates installed. Tutorial within the expansion.")
-@Patterns("(start|create) [a] [new] [bungee[[ ]cord]]] server[s] named %strings% (with|from) template %string% [with %-number% xmx [ram] [and] [with] %-number% xms [ram]]")
+@Patterns("(start|create) [a] [new] [bungee[[ ]cord]]] server[s] [named] %strings% (with|from) template %string% [with %-number% xmx [ram] [and] [with] %-number% xms [ram]]")
 public class EffServerInstancesCreate extends SkungeeEffect {
 
 	@Override

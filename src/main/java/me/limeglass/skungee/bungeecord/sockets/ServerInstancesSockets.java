@@ -82,6 +82,7 @@ public class ServerInstancesSockets {
 			} else {
 				objectOutputStream.writeObject(packet);
 			}
+			//NOTE: There is a bug where if a ServerInstances server stays in the config.yml of Bungeecord this can error, strange stuff.
 			ObjectInputStream objectInputStream = new ObjectInputStream(bootstrap.getInputStream());
 			if (packet.isReturnable()) {
 				if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {

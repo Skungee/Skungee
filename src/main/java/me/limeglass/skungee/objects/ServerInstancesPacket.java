@@ -11,6 +11,11 @@ public class ServerInstancesPacket implements Serializable {
 	private Object settable, object;
 	private byte[] password;
 
+	public ServerInstancesPacket(Boolean returnable, ServerInstancesPacketType type) {
+		this.returnable = returnable;
+		this.type = type;
+	}
+	
 	public ServerInstancesPacket(Boolean returnable, ServerInstancesPacketType type, Object object) {
 		this.returnable = returnable;
 		this.object = object;

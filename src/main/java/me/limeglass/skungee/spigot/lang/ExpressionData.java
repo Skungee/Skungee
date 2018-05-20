@@ -92,7 +92,7 @@ public class ExpressionData {
 	*/
 	@Nullable
 	public Expression<?> get(int index) {
-		if (expressions[index] == null) return null;
+		if (index > expressions.length) return null;
 		return expressions[index];
 	}
 	

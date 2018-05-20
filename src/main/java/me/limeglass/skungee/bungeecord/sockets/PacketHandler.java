@@ -7,6 +7,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -40,9 +41,12 @@ import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.plugin.PluginManager;
 
 public class PacketHandler {
 	
@@ -126,14 +130,14 @@ public class PacketHandler {
 				}
 				break;
 			case ACTIONBAR:
-				if (!players.isEmpty()) {
+				if (!players.isEmpty() && packet.getObject() != null) {
 					for (ProxiedPlayer player : players) {
 						player.sendMessage(ChatMessageType.ACTION_BAR, new TextComponent((String) packet.getObject()));
 					}
 				}
 				break;
 			case PLAYERCHAT:
-				if (!players.isEmpty()) {
+				if (!players.isEmpty() && packet.getObject() != null) {
 					for (ProxiedPlayer player : players) {
 						for (String msg : (String[]) packet.getObject()) {
 							player.chat(ChatColor.stripColor(msg));
@@ -175,7 +179,7 @@ public class PacketHandler {
 				}
 				break;
 			case MESSAGEPLAYER:
-				if (!players.isEmpty()) {
+				if (!players.isEmpty() && packet.getObject() != null) {
 					for (ProxiedPlayer player : players) {
 						for (String msg : (String[]) packet.getObject()) {
 							player.sendMessage(new TextComponent(msg));
@@ -184,7 +188,7 @@ public class PacketHandler {
 				}
 				break;
 			case CONNECTPLAYER:
-				if (!players.isEmpty()) {
+				if (!players.isEmpty() && packet.getObject() != null) {
 					for (ProxiedPlayer player : players) {
 						ServerInfo serverinfo = ProxyServer.getInstance().getServerInfo((String) packet.getObject());
 						if (serverinfo != null) player.connect(serverinfo);
@@ -487,7 +491,7 @@ public class PacketHandler {
 					return reconnected;
 				}
 				break;
-			case PLAYERPERMISSIONS:
+			case PLAYERHASPERMISSIONS:
 				if (packet.getObject() != null && players != null) {
 					if (players.isEmpty()) return false;
 					for (String permission : (String[]) packet.getObject()) {
@@ -510,7 +514,7 @@ public class PacketHandler {
 				break;
 			case PLAYERCOMMAND:
 				Set<Boolean> registered = new HashSet<Boolean>();
-				if (!players.isEmpty()) {
+				if (!players.isEmpty() && packet.getObject() != null) {
 					for (ProxiedPlayer player : players) {
 						for (String command : (String[]) packet.getObject()) {
 							registered.add(ProxyServer.getInstance().getPluginManager().dispatchCommand(player, command));
@@ -615,6 +619,147 @@ public class PacketHandler {
 				String[] channels = (String[]) packet.getSetObject();
 				BungeeSockets.sendAll(new BungeePacket(false, BungeePacketType.SKUNGEEMESSAGES, messages, channels));
 				break;
+			case TABHEADERFOOTER:
+				if (!players.isEmpty() && packet.getObject() != null) {
+					BaseComponent component = new TextComponent();
+					for (String text : (String[]) packet.getObject()) {
+						component.addExtra(text);
+					}
+					for (ProxiedPlayer player : players) {
+						if (player != null) {
+							if (packet.getSetObject() instanceof Integer) {
+								int pattern = (int) packet.getSetObject();
+								if (pattern == 1) player.setTabHeader(component, new TextComponent());
+								else if (pattern == 2) player.setTabHeader(new TextComponent(), component);
+								else player.setTabHeader(component, component);
+							} else {
+								BaseComponent secondary = new TextComponent();
+								for (String text : (String[]) packet.getSetObject()) {
+									secondary.addExtra(text);
+								}
+								player.setTabHeader(component, secondary);
+							}
+						}
+					}
+				}
+				break;
+			case PLAYERPERMISSIONS:
+				if (!players.isEmpty()) {
+					if (packet.getObject() != null && packet.getChangeMode() != null) {
+						Set<String> permissions = new HashSet<String>();
+						for (Object object : (Object[]) packet.getObject()) {
+							if (object instanceof String) {
+								permissions.add((String)object);
+							}
+						}
+						for (ProxiedPlayer player : players) {
+							switch (packet.getChangeMode()) {
+								case SET:
+									for (String permission : player.getPermissions()) {
+										player.setPermission(permission, false);
+									}
+								case ADD:
+									for (String permission : permissions) {
+										player.setPermission(permission, true);
+									}
+									break;
+								case RESET:
+								case DELETE:
+									for (String permission : player.getPermissions()) {
+										player.setPermission(permission, false);
+									}
+									break;
+								case REMOVE:
+								case REMOVE_ALL:
+									for (String permission : permissions) {
+										player.setPermission(permission, false);
+									}
+									break;
+							}
+						}
+						break;
+					}
+					Set<String> permissions = new HashSet<String>();
+					for (ProxiedPlayer player : players) {
+						permissions.addAll(player.getPermissions());
+					}
+					return permissions;
+				}
+				break;
+			case PLAYERGROUPS:
+				if (!players.isEmpty()) {
+					if (packet.getObject() != null && packet.getChangeMode() != null) {
+						String[] groups = new String[((Object[])packet.getObject()).length];
+						int i = 0;
+						for (Object object : (Object[]) packet.getObject()) {
+							if (object instanceof String) {
+								groups[i] = (String) object;
+							}
+						}
+						for (ProxiedPlayer player : players) {
+							Collection<String> playerGroups = player.getGroups();
+							switch (packet.getChangeMode()) {
+								case SET:
+									player.removeGroups(playerGroups.toArray(new String[playerGroups.size()]));
+								case ADD:
+									player.addGroups(groups);
+									break;
+								case RESET:
+								case DELETE:
+									player.removeGroups(playerGroups.toArray(new String[playerGroups.size()]));
+									break;
+								case REMOVE:
+								case REMOVE_ALL:
+									player.removeGroups(groups);
+									break;
+							}
+						}
+						break;
+					}
+					Set<String> groups = new HashSet<String>();
+					for (ProxiedPlayer player : players) {
+						groups.addAll(player.getGroups());
+					}
+					return groups;
+				}
+				break;
+			case UNREGISTERCOMMANDS:
+				if (packet.getObject() != null) {
+					for (String name : (String[])packet.getObject()) {
+						PluginManager manager = ProxyServer.getInstance().getPluginManager();
+						Plugin plugin = manager.getPlugin(name);
+						if (plugin != null && !name.equalsIgnoreCase("skungee")) manager.unregisterCommands(plugin);
+					}
+				}
+				break;
+			case UNREGISTERLISTENERS:
+				if (packet.getObject() != null) {
+					for (String name : (String[])packet.getObject()) {
+						PluginManager manager = ProxyServer.getInstance().getPluginManager();
+						Plugin plugin = manager.getPlugin(name);
+						if (plugin != null && !name.equalsIgnoreCase("skungee")) manager.unregisterListeners(plugin);
+					}
+				}
+				break;
+			case SHUTDOWNSERVER:
+				if (packet.getObject() != null) {
+					ServerInstancesPacket unload = new ServerInstancesPacket(false, ServerInstancesPacketType.SHUTDOWN, (String[]) packet.getObject());
+					if (packet.getSetObject() != null) unload = new ServerInstancesPacket(false, ServerInstancesPacketType.SHUTDOWN, packet.getObject(), packet.getSetObject());
+					ServerInstancesSockets.send(unload);
+					BungeePacket shutdown = new BungeePacket(false, BungeePacketType.SHUTDOWN);
+					for (String server : (String[]) packet.getObject()) {
+						BungeeSockets.send(shutdown, ServerTracker.get(server));
+					}
+				}
+				break;
+			case ENABLEPLUGINS:
+				ProxyServer.getInstance().getPluginManager().enablePlugins();
+				break;
+			case SERVERINSTANCES:
+				return ServerInstancesSockets.send(new ServerInstancesPacket(true, ServerInstancesPacketType.SERVERINSTANCES));
+			case LOADPLUGINS:
+				ProxyServer.getInstance().getPluginManager().loadPlugins();
+				break;
 			case REDISSERVERS:
 				return RedisBungee.getApi().getAllServers();
 			case REDISSERVERID:
@@ -637,9 +782,6 @@ public class PacketHandler {
 				return ProxyServer.getInstance().getConfig().getTimeout();
 			case BUNGEEONLINEMODE:
 				return ProxyServer.getInstance().getConfig().isOnlineMode();
-			case SHUTDOWNSERVER:
-				//TODO
-				break;
 		}
 		return null;
 	}

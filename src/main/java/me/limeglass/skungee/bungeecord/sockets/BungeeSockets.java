@@ -109,10 +109,12 @@ public class BungeeSockets {
 				StringBuilder builder = new StringBuilder();
 				Boolean found = false;
 				for (ConnectedServer server : servers) {
-					builder.append(server.getName() + "-" + server.getAddress() + ":" + server.getPort());
-					if (server != null && packet != null) {
-						found = true;
-						send(server, packet);
+					if (server != null) {
+						builder.append(server.getName() + "-" + server.getAddress() + ":" + server.getPort());
+						if (server != null && packet != null) {
+							found = true;
+							send(server, packet);
+						}
 					}
 				}
 				if (!found) Skungee.debugMessage("Could not find servers by the names: " + builder.toString());

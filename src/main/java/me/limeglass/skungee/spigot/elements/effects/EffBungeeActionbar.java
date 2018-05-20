@@ -12,9 +12,9 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 import org.bukkit.event.Event;
 
-@Name("Actionbar")
+@Name("Bungeecord Actionbar")
 @Description("Send a actionbar message to anyone on the Bungeecord network.")
-@Patterns("[skungee] (send|display|show) [a[n]] action[ ]bar [with [(text|message)]] %string% to bungee[[ ]cord] [(player|uuid)] %strings/players%")
+@Patterns("[skungee] (send|display|show) [a[n]] action[ ]bar [with [(text|message)]] %string% to bungee[[ ]cord] [(player|uuid)[s]] %strings/players%")
 public class EffBungeeActionbar extends SkungeeEffect {
 
 	@Override
