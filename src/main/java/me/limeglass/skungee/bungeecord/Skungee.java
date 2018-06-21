@@ -255,10 +255,6 @@ public class Skungee extends Plugin {
 	}
 }
 /*
-Fixed the DISCONNECT packet not being sent on some systems.
-
-Fixed Events! Events now work and the most important events are added. Working on adding more.
-
 TODO:
 
 Added title stuff:

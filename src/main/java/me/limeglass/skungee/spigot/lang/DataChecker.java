@@ -29,8 +29,7 @@ public interface DataChecker {
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public default <T> Boolean isNull(Event event, ExpressionData expressions, Class<T>... types) {
+	public default <T> Boolean isNull(Event event, ExpressionData expressions, @SuppressWarnings("unchecked") Class<T>... types) {
 		Map<Expression<?>, T[]> map = expressions.getAllMapOf(event, types);
 		if (map == null || map.isEmpty()) return true;
 		for (Entry<Expression<?>, T[]> entry : map.entrySet()) {

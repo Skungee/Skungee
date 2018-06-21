@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -18,6 +19,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import me.limeglass.skungee.objects.SkungeePacket;
 import net.md_5.bungee.api.ProxyServer;
 import me.limeglass.skungee.bungeecord.Skungee;
+import me.limeglass.skungee.bungeecord.packetmanager.SkungeeHandlerPacket;
 
 public class SocketRunnable implements Runnable {
 
@@ -78,7 +80,12 @@ public class SocketRunnable implements Runnable {
 					incorrectPassword(packet);
 					return;
 				}
-				Object packetData = PacketHandler.handlePacket(packet, socket.getInetAddress());
+				Optional<SkungeeHandlerPacket> handler = SkungeeHandlerPacket.getPacket(packet.getType());
+				Object packetData;
+				if (handler.isPresent()) {
+					packetData = handler.get().handlePacket(packet, address);
+				}
+				packetData = PacketHandler.handlePacket(packet, socket.getInetAddress());
 				if (packetData != null) {
 					//TODO Add cipher encryption + change config message.
 					if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {

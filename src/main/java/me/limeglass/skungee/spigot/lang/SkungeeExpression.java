@@ -88,7 +88,7 @@ public abstract class SkungeeExpression<T> extends SimpleExpression<T> implement
 		return (Arrays.asList(getClass().getAnnotation(Changers.class).value()).contains(mode)) ? returnable : null;
 	}
 	
-	public <V> Boolean isNull(Event event, Class<?>... types) {
+	public Boolean isNull(Event event, @SuppressWarnings("unchecked") Class<T>... types) {
 		return isNull(event, expressions, types);
 	}
 	

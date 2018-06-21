@@ -127,6 +127,14 @@ public class SkungeePacket implements Serializable {
 		this.settable = settable;
 	}
 	
+	public Boolean objectsAreNull() {
+		return object == null && settable == null;
+	}
+	
+	public Boolean eitherObjectsAreNull() {
+		return object == null || settable == null;
+	}
+	
 	public SkungeePacketType getType() {
 		return type;
 	}

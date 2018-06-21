@@ -113,7 +113,7 @@ public abstract class SkungeeSection extends Condition implements DataChecker {
 		return Skungee.getNameplate() + getClass().getSimpleName() + "- Syntax: " + Arrays.toString(getSyntax());
 	}
 	
-	public <V> Boolean isNull(Event event, Class<?>... types) {
+	public <T> Boolean isNull(Event event, @SuppressWarnings("unchecked") Class<T>... types) {
 		return isNull(event, expressions, types);
 	}
 

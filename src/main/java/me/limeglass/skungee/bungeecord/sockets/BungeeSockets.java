@@ -111,7 +111,7 @@ public class BungeeSockets {
 				for (ConnectedServer server : servers) {
 					if (server != null) {
 						builder.append(server.getName() + "-" + server.getAddress() + ":" + server.getPort());
-						if (server != null && packet != null) {
+						if (packet != null) {
 							found = true;
 							send(server, packet);
 						}
