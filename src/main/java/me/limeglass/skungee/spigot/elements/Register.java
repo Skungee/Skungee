@@ -1,17 +1,6 @@
 package me.limeglass.skungee.spigot.elements;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import org.bukkit.plugin.java.JavaPlugin;
 import ch.njol.skript.Skript;
 import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Condition;
@@ -22,34 +11,15 @@ import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.Metrics;
 import me.limeglass.skungee.spigot.Syntax;
 import me.limeglass.skungee.spigot.utils.EnumClassInfo;
+import me.limeglass.skungee.spigot.utils.ReflectionUtil;
 import me.limeglass.skungee.spigot.utils.TypeClassInfo;
 import me.limeglass.skungee.spigot.utils.annotations.*;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class Register {
 	
-	private static Set<Class<?>> classes = new HashSet<>();
-	private static JarFile addon;
-	
 	static {
-		try {
-			Method method = JavaPlugin.class.getDeclaredMethod("getFile");
-			method.setAccessible(true);
-			File file = (File) method.invoke(Skungee.getInstance());
-			addon = new JarFile(file);
-			for (Enumeration<JarEntry> jarEntry = addon.entries(); jarEntry.hasMoreElements();) {
-				String name = jarEntry.nextElement().getName().replace("/", ".");
-				String className = name.substring(0, name.length() - 6);
-				className = className.replace('/', '.');
-				if (name.startsWith(Skungee.getInstance().getPackageName()) && name.endsWith(".class")) {
-					classes.add(Class.forName(className));
-				}
-			}
-			addon.close();
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException | ClassNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		run : for (Class clazz : classes) {
+		run : for (Class clazz : ReflectionUtil.getClasses(Skungee.getInstance(), Skungee.getInstance().getPackageName())) {
 			if (clazz.getName().contains("serverinstances") && !Skungee.getConfiguration("config").getBoolean("ServerInstances", false)) continue run;
 			if (!clazz.isAnnotationPresent(Disabled.class)) {
 				String[] syntax = null;

@@ -114,7 +114,6 @@ public class PacketHandler {
 				} catch (SocketException exception) {
 					Skungee.exception(exception, "Could not find the system's local host.");
 				}
-				Skungee.debugMessage("Wattttttttttttt");
 				break;
 			case HEARTBEAT:
 				Integer fromPort = (Integer) packet.getObject();
@@ -785,8 +784,6 @@ public class PacketHandler {
 				return ProxyServer.getInstance().getConfig().isOnlineMode();
 			case CUSTOM:
 				break;
-		default:
-			break;
 		}
 		return null;
 	}

@@ -1,45 +1,43 @@
-package me.limeglass.skungee.bungeecord.packetmanager;
+package me.limeglass.skungee.bungeecord.handler;
 
 import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Optional;
-
-import org.reflections.Reflections;
 
 import java.util.Set;
 import com.google.common.reflect.Reflection;
 
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.bungeecord.Skungee;
+import me.limeglass.skungee.spigot.utils.ReflectionUtil;
 
-public abstract class SkungeeHandlerPacket {
-
-	protected static Set<SkungeeHandlerPacket> registered = new HashSet<SkungeeHandlerPacket>();
+public abstract class SkungeeHandler {
+	
+	protected static Set<SkungeeHandler> registered = new HashSet<SkungeeHandler>();
 	protected SkungeePacketType type = SkungeePacketType.CUSTOM;
 	protected String name;
 	
-	protected static void registerPacket(SkungeeHandlerPacket packet, String name) {
+	protected static void registerPacket(SkungeeHandler packet, String name) {
 		packet.setName(name);
 		if (!registered.contains(packet)) registered.add(packet);
 	}
 	
-	protected static void registerPacket(SkungeeHandlerPacket packet, SkungeePacketType type) {
+	protected static void registerPacket(SkungeeHandler packet, SkungeePacketType type) {
 		packet.setType(type);
 		registerPacket(packet, type.name());
 	}
 	
 	public static void load() {
-		Reflections reflections = new Reflections(Skungee.getInstance().getPackageName());
-		Set<Class<? extends SkungeeHandlerPacket>> classes = reflections.getSubTypesOf(SkungeeHandlerPacket.class);
+		Set<Class<? extends SkungeeHandler>> classes = ReflectionUtil.getSubTypesOf(Skungee.getInstance(), SkungeeHandler.class, "me.limeglass.skungee.bungeecord.handler");
 		Reflection.initialize(classes.toArray(new Class[classes.size()]));
 	}
 	
-	public static Optional<SkungeeHandlerPacket> getPacket(SkungeePacketType type) {
+	public static Optional<SkungeeHandler> getPacket(SkungeePacketType type) {
 		return registered.parallelStream().filter(packet -> packet.getType() == type).findFirst();
 	}
 	
-	public static Optional<SkungeeHandlerPacket> getPacket(String name) {
+	public static Optional<SkungeeHandler> getPacket(String name) {
 		return registered.parallelStream().filter(packet -> packet.getName().equals(name)).findFirst();
 	}
 	

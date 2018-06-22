@@ -1,9 +1,9 @@
-package me.limeglass.skungee.bungeecord.packetmanager;
+package me.limeglass.skungee.bungeecord.handler;
 
 import java.net.InetAddress;
 import me.limeglass.skungee.objects.SkungeePacket;
 
-public abstract class SkungeeExecutePacket extends SkungeeHandlerPacket {
+public abstract class SkungeeExecutor extends SkungeeHandler {
 	
 	public abstract void executePacket(SkungeePacket packet, InetAddress address);
 

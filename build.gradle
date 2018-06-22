@@ -12,10 +12,6 @@ repositories {
     mavenCentral()
     jcenter()
     
-    maven {
-        url "https://jitpack.io"
-    }
-    
     //Spigot
     maven {
         url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
@@ -43,9 +39,6 @@ dependencies {
     api (group: 'ch.njol', name: 'skript', version: '2.2-dev32') {
         transitive = false
 	}
-	
-	//Reflections
-    shade 'org.reflections:reflections:0.9.11'
 	
 	//Nullable annotation
 	compile (group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '1.1.0')

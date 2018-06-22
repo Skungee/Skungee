@@ -15,8 +15,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
+import me.limeglass.skungee.bungeecord.handler.SkungeeHandler;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
-import me.limeglass.skungee.bungeecord.packetmanager.SkungeeHandlerPacket;
 import me.limeglass.skungee.bungeecord.serverinstances.Premium;
 import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
 import me.limeglass.skungee.bungeecord.sockets.SocketRunnable;
@@ -51,7 +51,7 @@ public class Skungee extends Plugin {
 		Premium.check();
 		encryption = new EncryptionUtil(this, false);
 		encryption.hashFile();
-		SkungeeHandlerPacket.load();
+		SkungeeHandler.load();
 		metrics = new BungecordMetrics(this);
 		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_plugins") {
 			@Override

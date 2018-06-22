@@ -3,7 +3,7 @@
 # The version is to help determine which version this config is. Please don't modify this value.
 version: "1.0.7-SNAPSHOT"
 
-# Print additional information in the console. The developers of FunkySk may ask you to enable this when reporting an error.
+# Print additional information in the console. The developers of Skungee may ask you to enable this when reporting an error.
 debug: false
 
 # Ignores the packets that spam alot such as GLOBALSCRIPTS and HEARTBEAT in the debug.
@@ -102,7 +102,7 @@ NotRegisteredSyntax: false
 # Converts the Enum's into proper english enums like `FADE_TYPE` will be `fade type` or `fading type` as defined in the english.lang of the jar. (Which can be edited, they parent aliases parsing)
 UseEnglishEnums: true
 
-# Disables the message saying FunkySk was enabled.
+# Disables the message saying the addon was enabled.
 DisableRegisteredInfo: false
 
 # Disables all messages to the console. Only important stack traces and information logger will be sent.
@@ -116,7 +116,7 @@ DisableConsoleColour: false
 GlobalScriptMessages: true
 
 # Should Skungee return all players as a UUID to the spigot servers.
-# If you run a cracked offline Bungeecord network, it is best to keep this off then.
+# If you run a cracked offline Bungeecord network, it is best to keep this false.
 ReturnUUIDs: true
 
 # When a player is returned from Bungeecord it can't be a Player or ProxiedPlayer because for the Player class, the
@@ -135,6 +135,7 @@ SkungeeReturn: "string"
 SkungeeReturnUUID: true
 
 # If a syntax returns a number that can be parsed as a timespan, should Skungee convert it into a Timespan?
+# Example: '5 minutes and 27 seconds'
 Timespans: true
 
 # Reciever, this will allow for some syntax to work. Like "evaluate", "server is online", "global scripts" and "network variables".
