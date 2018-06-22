@@ -8,7 +8,6 @@ import me.limeglass.skungee.objects.BungeePacket;
 import me.limeglass.skungee.objects.BungeePacketType;
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
-import me.limeglass.skungee.bungeecord.Skungee;
 
 public class SkungeeMessageHandler extends SkungeeExecutor {
 	
@@ -18,7 +17,6 @@ public class SkungeeMessageHandler extends SkungeeExecutor {
 
 	@Override
 	public void executePacket(SkungeePacket packet, InetAddress address) {
-		Skungee.consoleMessage("this works!");
 		if (packet.eitherObjectsAreNull()) return;
 		String[] messages = (String[]) packet.getObject();
 		String[] channels = (String[]) packet.getSetObject();
