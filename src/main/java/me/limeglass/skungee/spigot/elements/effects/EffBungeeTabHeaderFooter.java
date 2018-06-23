@@ -9,6 +9,7 @@ import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
+
 import org.bukkit.event.Event;
 
 @Name("Bungeecord tablist header and footer")

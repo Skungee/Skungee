@@ -13,13 +13,16 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
 
+import com.google.common.reflect.Reflection;
+
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
-import me.limeglass.skungee.bungeecord.handler.SkungeeHandler;
+import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
 import me.limeglass.skungee.bungeecord.serverinstances.Premium;
 import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
 import me.limeglass.skungee.bungeecord.sockets.SocketRunnable;
+import me.limeglass.skungee.bungeecord.utils.BungeeReflectionUtil;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -51,7 +54,10 @@ public class Skungee extends Plugin {
 		Premium.check();
 		encryption = new EncryptionUtil(this, false);
 		encryption.hashFile();
-		SkungeeHandler.load();
+		//load handlers
+		Set<Class<? extends SkungeeHandler>> classes = BungeeReflectionUtil.getSubTypesOf(Skungee.getInstance(), SkungeeHandler.class, "me.limeglass.skungee.bungeecord.handler");
+		Reflection.initialize(classes.toArray(new Class[classes.size()]));
+		
 		metrics = new BungecordMetrics(this);
 		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_plugins") {
 			@Override

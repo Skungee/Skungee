@@ -19,7 +19,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import me.limeglass.skungee.objects.SkungeePacket;
 import net.md_5.bungee.api.ProxyServer;
 import me.limeglass.skungee.bungeecord.Skungee;
-import me.limeglass.skungee.bungeecord.handler.SkungeeHandler;
+import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
 
 public class SocketRunnable implements Runnable {
 
@@ -80,10 +80,10 @@ public class SocketRunnable implements Runnable {
 					incorrectPassword(packet);
 					return;
 				}
-				Optional<SkungeeHandler> handler = SkungeeHandler.getPacket(packet.getType());
+				Optional<SkungeeHandler> handler = SkungeeHandler.getHandler(packet.getType());
 				Object packetData;
 				if (handler.isPresent()) {
-					packetData = handler.get().handlePacket(packet, address);
+					packetData = handler.get().callPacket(packet, address);
 				} else {
 					packetData = PacketHandler.handlePacket(packet, socket.getInetAddress());
 				}

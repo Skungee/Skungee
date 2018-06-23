@@ -78,7 +78,7 @@ public class Sockets {
 					restart = true;
 				} else {
 					for (int i = 0; i < 10; i++) {
-						String state = (String) send(new SkungeePacket(true, SkungeePacketType.PING, data));
+						String state = (String) send(new SkungeePacket(true, SkungeePacketType.HANDSHAKE, data));
 						if (state != null && state.equals("CONNECTED")) {
 							isConnected = true;
 							Skungee.consoleMessage("Successfully connected to the Bungeecord Skungee.");
@@ -103,7 +103,7 @@ public class Sockets {
 	}
 
 	public static Object send(SkungeePacket packet) {
-		if (packet.isReturnable()) return (isConnected) ? send_i(packet) : (packet.getType() == SkungeePacketType.PING) ? send_i(packet) : null;
+		if (packet.isReturnable()) return (isConnected) ? send_i(packet) : (packet.getType() == SkungeePacketType.HANDSHAKE) ? send_i(packet) : null;
 		if (Skungee.getInstance().getConfig().getBoolean("Queue.enabled", true)) {
 			PacketQueue.queue(packet);
 		} else {

@@ -18,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import io.netty.channel.Channel;
-import net.md_5.bungee.api.plugin.Plugin;
 
 public class ReflectionUtil {
 	
@@ -87,28 +86,10 @@ public class ReflectionUtil {
 		return null;
 	}
 	
-	public static Set<Class<?>> getClasses(Plugin instance, String... packages) {
-		try {
-			JarFile jar = new JarFile(instance.getFile());
-			return getClasses(jar, packages);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	public static Object getConnection(Player player) throws SecurityException, NoSuchMethodException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Object nmsPlayer = getHandle(player);
 		Field connectionField = nmsPlayer.getClass().getField("playerConnection");
 		return connectionField.get(nmsPlayer);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T> Set<Class<? extends T>> getSubTypesOf(Plugin instance, Class<T> of, String... packages) {
-		return getClasses(instance, packages).parallelStream()
-			.filter(clazz -> clazz.isAssignableFrom(of))
-			.map(clazz -> (Class<? extends T>)clazz)
-			.collect(Collectors.toSet());
 	}
 	
 	@SuppressWarnings("unchecked")

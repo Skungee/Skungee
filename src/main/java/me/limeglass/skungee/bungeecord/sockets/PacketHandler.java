@@ -1,15 +1,9 @@
 package me.limeglass.skungee.bungeecord.sockets;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +44,6 @@ import net.md_5.bungee.api.plugin.PluginManager;
 
 public class PacketHandler {
 	
-	//TODO Possible cleanup and place this into an abstract with different packet classes.
-	
 	@SuppressWarnings("deprecation")
 	public static Object handlePacket(SkungeePacket packet, InetAddress address) {
 		if (!Skungee.getConfig().getBoolean("IgnoreSpamPackets", true)) {
@@ -76,58 +68,9 @@ public class PacketHandler {
 		}
 		Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
 		switch (packet.getType()) {
-			case PING:
-				@SuppressWarnings("unchecked")
-				ArrayList<Object> data = (ArrayList<Object>) packet.getObject();
-				Boolean usingReciever = (Boolean) data.get(0);
-				Integer recieverPort = (Integer) data.get(1);
-				Integer port = (Integer) data.get(2);
-				@SuppressWarnings("unchecked")
-				Set<SkungeePlayer> whitelisted = (Set<SkungeePlayer>) data.get(3);
-				Integer heartbeat = (Integer) data.get(4);
-				String motd = (String) data.get(5);
-				Integer max = (Integer) data.get(6);
-				try {
-					for (Entry<String, ServerInfo> server : servers.entrySet()) {
-						String serverAddress = server.getValue().getAddress().getAddress().getHostAddress();
-						for (Enumeration<NetworkInterface> entry = NetworkInterface.getNetworkInterfaces(); entry.hasMoreElements();) {
-							for (Enumeration<InetAddress> addresses = entry.nextElement().getInetAddresses(); addresses.hasMoreElements();) {
-								if (addresses.nextElement().getHostAddress().equals(serverAddress) && port == server.getValue().getAddress().getPort()) {
-									ConnectedServer connect = new ConnectedServer(usingReciever, recieverPort, port, address, heartbeat, server.getKey(), motd, max, whitelisted);
-									if (!ServerTracker.contains(connect)) {
-										ServerTracker.add(connect);
-										ServerTracker.update(server.getKey());
-										return "CONNECTED";
-									}
-								}
-							}
-						}
-						if (serverAddress.equals(address.getHostAddress()) && port == server.getValue().getAddress().getPort()) {
-							ConnectedServer connect = new ConnectedServer(usingReciever, recieverPort, port, address, heartbeat, server.getKey(), motd, max, whitelisted);
-							if (!ServerTracker.contains(connect)) {
-								ServerTracker.add(connect);
-								ServerTracker.update(server.getKey());
-								return "CONNECTED";
-							}
-						}
-					}
-				} catch (SocketException exception) {
-					Skungee.exception(exception, "Could not find the system's local host.");
-				}
+			case HANDSHAKE:
 				break;
 			case HEARTBEAT:
-				Integer fromPort = (Integer) packet.getObject();
-				if (fromPort != null) {
-					for (Entry<String, ServerInfo> s : servers.entrySet()) {
-						try {
-							if (s.getValue().getAddress().equals(new InetSocketAddress(address, fromPort)) || Inet4Address.getLocalHost().getHostAddress().equals(new InetSocketAddress(address, fromPort).getAddress().getHostAddress())) {
-								return ServerTracker.update(s.getKey());
-							}
-						} catch (UnknownHostException e) {
-							Skungee.exception(e, "Unknown host");
-						}
-					}
-				}
 				break;
 			case ACTIONBAR:
 				if (!players.isEmpty() && packet.getObject() != null) {
