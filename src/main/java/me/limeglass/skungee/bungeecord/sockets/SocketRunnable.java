@@ -20,6 +20,7 @@ import me.limeglass.skungee.objects.SkungeePacket;
 import net.md_5.bungee.api.ProxyServer;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
+import me.limeglass.skungee.bungeecord.handlers.PacketHandler;
 
 public class SocketRunnable implements Runnable {
 

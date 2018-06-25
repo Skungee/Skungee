@@ -14,5 +14,5 @@ public abstract class SkungeeExecutor extends SkungeeHandler {
 	}
 	
 	@Override
-	public void onPacketCall(SkungeePacket packet, InetAddress address) {}
+	public Boolean onPacketCall(SkungeePacket packet, InetAddress address) {return true;}
 }

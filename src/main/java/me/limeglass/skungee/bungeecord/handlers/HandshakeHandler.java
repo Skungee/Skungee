@@ -18,8 +18,6 @@ import me.limeglass.skungee.objects.SkungeePlayer;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class HandshakeHandler extends SkungeeBungeeHandler {
-	
-	private static final long serialVersionUID = 6313562508528002437L;
 
 	static {
 		registerPacket(new HandshakeHandler(), SkungeePacketType.HANDSHAKE);

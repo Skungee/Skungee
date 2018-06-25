@@ -15,8 +15,6 @@ import net.md_5.bungee.api.config.ServerInfo;
 
 public class HeartbeatHandler extends SkungeeBungeeHandler {
 
-	private static final long serialVersionUID = -8809677764652270465L;
-
 	static {
 		registerPacket(new HeartbeatHandler(), SkungeePacketType.HEARTBEAT);
 	}

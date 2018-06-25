@@ -18,7 +18,7 @@ public abstract class SkungeePlayerHandler extends SkungeeHandler {
 	protected Set<ProxiedPlayer> players = new HashSet<ProxiedPlayer>();
 	
 	@Override
-	public void onPacketCall(SkungeePacket packet, InetAddress address) {
+	public Boolean onPacketCall(SkungeePacket packet, InetAddress address) {
 		if (packet.getPlayers() != null) {
 			for (SkungeePlayer player : packet.getPlayers()) {
 				ProxiedPlayer proxiedPlayer = null;
@@ -33,6 +33,7 @@ public abstract class SkungeePlayerHandler extends SkungeeHandler {
 				if (proxiedPlayer != null) players.add(proxiedPlayer);
 			}
 		}
+		return !players.isEmpty();
 	}
 	
 	public abstract Object handlePacket(SkungeePacket packet, InetAddress address);

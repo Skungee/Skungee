@@ -1,4 +1,4 @@
-package me.limeglass.skungee.bungeecord.sockets;
+package me.limeglass.skungee.bungeecord.handlers;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -14,6 +14,9 @@ import java.util.UUID;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.VariableStorage;
+import me.limeglass.skungee.bungeecord.sockets.BungeeSockets;
+import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
+import me.limeglass.skungee.bungeecord.sockets.ServerTracker;
 import me.limeglass.skungee.objects.BungeePacket;
 import me.limeglass.skungee.objects.BungeePacketType;
 import me.limeglass.skungee.objects.ChatMode;
@@ -727,6 +730,12 @@ public class PacketHandler {
 				return ProxyServer.getInstance().getConfig().isOnlineMode();
 			case CUSTOM:
 				break;
+			case BTLP_TABLIST:
+				break;
+		case BTLP_PLAYERTABLIST:
+			break;
+		default:
+			break;
 		}
 		return null;
 	}

@@ -54,11 +54,11 @@ public abstract class SkungeeHandler {
 	public Object callPacket(SkungeePacket packet, InetAddress address) {
 		this.packet = packet;
 		this.address = address;
-		onPacketCall(packet, address);
+		if (!onPacketCall(packet, address)) return null;
 		return handlePacket(packet, address);
 	}
 	
 	public abstract Object handlePacket(SkungeePacket packet, InetAddress address);
 	
-	public abstract void onPacketCall(SkungeePacket packet, InetAddress address);
+	public abstract Boolean onPacketCall(SkungeePacket packet, InetAddress address);
 }
