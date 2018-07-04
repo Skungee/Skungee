@@ -10,8 +10,8 @@ import me.limeglass.skungee.spigot.lang.SkungeeCondition;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
-@Name("Bungeecord player online")
-@Description("Check if a player is online the Bungeecord. Keep in mind that they need to have joined the proxy and not through a port for it to work.")
+@Name("Bungeecord server online")
+@Description("Check if a server is online the Bungeecord.")
 @Patterns("[bungee[[ ]cord]] server %string% (1¦is|2¦is(n't| not)) (running|online|responding)")
 public class CondServerOnline extends SkungeeCondition {
 

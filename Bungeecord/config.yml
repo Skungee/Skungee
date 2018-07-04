@@ -130,7 +130,7 @@ NetworkVariables:
     # Allow variables to be re-writen if a server calls for it.
     AllowOverrides: true
     # Automatic sharing means that Skungee will try to make Skungee's (Spigot side) variables
-    # match the exact variables as Bungeecord.
+    # match the exact variables that the Skungee (Bungeecord) has.
     # So basically if you update a global variable, Skungee will make every Spigot server variables match that.
     # So all you need todo is
     #

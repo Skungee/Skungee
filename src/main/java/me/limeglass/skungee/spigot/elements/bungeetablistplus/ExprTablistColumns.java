@@ -1,4 +1,4 @@
-package me.limeglass.skungee.elements.bungeetablistplus;
+package me.limeglass.skungee.spigot.elements.bungeetablistplus;
 
 import java.util.Set;
 
@@ -14,11 +14,11 @@ import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
-@Name("BungeeTabListPlus - Tablist rows")
-@Description("Returns the amount of rows for the defined CustomTablist(s).")
-@Properties({"customtablist", "[(size|amount|number) of] rows", "{1}[(all [[of] the]|the)]"})
+@Name("BungeeTabListPlus - Tablist columns")
+@Description("Returns the amount of column for the defined CustomTablist(s).")
+@Properties({"customtablist", "[(size|amount|number) of] columns", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[bungee[[ ]tab[list]][[ ]plus] [tab[ ]]list[s]]")
-public class ExprTablistRows extends SkungeePropertyExpression<CustomTablist, Number> {
+public class ExprTablistColumns extends SkungeePropertyExpression<CustomTablist, Number> {
 
 	@Override
 	protected Number[] get(Event event, CustomTablist[] tablists) {

@@ -1,4 +1,4 @@
-package me.limeglass.skungee.spigot.elements.effects;
+package me.limeglass.skungee.spigot.elements.redisbungee;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;

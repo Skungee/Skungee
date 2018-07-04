@@ -1,4 +1,4 @@
-package me.limeglass.skungee.spigot.elements.conditions;
+package me.limeglass.skungee.spigot.elements.redisbungee;
 
 import org.bukkit.event.Event;
 

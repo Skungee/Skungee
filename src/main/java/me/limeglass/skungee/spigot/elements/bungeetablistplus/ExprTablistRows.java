@@ -1,4 +1,4 @@
-package me.limeglass.skungee.elements.bungeetablistplus;
+package me.limeglass.skungee.spigot.elements.bungeetablistplus;
 
 import java.util.Set;
 
@@ -14,17 +14,17 @@ import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
-@Name("BungeeTabListPlus - Tablist columns")
-@Description("Returns the amount of column for the defined CustomTablist(s).")
-@Properties({"customtablist", "[(size|amount|number) of] columns", "{1}[(all [[of] the]|the)]"})
+@Name("BungeeTabListPlus - Tablist rows")
+@Description("Returns the amount of rows for the defined CustomTablist(s).")
+@Properties({"customtablist", "[(size|amount|number) of] rows", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[bungee[[ ]tab[list]][[ ]plus] [tab[ ]]list[s]]")
-public class ExprTablistColumns extends SkungeePropertyExpression<CustomTablist, Number> {
+public class ExprTablistRows extends SkungeePropertyExpression<CustomTablist, Number> {
 
 	@Override
 	protected Number[] get(Event event, CustomTablist[] tablists) {
 		if (isNull(event)) return null;
 		@SuppressWarnings("unchecked")
-		Set<Number> columns = (Set<Number>) Sockets.send(new SkungeePacket(true, SkungeePacketType.BTLP_TABLISTCOLUMNS, tablists));
-		return (columns != null) ? columns.toArray(new Number[columns.size()]) : null;
+		Set<Number> rows = (Set<Number>) Sockets.send(new SkungeePacket(true, SkungeePacketType.BTLP_TABLISTROWS, tablists));
+		return (rows != null) ? rows.toArray(new Number[rows.size()]) : null;
 	}
 }

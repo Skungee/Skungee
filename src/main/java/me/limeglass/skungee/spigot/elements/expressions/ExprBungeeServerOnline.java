@@ -13,7 +13,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
 @Name("Bungeecord server online state")
-@Description("Returns the message of the day(s) from the defined server(s).")
+@Description("Returns the online state(s) from the defined server(s).")
 @Properties({"strings", "online stat(us|e)[s]", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[bungee[[ ]cord]] [server[s]]")
 public class ExprBungeeServerOnline extends SkungeePropertyExpression<String, Boolean> {

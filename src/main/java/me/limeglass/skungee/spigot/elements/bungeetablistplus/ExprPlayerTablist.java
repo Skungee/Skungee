@@ -1,4 +1,4 @@
-package me.limeglass.skungee.elements.bungeetablistplus;
+package me.limeglass.skungee.spigot.elements.bungeetablistplus;
 
 import java.util.Set;
 
