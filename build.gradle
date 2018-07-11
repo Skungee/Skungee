@@ -41,7 +41,7 @@ repositories {
 dependencies {
     
     //Skript
-    api (group: 'ch.njol', name: 'skript', version: '2.2-dev32') {
+    api (group: 'ch.njol', name: 'skript', version: '2.2-dev35b') {
         transitive = false
 	}
 	

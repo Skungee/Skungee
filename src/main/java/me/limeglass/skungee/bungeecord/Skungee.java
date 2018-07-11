@@ -23,6 +23,7 @@ import me.limeglass.skungee.bungeecord.serverinstances.Premium;
 import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
 import me.limeglass.skungee.bungeecord.sockets.SocketRunnable;
 import me.limeglass.skungee.bungeecord.utils.BungeeReflectionUtil;
+import me.limeglass.skungee.bungeecord.variables.VariableManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -68,7 +69,7 @@ public class Skungee extends Plugin {
 		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_network_variables") {
 			@Override
 			public int getValue() {
-				return VariableStorage.getSize();
+				return VariableManager.getMainStorage().getSize();
 			}
 		});
 		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_global_scripts") {
@@ -78,7 +79,7 @@ public class Skungee extends Plugin {
 			}
 		});
 		if (getConfig().getBoolean("Events", false)) getProxy().getPluginManager().registerListener(this, new EventListener());
-		VariableStorage.setup();
+		VariableManager.setup();
 		connect();
 		if (!getConfig().getBoolean("DisableRegisteredInfo", false)) consoleMessage("has been enabled!");
 	}

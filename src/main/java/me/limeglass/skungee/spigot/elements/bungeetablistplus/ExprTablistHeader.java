@@ -15,6 +15,7 @@ import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
+import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
@@ -23,6 +24,7 @@ import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 @Properties({"customtablist", "header", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[bungee[[ ]tab[list][[ ]plus]] tab[[ ]list[s]]")
 @AllChangers
+@Disabled
 public class ExprTablistHeader extends SkungeePropertyExpression<CustomTablist, String> {
 
 	@Override

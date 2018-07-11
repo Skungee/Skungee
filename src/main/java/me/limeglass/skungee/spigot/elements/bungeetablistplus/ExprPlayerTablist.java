@@ -15,6 +15,7 @@ import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Changers;
+import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
@@ -23,6 +24,7 @@ import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 @Properties({"strings/players", "bungee[[ ]tab[list]][[ ]plus] [tab[ ]]list", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[(player|uuid)[s]]")
 @Changers({ChangeMode.SET, ChangeMode.DELETE, ChangeMode.RESET})
+@Disabled
 public class ExprPlayerTablist extends SkungeePropertyExpression<Object, CustomTablist> {
 
 	@Override

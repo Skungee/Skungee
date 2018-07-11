@@ -9,7 +9,7 @@ import org.bukkit.event.Event;
 import java.lang.reflect.ParameterizedType;
 
 import ch.njol.skript.ScriptLoader;
-import ch.njol.skript.classes.Changer;
+import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
@@ -80,7 +80,7 @@ public abstract class SkungeeExpression<T> extends SimpleExpression<T> implement
 	}
 	
 	@Override
-	public Class<?>[] acceptChange(final Changer.ChangeMode mode) {
+	public Class<?>[] acceptChange(final ChangeMode mode) {
 		Class<?>[] returnable = (getClass().isAnnotationPresent(Multiple.class)) ? CollectionUtils.array(Utils.getArrayClass(expressionClass)) : CollectionUtils.array(expressionClass);
 		if (getClass().isAnnotationPresent(Settable.class)) returnable = getClass().getAnnotation(Settable.class).value();
 		if (getClass().isAnnotationPresent(AllChangers.class)) return returnable;

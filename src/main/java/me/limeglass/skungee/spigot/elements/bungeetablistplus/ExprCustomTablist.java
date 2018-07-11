@@ -9,6 +9,7 @@ import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.sockets.Sockets;
+import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 import me.limeglass.skungee.spigot.utils.annotations.RegisterType;
 import me.limeglass.skungee.spigot.utils.annotations.Single;
@@ -17,6 +18,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Single;
 @Description("Returns a new BungeeTabListPlus CustomTablist.")
 @Patterns("[a] [new] [custom] bungee[[ ]tab[list]][[ ]plus] [tab[ ]]list [(of|with) size %number%]")
 @RegisterType("customtablist")
+@Disabled
 @Single
 public class ExprCustomTablist extends SkungeeExpression<CustomTablist> {
 	

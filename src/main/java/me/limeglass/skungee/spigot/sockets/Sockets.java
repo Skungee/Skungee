@@ -26,13 +26,18 @@ public class Sockets {
 
 	public static Map<InetAddress, Integer> attempts = new HashMap<InetAddress, Integer>();
 	public static Set<InetAddress> blocked = new HashSet<InetAddress>();
-	public static Socket bungeecord;
+	public static Set<SkungeePacket> unsent = new HashSet<SkungeePacket>();
 	private static Boolean restart = true, checking = false, isConnected = false;
-	private static int task, heartbeat, keepAlive;
 	public static Long lastSent = System.currentTimeMillis();
+	private static int task, heartbeat, keepAlive;
+	public static Socket bungeecord;
 	//private static EncryptionUtil encrypter = Skungee.getEncrypter();
 	
 	//TODO create a system to cache failed packets, It already does but it gives up after a few times and lets it go.
+	
+	public static boolean isConnected() {
+		return isConnected;
+	}
 	
 	@SuppressWarnings("deprecation")
 	private static void startHeartbeat() {
@@ -124,10 +129,18 @@ public class Sockets {
 				bungeecord = getSocketConnection();
 				checking = false;
 				if (bungeecord == null) {
+					unsent.add(packet);
+					//TODO add hault option
 					Bukkit.getScheduler().cancelTask(heartbeat);
 					stop(restart);
 					restart = false;
 				} else {
+					if (!unsent.isEmpty()) {
+						for (SkungeePacket p : unsent) {
+							send(p);
+							unsent.remove(p);
+						}
+					}
 					EncryptionUtil encrypter = new EncryptionUtil(Skungee.getInstance(), true);
 					if (!Skungee.getInstance().getConfig().getBoolean("IgnoreSpamPackets", true)) {
 						Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));

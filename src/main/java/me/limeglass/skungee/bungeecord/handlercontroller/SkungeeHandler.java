@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import java.util.Set;
 
+import me.limeglass.skungee.UniversalSkungee;
+import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
 
@@ -54,6 +56,11 @@ public abstract class SkungeeHandler {
 	public Object callPacket(SkungeePacket packet, InetAddress address) {
 		this.packet = packet;
 		this.address = address;
+		if (!Skungee.getConfig().getBoolean("IgnoreSpamPackets", true)) {
+			Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
+		} else if (packet.getType() != SkungeePacketType.HEARTBEAT) {
+			Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
+		}
 		if (!onPacketCall(packet, address)) return null;
 		return handlePacket(packet, address);
 	}

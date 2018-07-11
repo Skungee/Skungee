@@ -15,6 +15,7 @@ import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.sockets.Sockets;
+import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -22,6 +23,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 @Description("Returns the text at the column and row defined for the CustomTablist(s).")
 @Patterns("text at [slot] [row] %number%[( and|,)] [column] %number% (in|from|of) [bungee[[ ]tab[list]][[ ]plus] [tab[ ]]list[s]] %customtablists%")
 @ExpressionProperty(ExpressionType.COMBINED)
+@Disabled
 public class ExprTablistText extends SkungeeExpression<String> {
 
 	@Override

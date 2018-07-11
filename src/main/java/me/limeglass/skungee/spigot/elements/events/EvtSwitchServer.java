@@ -27,7 +27,7 @@ public class EvtSwitchServer extends SkriptEvent {
 	
 	@Override
 	public String toString(@Nullable Event event, boolean debug) {
-		return "Player switch servers for player: " + ((PlayerSwitchServerEvent)event).getPlayer().getName() + " with argument: " + server.toString(event, debug);
+		return "Player switch servers for player: " + ((PlayerSwitchServerEvent)event).getPlayer().getName() + " with argument: " + server != null ? server.toString(event, debug) : "";
 	}
 
 	public boolean check(Event event) {

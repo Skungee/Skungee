@@ -11,6 +11,7 @@ import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.sockets.Sockets;
+import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
@@ -18,6 +19,7 @@ import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 @Description("Returns the amount of column for the defined CustomTablist(s).")
 @Properties({"customtablist", "[(size|amount|number) of] columns", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[bungee[[ ]tab[list]][[ ]plus] [tab[ ]]list[s]]")
+@Disabled
 public class ExprTablistColumns extends SkungeePropertyExpression<CustomTablist, Number> {
 
 	@Override

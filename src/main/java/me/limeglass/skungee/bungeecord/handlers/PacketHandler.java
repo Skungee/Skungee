@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
-import me.limeglass.skungee.bungeecord.VariableStorage;
 import me.limeglass.skungee.bungeecord.sockets.BungeeSockets;
 import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
 import me.limeglass.skungee.bungeecord.sockets.ServerTracker;
@@ -341,59 +340,7 @@ public class PacketHandler {
 				}
 				break;
 			case NETWORKVARIABLE:
-				if (packet.getObject() != null) {
-					String ID = (String) packet.getObject();
-					if (packet.getChangeMode() == null) {
-						return VariableStorage.get(ID);
-					} else if (packet.getChangeMode() != null) {
-						Object value = (Object) packet.getSetObject();
-						switch (packet.getChangeMode()) {
-							case ADD:
-								packet.setChangeMode(null);
-								Object object = handlePacket(packet, address);
-								//TODO number shit doesn't work?
-								try {
-									Number number = (Number) object;
-									Skungee.consoleMessage("yes");
-									Integer integer = number.intValue();
-									VariableStorage.write(ID, integer++);
-									break;
-								} catch (Exception e) {}
-								Set<Object> variable = new HashSet<Object>();
-								for (Object obj : (Object[]) object) {
-									variable.add(obj);
-								}
-								variable.add(value);
-								VariableStorage.write(ID, variable.toArray(new Object[variable.size()]));
-								break;
-							case REMOVE:
-								packet.setSettableObject(null);
-								Object objectRemove = handlePacket(packet, address);
-								try {
-									Number number = (Number) objectRemove;
-									Integer integer = number.intValue();
-									VariableStorage.write(ID, integer++);
-									break;
-								} catch (Exception e) {}
-								Set<Object> variableRevove = new HashSet<Object>();
-								for (Object obj : (Object[]) objectRemove) {
-									variableRevove.add(obj);
-								}
-								variableRevove.remove(value);
-								VariableStorage.write(ID, variableRevove.toArray(new Object[variableRevove.size()]));
-								break;
-							case DELETE:
-							case REMOVE_ALL:
-							case RESET:
-								VariableStorage.remove(ID);
-								break;
-							case SET:
-								VariableStorage.write(ID, value);
-								break;
-						}
-					}
-				}
-				return null;
+				break;
 			case PLAYERCHATMODE:
 				if (!players.isEmpty()) {
 					Set<ChatMode> modes = new HashSet<ChatMode>();
