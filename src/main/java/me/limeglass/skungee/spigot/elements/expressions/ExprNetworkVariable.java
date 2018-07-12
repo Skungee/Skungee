@@ -1,9 +1,6 @@
 package me.limeglass.skungee.spigot.elements.expressions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Set;
 
 import org.bukkit.event.Event;
@@ -26,6 +23,7 @@ import ch.njol.util.coll.CollectionUtils;
 import me.limeglass.skungee.objects.SkriptChangeMode;
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
+import me.limeglass.skungee.objects.SkungeeVariable;
 import me.limeglass.skungee.objects.SkungeeVariable.Value;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
@@ -86,41 +84,24 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 		return false;
 	}
 	
+	//TODO make iterator
+	
 	@Override
 	@Nullable
 	protected Object[] get(Event event) {
 		Object variable = Sockets.send(new SkungeePacket(true, SkungeePacketType.NETWORKVARIABLE, variableString.toString(event)));
 		if (variable == null) return null;
+		if (!(variable instanceof Value[])) {
+			Skungee.consoleMessage("A network variable under the index of \"" + variableString.toString(event) + "\" returned a value that could not be handled.");
+			Skungee.consoleMessage("This could be due to an old format, in that case please reset this value or reset it.");
+			Skungee.consoleMessage("Report this type to the developers of Skungee: &f" + variable.getClass().getName());
+			return null;
+		}
 		Set<Object> objects = new HashSet<Object>();
-		@SuppressWarnings("unchecked")
-		Set<Object> values = (Set<Object>) variable;
+		Value[] values = (Value[]) variable;
 		for (Object object : values) {
-			if (object instanceof Value) {
-				Value value = (Value) object;
-				objects.add(Classes.deserialize(value.type, value.data));
-			} else if (object instanceof LinkedHashMap) {
-				//GSON serializes to a LinkedHashMap I guess.
-				//TODO change this.
-				@SuppressWarnings("unchecked")
-				LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) object;
-				String type = map.keySet().stream().findFirst().get();
-				for (Object o : map.values()) {
-					if (o instanceof ArrayList) {
-						@SuppressWarnings("unchecked")
-						ArrayList<Number> list = (ArrayList<Number>) o;
-						for (Number d : list) {
-							Skungee.consoleMessage(d + "");
-						}
-						byte[] bytes = new byte[list.size()];
-						for (int i = 0; i < list.size(); i++) {
-							bytes[i] = (byte) list.get(i).intValue();
-						}
-						Skungee.consoleMessage(Arrays.toString(bytes) + " == " + o.toString());
-						objects.add(Classes.deserialize(type, bytes));
-					}
-				}
-				//objects.add(Classes.deserialize(type, data));
-			}
+			Value value = (Value) object;
+			objects.add(Classes.deserialize(value.type, value.data));
 		}
 		if (objects.isEmpty()) return null;
 		return objects.toArray(new Object[objects.size()]);
@@ -134,12 +115,13 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 	@Override
 	public void change(Event event, Object[] delta, ChangeMode mode) {
 		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
-		if (changer == null) return;
-		Set<Value> serialized = new HashSet<Value>();
-		for (Object object : delta) {
-			ch.njol.skript.variables.SerializedVariable.Value value = Classes.serialize(object);
-			serialized.add(new Value(value.type, value.data));
+		if (changer == null || delta == null) return;
+		Value[] values = new Value[delta.length];
+		for (int i = 0; i < delta.length; i++) {
+			ch.njol.skript.variables.SerializedVariable.Value value = Classes.serialize(delta[i]);
+			values[i] = new Value(value.type, value.data);
 		}
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.NETWORKVARIABLE, variableString.toString(event), serialized, changer));
+		SkungeeVariable variable = new SkungeeVariable(variableString.toString(event), values);
+		Sockets.send(new SkungeePacket(false, SkungeePacketType.NETWORKVARIABLE, variable, null, changer));
 	}
 }

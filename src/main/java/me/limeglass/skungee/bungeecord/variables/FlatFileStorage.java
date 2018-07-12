@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,7 +33,7 @@ public class FlatFileStorage extends SkungeeStorage {
 	}
 	
 	private final static String path = Skungee.getInstance().getDataFolder().getAbsolutePath() + File.separator + "variables" + File.separator;
-	private static final String DELIMITER = ": ";
+	private static final String DELIMITER = "@: ";
 	private Boolean loadingHash = false;
 	private File folder, file;
 	private FileWriter writer;
@@ -71,7 +69,7 @@ public class FlatFileStorage extends SkungeeStorage {
 	}
 	
 	@Override
-	public Set<Value> get(String index) {
+	public Value[] get(String index) {
 		return variables.get(index);
 	}
 
@@ -109,7 +107,6 @@ public class FlatFileStorage extends SkungeeStorage {
 		load();
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void load() {
 		String line = "";
 		BufferedReader reader = null;
@@ -128,7 +125,8 @@ public class FlatFileStorage extends SkungeeStorage {
 			writer = new FileWriter(file);
 			header();
 			for (Entry<String, String> data : map.entrySet()) {
-				set(data.getKey(), gson.fromJson(data.getValue(), Set.class));
+				Value[] values = gson.fromJson(data.getValue(), Value[].class);
+				set(data.getKey(), values);
 			}
 			reader.close();
 		} catch (IOException e) {
@@ -137,14 +135,13 @@ public class FlatFileStorage extends SkungeeStorage {
 	}
 	
 	@Override
-	public void set(String index, Set<Value> objects) {
-		if (index == null || objects == null) return;
+	public void set(String name, Value[] values) {
 		if (Skungee.getConfig().getBoolean("NetworkVariables.AutomaticSharing", false)) {
 			if (!ServerTracker.isEmpty()) {
-				BungeeSockets.sendAll(new BungeePacket(false, BungeePacketType.UPDATEVARIABLES, index, objects));
+				BungeeSockets.sendAll(new BungeePacket(false, BungeePacketType.UPDATEVARIABLES, name, values));
 			}
 		}
-		if (variables.containsKey(index)) {
+		if (variables.containsKey(name)) {
 			if (!loadingHash) {
 				if (Skungee.getConfig().getBoolean("NetworkVariables.AllowOverrides", true)) {
 					try {
@@ -152,18 +149,18 @@ public class FlatFileStorage extends SkungeeStorage {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					variables.remove(index);
+					variables.remove(name);
 					loadFromHash();
 				} else {
 					return;
 				}
 			}
 		}
-		variables.put(index, objects);
+		variables.put(name, values);
 		try {
-			writer.append(index);
+			writer.append(name);
 			writer.append(DELIMITER);
-			writer.append(gson.toJson(objects));
+			writer.append(gson.toJson(values));
 			writer.append("\n");
 		} catch (IOException e) {
 			try {

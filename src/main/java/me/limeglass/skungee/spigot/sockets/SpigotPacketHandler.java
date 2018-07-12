@@ -21,6 +21,7 @@ import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.objects.BungeePacket;
 import me.limeglass.skungee.objects.BungeePacketType;
 import me.limeglass.skungee.objects.ServerPingPacket;
+import me.limeglass.skungee.objects.SkungeeVariable.Value;
 import me.limeglass.skungee.objects.events.PingEvent;
 import me.limeglass.skungee.objects.events.PlayerDisconnectEvent;
 import me.limeglass.skungee.objects.events.PlayerSwitchServerEvent;
@@ -32,6 +33,7 @@ import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.Config;
 import ch.njol.skript.lang.Effect;
+import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.variables.Variables;
 
 public class SpigotPacketHandler {
@@ -159,8 +161,16 @@ public class SpigotPacketHandler {
 				}
 				break;
 			case UPDATEVARIABLES:
-				String ID = (String) packet.getObject();
-				Variables.setVariable(ID, packet.getSetObject(), null, false);
+				Object objectName = packet.getObject();
+				Object objectValues = packet.getSetObject();
+				if (objectName == null || objectValues == null) return null;
+				String name = (String) objectName;
+				Value[] values = (Value[]) objectValues;
+				Object[] objects = new Object[values.length];
+				for (int i = 0; i < values.length; i++) {
+					objects[i] = Classes.deserialize(values[i].type, values[i].data);
+				}
+				Variables.setVariable(name, objects, null, false);
 				break;
 			case SHUTDOWN:
 				Bukkit.shutdown();

@@ -1,12 +1,11 @@
 package me.limeglass.skungee.bungeecord.handlers;
 
 import java.net.InetAddress;
-import java.util.Set;
-
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.bungeecord.variables.VariableManager;
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
+import me.limeglass.skungee.objects.SkungeeVariable;
 import me.limeglass.skungee.objects.SkungeeVariable.Value;
 
 public class NetworkVariableHandler extends SkungeeBungeeHandler {
@@ -16,13 +15,17 @@ public class NetworkVariableHandler extends SkungeeBungeeHandler {
 	}
 
 	@Override
-	public Set<Value> handlePacket(SkungeePacket packet, InetAddress address) {
+	public Value[] handlePacket(SkungeePacket packet, InetAddress address) {
 		if (packet.getObject() == null) return null;
-		String index = (String) packet.getObject();
-		if (packet.getChangeMode() == null) return VariableManager.getMainStorage().get(index);
-		@SuppressWarnings("unchecked")
-		Set<Value> serialized = (Set<Value>) packet.getSetObject();
-		VariableManager.getMainStorage().set(index, serialized);
+		Object object = packet.getObject();
+		if (object instanceof SkungeeVariable) {
+			SkungeeVariable variable = (SkungeeVariable) object;
+			String variableName = variable.getVariableName();
+			Value[] values = variable.getValues();
+			if (values == null || variableName == null) return null;
+			VariableManager.getMainStorage().set(variableName, values);
+		} else if (object instanceof String && packet.getChangeMode() == null)
+			return VariableManager.getMainStorage().get((String)object);
 		//Object object = VariableManager.getMainStorage().get(index);
 		/*switch (packet.getChangeMode()) {
 			case ADD:

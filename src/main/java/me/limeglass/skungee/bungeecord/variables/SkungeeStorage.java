@@ -1,13 +1,12 @@
 package me.limeglass.skungee.bungeecord.variables;
 
-import java.util.Set;
 import java.util.TreeMap;
 
 import me.limeglass.skungee.objects.SkungeeVariable.Value;
 
 public abstract class SkungeeStorage {
 
-	protected final static TreeMap<String, Set<Value>> variables = new TreeMap<String, Set<Value>>(String.CASE_INSENSITIVE_ORDER);
+	protected final static TreeMap<String, Value[]> variables = new TreeMap<String, Value[]>(String.CASE_INSENSITIVE_ORDER);
 	private final String[] names;
 	
 	public SkungeeStorage(String... names) {
@@ -26,9 +25,9 @@ public abstract class SkungeeStorage {
 		return names;
 	}
 	
-	public abstract Set<Value> get(String index);
+	public abstract Value[] get(String index);
 	
-	public abstract void set(String index, Set<Value> objects);
+	public abstract void set(String index, Value[] objects);
 	
 	public abstract void remove(String index);
 	

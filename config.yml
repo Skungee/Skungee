@@ -76,8 +76,8 @@ heartbeat: 50
 # Should Skungee hault the server until it recieves a value.
 # This can be critical for some users such as grabbing important network variables.
 # Information: basically Skungee will wait until the Skungee on the Bungeecord becomes active while a value is being called.
-# So if you do something like `set {_value} to network variable {example}` and this value is false and the Bungeecord Skungee is offline, this will return null.
-# If this value is true below, it will wait until the Bungeecord Skungee is found/online.
+# So if you do something like `set {_value} to network variable {example}` and this node is false and the Bungeecord Skungee is offline, this will return null.
+# If this node is true below, it will wait until the Bungeecord Skungee is found/online.
 hault: false
 
 # Contantly keep trying to connect to the Skungee on the Bungeecord. This can spam if the Bungeecord is offline for a long period of time.
