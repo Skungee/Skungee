@@ -78,6 +78,10 @@ heartbeat: 50
 # Information: basically Skungee will wait until the Skungee on the Bungeecord becomes active while a value is being called.
 # So if you do something like `set {_value} to network variable {example}` and this node is false and the Bungeecord Skungee is offline, this will return null.
 # If this node is true below, it will wait until the Bungeecord Skungee is found/online.
+
+# There is an alternaitve async method to this in the form of a syntax:
+# `wait until skungee connects`
+# This syntax will wait in an async thread until Skungee connects and this walking down the rest of the trigger. Which is also recommeneded.
 hault: false
 
 # Contantly keep trying to connect to the Skungee on the Bungeecord. This can spam if the Bungeecord is offline for a long period of time.

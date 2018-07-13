@@ -103,13 +103,12 @@ public class Sockets {
 				return new Socket(Skungee.getInstance().getConfig().getString("host", "0.0.0.0"), Skungee.getInstance().getConfig().getInt("port", 1337));
 			} catch (IOException e) {}
 		}
-		Skungee.consoleMessage("Could not establish connection to Skungee on the Bungeecord!");
 		return null;
 	}
 
 	public static Object send(SkungeePacket packet) {
 		if (packet.isReturnable()) return (isConnected) ? send_i(packet) : (packet.getType() == SkungeePacketType.HANDSHAKE) ? send_i(packet) : null;
-		if (Skungee.getInstance().getConfig().getBoolean("Queue.enabled", true)) {
+		if (Skungee.getInstance().getConfig().getBoolean("Queue.enabled", false)) {
 			PacketQueue.queue(packet);
 		} else {
 			Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), new Runnable() {
@@ -129,11 +128,15 @@ public class Sockets {
 				bungeecord = getSocketConnection();
 				checking = false;
 				if (bungeecord == null) {
-					unsent.add(packet);
-					//TODO add hault option
-					Bukkit.getScheduler().cancelTask(heartbeat);
-					stop(restart);
-					restart = false;
+					if (Skungee.getConfiguration("config").getBoolean("hault", false)) {
+						return send_i(packet);
+					} else {
+						Skungee.consoleMessage("Could not establish connection to Skungee on the Bungeecord!");
+						unsent.add(packet);
+						Bukkit.getScheduler().cancelTask(heartbeat);
+						stop(restart);
+						restart = false;
+					}
 				} else {
 					if (!unsent.isEmpty()) {
 						for (SkungeePacket p : unsent) {
