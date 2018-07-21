@@ -13,7 +13,6 @@ import ch.njol.skript.util.Timespan;
 import me.limeglass.skungee.objects.SkungeeTitle;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
-import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
@@ -22,7 +21,6 @@ import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 @Properties({"skungeetitles", "fade in[ ][time][s]", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[(skungee|bungee[[ ]cord])] title[s]")
 @AllChangers
-@Disabled
 public class ExprBungeeTitleFadeIn extends SkungeePropertyExpression<SkungeeTitle, Timespan> {
 
 	private Map<SkungeeTitle, Timespan> getTimespans(SkungeeTitle[] titles) {

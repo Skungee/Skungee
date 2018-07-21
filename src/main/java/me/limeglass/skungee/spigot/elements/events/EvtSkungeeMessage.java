@@ -9,6 +9,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import me.limeglass.skungee.objects.events.SkungeeMessageEvent;
+import me.limeglass.skungee.spigot.elements.Events;
 
 public class EvtSkungeeMessage extends SkriptEvent {
 	

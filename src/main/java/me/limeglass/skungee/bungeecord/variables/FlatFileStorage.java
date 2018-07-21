@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -182,7 +185,8 @@ public class FlatFileStorage extends SkungeeStorage {
 			writer = new FileWriter(file);
 			header();
 			if (!variables.isEmpty()) {
-				Iterator<String> iterator = variables.keySet().iterator();
+				Set<String> ids = Sets.newConcurrentHashSet(variables.keySet());
+				Iterator<String> iterator = ids.iterator();
 				while (iterator.hasNext()) {
 					String ID = iterator.next();
 					set(ID, variables.get(ID));

@@ -27,7 +27,7 @@ public class ExprBungeeTitleString extends SkungeePropertyExpression<SkungeeTitl
 		if (isNull(event)) return null;
 		Set<String> names = new HashSet<String>();
 		for (SkungeeTitle title : titles) {
-			names.add(title.getString());
+			names.add(title.getTitleText());
 		}
 		return (names != null) ? names.toArray(new String[names.size()]) : null;
 	}
@@ -44,12 +44,12 @@ public class ExprBungeeTitleString extends SkungeePropertyExpression<SkungeeTitl
 			case REMOVE_ALL:
 			case RESET:
 				for (SkungeeTitle title : titles) {
-					title.setString(null);
+					title.setTitleText(null);
 				}
 				break;
 			case SET:
 				for (SkungeeTitle title : titles) {
-					title.setString((String) delta[0]);
+					title.setTitleText((String) delta[0]);
 				}
 				break;
 		}

@@ -27,7 +27,6 @@ import me.limeglass.skungee.objects.SkriptChangeMode;
 import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePacketType;
 import me.limeglass.skungee.objects.SkungeePlayer;
-import me.limeglass.skungee.objects.SkungeeTitle;
 import me.limeglass.skungee.spigot.utils.Utils;
 
 import java.util.concurrent.TimeUnit;
@@ -396,15 +395,6 @@ public class PacketHandler {
 					return false;
 				}
 				return true;
-			case TITLE:
-				if (packet.getObject() == null) return null;
-				SkungeeTitle title = (SkungeeTitle) packet.getObject();
-				//title.setTitle(ProxyServer.getInstance().createTitle());
-				return title;
-			case PLAYERTITLE:
-				if (packet.getObject() == null || packet.getPlayers() == null) return null;
-				//((SkungeeTitle)packet.getObject()).send(packet.getPlayers());
-				break;
 			case PLAYERCOMMAND:
 				Set<Boolean> registered = new HashSet<Boolean>();
 				if (!players.isEmpty() && packet.getObject() != null) {

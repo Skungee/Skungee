@@ -10,7 +10,6 @@ import ch.njol.skript.doc.Name;
 import me.limeglass.skungee.objects.SkungeeTitle;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Changers;
-import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
@@ -18,8 +17,7 @@ import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 @Description("Returns the subtitle(s) of defined skungee title(s).")
 @Properties({"skungeetitles", "sub[-]title[s]", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[(skungee|bungee[[ ]cord])] title[s]")
-@Changers({ChangeMode.SET, ChangeMode.DELETE, ChangeMode.REMOVE, ChangeMode.REMOVE_ALL, ChangeMode.RESET})
-@Disabled
+@Changers({ChangeMode.SET, ChangeMode.DELETE, ChangeMode.REMOVE, ChangeMode.RESET})
 public class ExprBungeeTitleSubtitle extends SkungeePropertyExpression<SkungeeTitle, String> {
 
 	@Override
@@ -27,7 +25,7 @@ public class ExprBungeeTitleSubtitle extends SkungeePropertyExpression<SkungeeTi
 		if (isNull(event)) return null;
 		Set<String> subtitles = new HashSet<String>();
 		for (SkungeeTitle title : titles) {
-			subtitles.add(title.getSubtitle());
+			subtitles.add(title.getSubtitleText());
 		}
 		return (subtitles != null) ? subtitles.toArray(new String[subtitles.size()]) : null;
 	}

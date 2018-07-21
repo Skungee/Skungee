@@ -3,24 +3,30 @@ package me.limeglass.skungee.spigot.elements;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.bukkit.event.Event;
+import org.eclipse.jdt.annotation.Nullable;
+
 import ch.njol.skript.Skript;
+import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
-import me.limeglass.skungee.objects.events.EvtPlayerDisconnect;
-import me.limeglass.skungee.objects.events.EvtPlayerSwitchServer;
+import me.limeglass.skungee.objects.events.PingEvent;
+import me.limeglass.skungee.objects.events.PlayerDisconnectEvent;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.utils.ReflectionUtil;
 
 public class Events {
 	
-	public Events() {
-		registerEvent(EvtPlayerSwitchServer.class, "[player] [bungee[[ ]cord]] switch server[s]", "[bungee[[ ]cord]] player switching [of] server[s]");
-		registerEvent(EvtPlayerDisconnect.class, "bungee[[ ]cord] player disconnect");
+	static {
+		registerEvent(null, PlayerDisconnectEvent.class, "bungee[[ ]cord] disconnect");
+		registerEvent(null, PingEvent.class, "bungee[[ ]cord] [server list] ping");
 	}
 	
-	private void registerEvent(Class<? extends Event> event, String... patterns) {
+	public static void registerEvent(@Nullable Class<? extends SkriptEvent> skriptEvent, Class<? extends Event> event, String... patterns) {
+		if (!Skungee.getInstance().getConfig().getBoolean("Events", true)) return;
+		if (skriptEvent == null) skriptEvent = SimpleEvent.class;
 		for (int i = 0; i < patterns.length; i++) {
 			patterns[i] = Skungee.getNameplate() + patterns[i];
 		}
@@ -34,12 +40,13 @@ public class Events {
 		Skungee.save("syntax");
 		if (Skungee.getConfiguration("syntax").getBoolean("Syntax.Events." + event.getSimpleName() + ".enabled", true)) {
 			//TODO find a way to make the stupid Spigot Yaml read properly for user editing of event patterns.
-			Skript.registerEvent(event.getSimpleName(), SimpleEvent.class, event, patterns);
+			Skript.registerEvent("Skungee " + event.getSimpleName(), skriptEvent, event, patterns);
+			Skungee.debugMessage("&5Registered Event " + event.getSimpleName() + " (" + skriptEvent.getCanonicalName() + ") with syntax " + Arrays.toString(patterns));
 		}
 	}
 	
 	@SafeVarargs
-	private final List<String> getEventValues(Class<? extends Event>... events) {
+	private final static List<String> getEventValues(Class<? extends Event>... events) {
 		List<String> classes = new ArrayList<String>();
 		try {
 			Method method = EventValues.class.getDeclaredMethod("getEventValuesList", int.class);

@@ -7,6 +7,7 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import me.limeglass.skungee.objects.events.PlayerSwitchServerEvent;
+import me.limeglass.skungee.spigot.elements.Events;
 
 public class EvtSwitchServer extends SkriptEvent {
 	
