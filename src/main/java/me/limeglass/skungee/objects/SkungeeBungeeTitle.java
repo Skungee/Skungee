@@ -1,5 +1,7 @@
 package me.limeglass.skungee.objects;
 
+import java.util.Set;
+
 import me.limeglass.skungee.bungeecord.Skungee;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
@@ -40,7 +42,7 @@ public class SkungeeBungeeTitle extends SkungeeTitle {
 		return title;
 	}
 	
-	public void send(ProxiedPlayer... players) {
+	public void send(Set<ProxiedPlayer> players) {
 		for (ProxiedPlayer player : players) {
 			getTitle().send(ProxyServer.getInstance().getPlayer(player.getUniqueId()));
 		}
