@@ -29,16 +29,12 @@ import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
-import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
 import me.limeglass.skungee.spigot.utils.annotations.Changers;
-import me.limeglass.skungee.spigot.utils.annotations.Multiple;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 @Name("Network variable")
 @Description("Returns a variable that is stored on the Bungeecord Skungee.")
-@Patterns("[the] [skungee] (global|network|bungee[[ ]cord]) variable [(from|of)] %objects%")
-@AllChangers
-@Multiple
+@Patterns("[skungee] (global|network|bungee[[ ]cord]) variable [(from|of)] %objects%")
 @Changers(ChangeMode.SET)
 public class ExprNetworkVariable extends SkungeeExpression<Object> {
 
@@ -109,6 +105,7 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 	
 	@Override
 	public Class<?>[] acceptChange(final ChangeMode mode) {
+		if (mode != ChangeMode.SET || mode != ChangeMode.RESET || mode != ChangeMode.DELETE) return null;
 		return CollectionUtils.array(this.isSingle() ? Object.class : Object[].class);
 	}
 	
