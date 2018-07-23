@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.event.Event;
@@ -25,7 +26,7 @@ public class ExpressionData {
 		Matcher matcher = Pattern.compile("\\%([^\\%]+)\\%").matcher(pattern);
 		int i = 0;
 		while (matcher.find()) {
-			String expression = matcher.group(1);
+			String expression = matcher.group(1).trim();
 			while ((expression.startsWith("-")) || (expression.startsWith("~")) || (expression.startsWith("*"))) {
 				if (expression.startsWith("-")) nullable = true;
 				expression = expression.substring(1, expression.length());
@@ -37,8 +38,8 @@ public class ExpressionData {
 				while (syntax.containsKey(expression)) {
 					char lastChar = expression.charAt(expression.length() - 1);
 					if (lastChar >= '0' && lastChar <= '9') {
-						expression = expression.replace(lastChar, '\0');
-						expression = expression + ((int)lastChar + 1);
+						expression = expression.replace(lastChar + "", "");
+						expression = expression + (Integer.valueOf(lastChar + "") + 1);
 					}
 				}
 			}
@@ -125,7 +126,10 @@ public class ExpressionData {
 	*/
 	@Nullable
 	public <T> Expression<?> getExpression(Class<T> type, int index) {
-		return expressions[syntax.get(type.getSimpleName().toLowerCase() + index)];
+		String key = type.getSimpleName().toLowerCase() + index;
+		if (!syntax.containsKey(key)) return null;
+		int i = syntax.get(type.getSimpleName().toLowerCase() + index);
+		return expressions[i];
 	}
 	
 	/**
@@ -341,9 +345,13 @@ public class ExpressionData {
 	
 	public String toString(Event event, boolean debug) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(getClass().getName());
+		builder.append(getClass().getName() + "\n");
+		builder.append("\nEntry set:\n");
+		for (Entry<String, Integer> entry : syntax.entrySet())
+			builder.append(entry.getKey()  + " spot: " + entry.getValue() + "\n");
+		builder.append("\nExpressions:\n");
 		for (Expression<?> expression : expressions)
-			builder.append(expression.toString(event, debug));
+			builder.append(expression.toString(event, debug) + "\n");
 		return builder.toString();
 	}
 }

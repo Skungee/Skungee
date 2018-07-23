@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 import codecrafter47.bungeetablistplus.api.bungee.CustomTablist;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
-import me.limeglass.skungee.objects.SkungeePacket;
-import me.limeglass.skungee.objects.SkungeePacketType;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class TablistTextHandler extends SkungeeBungeeHandler {
 

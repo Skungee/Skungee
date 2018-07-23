@@ -1,6 +1,9 @@
-package me.limeglass.skungee.objects;
+package me.limeglass.skungee.objects.packets;
 
 import java.io.Serializable;
+
+import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
+import me.limeglass.skungee.objects.SkungeePlayer;
 
 public class SkungeePacket implements Serializable {
 

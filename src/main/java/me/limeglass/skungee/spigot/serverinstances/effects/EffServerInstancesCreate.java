@@ -2,8 +2,8 @@ package me.limeglass.skungee.spigot.serverinstances.effects;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.SkungeePacket;
-import me.limeglass.skungee.objects.SkungeePacketType;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;

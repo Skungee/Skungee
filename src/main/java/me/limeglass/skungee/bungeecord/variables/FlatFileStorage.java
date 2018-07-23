@@ -21,9 +21,9 @@ import com.google.gson.GsonBuilder;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.sockets.BungeeSockets;
 import me.limeglass.skungee.bungeecord.sockets.ServerTracker;
-import me.limeglass.skungee.objects.BungeePacket;
-import me.limeglass.skungee.objects.BungeePacketType;
 import me.limeglass.skungee.objects.SkungeeVariable.Value;
+import me.limeglass.skungee.objects.packets.BungeePacket;
+import me.limeglass.skungee.objects.packets.BungeePacketType;
 
 public class FlatFileStorage extends SkungeeStorage {
 
@@ -123,7 +123,7 @@ public class FlatFileStorage extends SkungeeStorage {
 			}
 			while ((line = reader.readLine()) != null) {
 				String[] values = line.split(DELIMITER, 2);
-				map.put(values[0], values[1]);
+				if (values.length == 2) map.put(values[0], values[1]);
 			}
 			writer = new FileWriter(file);
 			header();

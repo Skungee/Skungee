@@ -18,9 +18,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import me.limeglass.skungee.bungeecord.Skungee;
-import me.limeglass.skungee.objects.BungeePacket;
-import me.limeglass.skungee.objects.BungeePacketType;
 import me.limeglass.skungee.objects.ConnectedServer;
+import me.limeglass.skungee.objects.packets.BungeePacket;
+import me.limeglass.skungee.objects.packets.BungeePacketType;
 import net.md_5.bungee.api.ProxyServer;
 
 public class ServerTracker {

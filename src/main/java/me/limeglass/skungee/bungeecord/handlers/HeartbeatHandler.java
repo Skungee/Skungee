@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.bungeecord.sockets.ServerTracker;
-import me.limeglass.skungee.objects.SkungeePacket;
-import me.limeglass.skungee.objects.SkungeePacketType;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class HeartbeatHandler extends SkungeeBungeeHandler {

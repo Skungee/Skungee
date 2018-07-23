@@ -18,14 +18,14 @@ import java.util.Set;
 
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.spigot.Skungee;
-import me.limeglass.skungee.objects.BungeePacket;
-import me.limeglass.skungee.objects.BungeePacketType;
-import me.limeglass.skungee.objects.ServerPingPacket;
 import me.limeglass.skungee.objects.SkungeeVariable.Value;
 import me.limeglass.skungee.objects.events.PingEvent;
 import me.limeglass.skungee.objects.events.PlayerDisconnectEvent;
 import me.limeglass.skungee.objects.events.PlayerSwitchServerEvent;
 import me.limeglass.skungee.objects.events.SkungeeMessageEvent;
+import me.limeglass.skungee.objects.packets.BungeePacket;
+import me.limeglass.skungee.objects.packets.BungeePacketType;
+import me.limeglass.skungee.objects.packets.ServerPingPacket;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;

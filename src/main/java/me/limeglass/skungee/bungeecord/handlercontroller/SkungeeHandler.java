@@ -8,8 +8,8 @@ import java.util.Set;
 
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
-import me.limeglass.skungee.objects.SkungeePacket;
-import me.limeglass.skungee.objects.SkungeePacketType;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public abstract class SkungeeHandler {
 

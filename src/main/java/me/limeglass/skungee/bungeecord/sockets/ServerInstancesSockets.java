@@ -7,9 +7,10 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Base64;
-import me.limeglass.skungee.objects.ServerInstancesPacket;
+
 import net.md_5.bungee.api.ProxyServer;
 import me.limeglass.skungee.bungeecord.Skungee;
+import me.limeglass.skungee.objects.packets.ServerInstancesPacket;
 
 public class ServerInstancesSockets {
 

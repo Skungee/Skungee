@@ -16,11 +16,11 @@ import java.util.logging.SimpleFormatter;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import me.limeglass.skungee.objects.SkungeePacket;
 import net.md_5.bungee.api.ProxyServer;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
 import me.limeglass.skungee.bungeecord.handlers.PacketHandler;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
 
 public class SocketRunnable implements Runnable {
 

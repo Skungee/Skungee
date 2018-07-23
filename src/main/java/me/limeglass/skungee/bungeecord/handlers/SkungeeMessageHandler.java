@@ -4,10 +4,10 @@ import java.net.InetAddress;
 
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeExecutor;
 import me.limeglass.skungee.bungeecord.sockets.BungeeSockets;
-import me.limeglass.skungee.objects.BungeePacket;
-import me.limeglass.skungee.objects.BungeePacketType;
-import me.limeglass.skungee.objects.SkungeePacket;
-import me.limeglass.skungee.objects.SkungeePacketType;
+import me.limeglass.skungee.objects.packets.BungeePacket;
+import me.limeglass.skungee.objects.packets.BungeePacketType;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class SkungeeMessageHandler extends SkungeeExecutor {
 

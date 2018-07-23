@@ -20,22 +20,20 @@ import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.StringMode;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import me.limeglass.skungee.objects.SkriptChangeMode;
-import me.limeglass.skungee.objects.SkungeePacket;
-import me.limeglass.skungee.objects.SkungeePacketType;
+import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
 import me.limeglass.skungee.objects.SkungeeVariable;
 import me.limeglass.skungee.objects.SkungeeVariable.Value;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
-import me.limeglass.skungee.spigot.utils.annotations.Changers;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 @Name("Network variable")
 @Description("Returns a variable that is stored on the Bungeecord Skungee.")
 @Patterns("[skungee] (global|network|bungee[[ ]cord]) variable [(from|of)] %objects%")
-@Changers(ChangeMode.SET)
 public class ExprNetworkVariable extends SkungeeExpression<Object> {
 
 	private static Variable<?> variable;
@@ -105,7 +103,7 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 	
 	@Override
 	public Class<?>[] acceptChange(final ChangeMode mode) {
-		if (mode != ChangeMode.SET || mode != ChangeMode.RESET || mode != ChangeMode.DELETE) return null;
+		if (mode != ChangeMode.SET && mode != ChangeMode.RESET && mode != ChangeMode.DELETE) return null;
 		return CollectionUtils.array(this.isSingle() ? Object.class : Object[].class);
 	}
 	

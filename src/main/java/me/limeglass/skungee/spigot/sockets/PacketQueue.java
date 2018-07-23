@@ -4,7 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import me.limeglass.skungee.objects.SkungeePacket;
+
+import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.spigot.Skungee;
 
 public class PacketQueue {

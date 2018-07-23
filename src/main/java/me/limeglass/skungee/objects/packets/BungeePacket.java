@@ -1,6 +1,8 @@
-package me.limeglass.skungee.objects;
+package me.limeglass.skungee.objects.packets;
 
 import java.io.Serializable;
+
+import me.limeglass.skungee.objects.SkungeePlayer;
 
 public class BungeePacket implements Serializable {
 

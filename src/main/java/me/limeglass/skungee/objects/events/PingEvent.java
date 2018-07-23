@@ -3,7 +3,7 @@ package me.limeglass.skungee.objects.events;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import me.limeglass.skungee.objects.ServerPingPacket;
+import me.limeglass.skungee.objects.packets.ServerPingPacket;
 
 public class PingEvent extends Event {
 	

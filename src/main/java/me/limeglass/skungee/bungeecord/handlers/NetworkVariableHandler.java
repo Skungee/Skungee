@@ -3,11 +3,11 @@ package me.limeglass.skungee.bungeecord.handlers;
 import java.net.InetAddress;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.bungeecord.variables.VariableManager;
-import me.limeglass.skungee.objects.SkriptChangeMode;
-import me.limeglass.skungee.objects.SkungeePacket;
-import me.limeglass.skungee.objects.SkungeePacketType;
+import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
 import me.limeglass.skungee.objects.SkungeeVariable;
 import me.limeglass.skungee.objects.SkungeeVariable.Value;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class NetworkVariableHandler extends SkungeeBungeeHandler {
 
@@ -17,8 +17,8 @@ public class NetworkVariableHandler extends SkungeeBungeeHandler {
 
 	@Override
 	public Value[] handlePacket(SkungeePacket packet, InetAddress address) {
-		if (packet.getObject() == null) return null;
 		Object object = packet.getObject();
+		if (object == null) return null;
 		if (object instanceof SkungeeVariable) {
 			SkungeeVariable variable = (SkungeeVariable) object;
 			String variableName = variable.getVariableName();

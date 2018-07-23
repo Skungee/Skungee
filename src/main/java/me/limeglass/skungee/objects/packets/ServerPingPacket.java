@@ -1,4 +1,6 @@
-package me.limeglass.skungee.objects;
+package me.limeglass.skungee.objects.packets;
+
+import me.limeglass.skungee.objects.SkungeePlayer;
 
 public class ServerPingPacket extends BungeePacket {
 

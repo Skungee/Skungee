@@ -17,9 +17,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
-import me.limeglass.skungee.objects.SkungeePacket;
-import me.limeglass.skungee.objects.SkungeePacketType;
 import me.limeglass.skungee.objects.SkungeePlayer;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.Skungee;
 
 public class Sockets {

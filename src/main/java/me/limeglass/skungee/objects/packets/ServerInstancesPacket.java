@@ -1,4 +1,4 @@
-package me.limeglass.skungee.objects;
+package me.limeglass.skungee.objects.packets;
 
 import java.io.Serializable;
 import java.util.Arrays;

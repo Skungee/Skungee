@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import me.limeglass.skungee.bungeecord.Skungee;
-import me.limeglass.skungee.objects.SkungeePacket;
 import me.limeglass.skungee.objects.SkungeePlayer;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

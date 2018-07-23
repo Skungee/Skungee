@@ -16,8 +16,8 @@ import java.util.logging.SimpleFormatter;
 import org.bukkit.Bukkit;
 import org.eclipse.jdt.annotation.Nullable;
 
+import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.spigot.Skungee;
-import me.limeglass.skungee.objects.BungeePacket;
 
 public class SpigotRunnable implements Runnable {
 
