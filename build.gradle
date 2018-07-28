@@ -41,9 +41,9 @@ repositories {
 dependencies {
     
     //Skript
-    //implementation (group: 'ch.njol', name: 'skript', version: '2.2-dev35b') {
-    //    transitive = false
-	//}
+    implementation (group: 'ch.njol', name: 'skript', version: '2.2-dev35b') {
+        transitive = false
+	}
 	
 	//BungeeTabListPlusAPI
 	shade (group: 'codecrafter47.bungeetablistplus', name: 'bungeetablistplus-api-bungee', version: '2.8.4')
