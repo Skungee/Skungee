@@ -18,4 +18,5 @@ public class SectionTest extends SkungeeSection {
 		if (areNull(event)) return false;
 		return true;
 	}
+	
 }

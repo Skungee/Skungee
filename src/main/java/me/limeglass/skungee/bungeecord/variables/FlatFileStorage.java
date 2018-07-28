@@ -35,12 +35,11 @@ public class FlatFileStorage extends SkungeeStorage {
 		super("CSV", "flatfile");
 	}
 	
-	private final static String path = Skungee.getInstance().getDataFolder().getAbsolutePath() + File.separator + "variables" + File.separator;
-	private static final String DELIMITER = "@: ";
-	private Boolean loadingHash = false;
+	private final String DELIMITER = "@: ";
+	private boolean loadingHash;
 	private File folder, file;
 	private FileWriter writer;
-	private static Gson gson;
+	private Gson gson;
 	
 	private void header() throws IOException {
 		writer.append("\n");
@@ -54,8 +53,8 @@ public class FlatFileStorage extends SkungeeStorage {
 	@Override
 	public boolean initialize() {
 		gson = new GsonBuilder().setLenient().setFieldNamingPolicy(FieldNamingPolicy.IDENTITY).create();
-		file = new File(path + "variables.csv");
-		folder = new File(path);
+		file = new File(variablesFolder + "variables.csv");
+		folder = new File(variablesFolder);
 		folder.mkdir();
 		if (!file.exists()) {
 			try {
@@ -83,7 +82,7 @@ public class FlatFileStorage extends SkungeeStorage {
 				try {
 					writer.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Skungee.exception(e, "Failed to remove ID: " + index + " from flatfile");
 				}
 				variables.remove(index);
 				loadFromHash();
@@ -105,7 +104,7 @@ public class FlatFileStorage extends SkungeeStorage {
 		try {
 			Files.copy(file.toPath(), newFile.toPath());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Skungee.exception(e, "Failed to backup flatfile");
 		}
 		load();
 	}
@@ -150,7 +149,7 @@ public class FlatFileStorage extends SkungeeStorage {
 					try {
 						writer.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						Skungee.exception(e, "Failed to close the writer while setting the value: " + name);
 					}
 					variables.remove(name);
 					loadFromHash();

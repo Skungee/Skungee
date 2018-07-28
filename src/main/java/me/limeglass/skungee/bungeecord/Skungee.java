@@ -17,8 +17,8 @@ import com.google.common.reflect.Reflection;
 
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
-import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
+import me.limeglass.skungee.bungeecord.protocol.channel.ChannelListener;
 import me.limeglass.skungee.bungeecord.serverinstances.Premium;
 import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
 import me.limeglass.skungee.bungeecord.sockets.SocketRunnable;
@@ -56,9 +56,8 @@ public class Skungee extends Plugin {
 		encryption = new EncryptionUtil(this, false);
 		encryption.hashFile();
 		//load handlers
-		Set<Class<? extends SkungeeHandler>> classes = BungeeReflectionUtil.getSubTypesOf(Skungee.getInstance(), SkungeeHandler.class, "me.limeglass.skungee.bungeecord.handler");
-		Reflection.initialize(classes.toArray(new Class[classes.size()]));
-		
+		Set<Class<?>> classes = BungeeReflectionUtil.getClasses(Skungee.getInstance(), "me.limeglass.skungee.bungeecord.handlers", "me.limeglass.skungee.bungeecord.protocol.handlers");
+		initialize(classes.toArray(new Class[classes.size()]));
 		metrics = new BungecordMetrics(this);
 		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_plugins") {
 			@Override
@@ -79,6 +78,7 @@ public class Skungee extends Plugin {
 			}
 		});
 		if (getConfig().getBoolean("Events", false)) getProxy().getPluginManager().registerListener(this, new EventListener());
+		if (getConfig().getBoolean("Packets.Enabled", true)) getProxy().getPluginManager().registerListener(this, new ChannelListener());
 		VariableManager.setup();
 		connect();
 		if (!getConfig().getBoolean("DisableRegisteredInfo", false)) consoleMessage("has been enabled!");
@@ -86,6 +86,11 @@ public class Skungee extends Plugin {
 	
 	public void onDisable() {
 		ServerInstancesSockets.shutdown();
+	}
+	
+	@SafeVarargs
+	public static void initialize(Class<?>... classes) {
+		Reflection.initialize(classes);
 	}
 	
 	private void loadConfiguration() {

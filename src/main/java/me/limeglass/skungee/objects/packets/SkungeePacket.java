@@ -8,16 +8,34 @@ import me.limeglass.skungee.objects.SkungeePlayer;
 public class SkungeePacket implements Serializable {
 
 	private static final long serialVersionUID = -7377209366283539512L;
-	private final SkungeePacketType type;
 	private final Boolean returnable;
 	private SkriptChangeMode changeMode;
 	private SkungeePlayer[] players;
 	private Object settable, object;
+	private SkungeePacketType type;
 	private byte[] password;
-
+	//Used for external packets, extend this SkungeePacket and set the name to then call the name on Bungeecord through handlers.
+	//The name or the type must be set or else the packet will become a dummy packet on Bungeecord. (Also needs the handler)
+	private String name;
+	
+	public SkungeePacket(Boolean returnable) {
+		this.returnable = returnable;
+	}
+	
+	public SkungeePacket(Boolean returnable, String name) {
+		this.returnable = returnable;
+		this.name = name;
+	}
+	
 	public SkungeePacket(Boolean returnable, SkungeePacketType type) {
 		this.returnable = returnable;
 		this.type = type;
+	}
+	
+	public SkungeePacket(Boolean returnable, String name, Object object) {
+		this.returnable = returnable;
+		this.object = object;
+		this.name = name;
 	}
 	
 	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object) {
@@ -26,10 +44,11 @@ public class SkungeePacket implements Serializable {
 		this.type = type;
 	}
 	
-	public SkungeePacket(Boolean returnable, SkungeePacketType type, SkungeePlayer... players) {
+	public SkungeePacket(Boolean returnable, String name, Object object, Object settable) {
 		this.returnable = returnable;
-		this.players = players;
-		this.type = type;
+		this.settable = settable;
+		this.object = object;
+		this.name = name;
 	}
 	
 	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object, Object settable) {
@@ -37,6 +56,13 @@ public class SkungeePacket implements Serializable {
 		this.settable = settable;
 		this.object = object;
 		this.type = type;
+	}
+	
+	public SkungeePacket(Boolean returnable, String name, Object object, SkungeePlayer... players) {
+		this.returnable = returnable;
+		this.players = players;
+		this.object = object;
+		this.name = name;
 	}
 	
 	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object, SkungeePlayer... players) {
@@ -140,5 +166,9 @@ public class SkungeePacket implements Serializable {
 	
 	public SkungeePacketType getType() {
 		return type;
+	}
+
+	public String getName() {
+		return name;
 	}
 }

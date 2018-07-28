@@ -153,6 +153,13 @@ NetworkVariables:
         # Set the backup time in minutes. (Default is 5 hours)
         IntervalTime: 300
 
+# Packets can be handled, read and managed from Skungee on the Bungeecord. Just let that settle in.
+Packets:
+    # Should Skungee be allowed to intercept, inject and read packets from the Minecraft clients (players)?
+    # If this is false some syntax that rely on packets will not be registered or return nothing.
+    # If you have errors with the packets or a developer of Skungee instructed you to, you can do so here.
+    Enabled: true
+
 Misc:
   # Whenever a message isn't set in a syntax, should Skungee grab a funny message to say to the user when kicked.
   # This is best used if you make a Bungeecord ban manager lol.

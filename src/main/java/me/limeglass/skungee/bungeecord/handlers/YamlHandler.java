@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
@@ -21,7 +23,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 public class YamlHandler extends SkungeeBungeeHandler {
 	
 	static {
-		registerPacket(new YamlHandler(), SkungeePacketType.YAML);
+		registerHandler(new YamlHandler(), SkungeePacketType.YAML);
 	}
 	
 	private Object[] get(Configuration configuration, String node, State state) {
@@ -87,7 +89,7 @@ public class YamlHandler extends SkungeeBungeeHandler {
 					for (Object object : delta) {
 						collection.add(parse(object));
 					}
-					if (configuration.getKeys().contains(path)) collection.addAll(configuration.getList(node));
+					if (configuration.getKeys().contains(node)) collection.addAll(configuration.getList(node));
 					configuration.set(node, collection);
 					break;
 				case SET:
@@ -132,5 +134,15 @@ public class YamlHandler extends SkungeeBungeeHandler {
 			}
 			file.createNewFile();
 		}
+	}
+
+	@Override
+	public String toString(SkungeePacket packet) {
+		SkungeeYamlPacket yamlPacket = (SkungeeYamlPacket) packet;
+		String output = UniversalSkungee.getPacketDebug(packet);
+		if (yamlPacket.getNode() != null) output = output + " with node: " + yamlPacket.getNode() + " ";
+		if (yamlPacket.getPath() != null) output = output + " with path: " + yamlPacket.getPath() + " ";
+		if (yamlPacket.getDelta() != null) output = output + " with delta: " + Arrays.toString(yamlPacket.getDelta());
+		return null;
 	}
 }

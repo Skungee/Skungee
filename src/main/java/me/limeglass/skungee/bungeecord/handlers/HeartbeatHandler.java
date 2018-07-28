@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Map.Entry;
 
+import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.bungeecord.sockets.ServerTracker;
@@ -16,7 +17,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 public class HeartbeatHandler extends SkungeeBungeeHandler {
 
 	static {
-		registerPacket(new HeartbeatHandler(), SkungeePacketType.HEARTBEAT);
+		registerHandler(new HeartbeatHandler(), SkungeePacketType.HEARTBEAT);
 	}
 
 	@Override
@@ -34,5 +35,10 @@ public class HeartbeatHandler extends SkungeeBungeeHandler {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public String toString(SkungeePacket packet) {
+		return Skungee.getConfig().getBoolean("IgnoreSpamPackets", true) ? null : UniversalSkungee.getPacketDebug(packet);
 	}
 }

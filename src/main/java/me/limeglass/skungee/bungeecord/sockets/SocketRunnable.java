@@ -19,7 +19,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import net.md_5.bungee.api.ProxyServer;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
-import me.limeglass.skungee.bungeecord.handlers.PacketHandler;
+import me.limeglass.skungee.bungeecord.handlers.SkungeePacketHandler;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 
 public class SocketRunnable implements Runnable {
@@ -82,11 +82,18 @@ public class SocketRunnable implements Runnable {
 					return;
 				}
 				Optional<SkungeeHandler> handler = SkungeeHandler.getHandler(packet.getType());
-				Object packetData;
+				Object packetData = null;
 				if (handler.isPresent()) {
 					packetData = handler.get().callPacket(packet, address);
 				} else {
-					packetData = PacketHandler.handlePacket(packet, socket.getInetAddress());
+					if (packet.getName() != null) {
+						Optional<SkungeeHandler> externalHandler = SkungeeHandler.getHandler(packet.getName());
+						if (externalHandler.isPresent()) {
+							packetData = externalHandler.get().callPacket(packet, address);
+						}
+					} else {
+						packetData = SkungeePacketHandler.handlePacket(packet, socket.getInetAddress());
+					}
 				}
 				if (packetData != null) {
 					//TODO Add cipher encryption + change config message.

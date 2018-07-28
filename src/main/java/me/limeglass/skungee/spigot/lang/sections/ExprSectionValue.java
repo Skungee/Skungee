@@ -1,5 +1,6 @@
 package me.limeglass.skungee.spigot.lang.sections;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +18,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
+import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.lang.ExpressionData;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Disabled;
@@ -32,6 +34,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Single;
 @Disabled
 public class ExprSectionValue extends SkungeeExpression<Object> {
 	
+	public static final List<StorageSection> sections = new ArrayList<StorageSection>();
 	private ExpressionData sectionExpressions;
 	
 	@Override
@@ -40,13 +43,18 @@ public class ExprSectionValue extends SkungeeExpression<Object> {
 		this.patternMark = parser.mark;
 		this.parser = parser;
 		//TODO look for multiple StorageSections rather than the lowest child.
-		List<TriggerSection> triggers = ScriptLoader.currentSections;
-		for (TriggerSection triggerSection : triggers) {
-			if (triggerSection instanceof StorageSection) {
-				this.sectionExpressions = ((StorageSection)triggerSection).getExpressions();
+		List<TriggerSection> triggers = new ArrayList<TriggerSection>(ScriptLoader.currentSections);
+		for (TriggerSection section : triggers) {
+			if (section instanceof StorageSection) {
+				sectionExpressions = sections.stream().filter(s -> s.equals(section)).findFirst().get().getExpressions();
+				/*ExpressionData exprData = ((StorageSection)section).getExpressions();
+				if (sectionExpressions == null) sectionExpressions = new ExpressionData(exprData);
+				Skungee.consoleMessage("called");
+				*/
+				break;
 			}
 		}
-		if (this.sectionExpressions == null) {
+		if (sectionExpressions == null) {
 			Skript.error("Section values may only be present in sections that extend the Custom Section classes");
 			return false;
 		}
@@ -55,6 +63,7 @@ public class ExprSectionValue extends SkungeeExpression<Object> {
 	
 	@Override
 	protected Object[] get(Event event) {
+		Skungee.consoleMessage(sectionExpressions.toString(event, false));
 		String input = "" + parser.regexes.get(0).group();
 		int i = -1;
 		final Matcher matcher = Pattern.compile("^(.+)(-| )(\\d+)$").matcher(input);
@@ -64,6 +73,7 @@ public class ExprSectionValue extends SkungeeExpression<Object> {
 		}
 		final Class<?> c = Classes.getClassFromUserInput(input);
 		if (c == null && !input.equals("value")) {
+			Skungee.consoleMessage("returning null");
 			return null;
 		} else if (input.equals("value")) {
 			i = 1;
@@ -75,4 +85,5 @@ public class ExprSectionValue extends SkungeeExpression<Object> {
 			return sectionExpressions.getAll(event, c);
 		}
 	}
+	
 }

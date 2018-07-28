@@ -6,8 +6,8 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
 import me.limeglass.skungee.objects.events.BungeecordEvent;
-import me.limeglass.skungee.objects.events.EvtPlayerDisconnect;
-import me.limeglass.skungee.objects.events.EvtPlayerSwitchServer;
+import me.limeglass.skungee.objects.events.SkungeePlayerDisconnect;
+import me.limeglass.skungee.objects.events.SkungeePlayerSwitchServer;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Events;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
@@ -19,7 +19,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Single;
 @Patterns("[the] (skungee|bungee[[ ]cord]) player")
 @ExpressionProperty(ExpressionType.SIMPLE)
 @Single
-@Events({EvtPlayerDisconnect.class, EvtPlayerSwitchServer.class})
+@Events({SkungeePlayerDisconnect.class, SkungeePlayerSwitchServer.class})
 public class ExprEventBungeePlayer extends SkungeeExpression<Object> {
 	
 	@Override

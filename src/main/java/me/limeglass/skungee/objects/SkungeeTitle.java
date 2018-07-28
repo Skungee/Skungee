@@ -71,4 +71,14 @@ public class SkungeeTitle implements Serializable {
 	public void setSubtitle(String subtitle) {
 		this.subtitle = subtitle;
 	}
+	
+	public String toString() {
+		String output = "SkungeeTitle ";
+		if (subtitle != null) output = output + " subtitle=" + subtitle + " ";
+		if (fadeOut >= 0) output = output + " fadeOut=" + fadeOut + " ";
+		if (title != null) output = output + " title=" + title + " ";
+		if (fadeIn >= 0) output = output + " fadeIn=" + fadeIn + " ";
+		if (stay >= 0) output = output + " stay=" + stay + " ";
+		return output;
+	}
 }

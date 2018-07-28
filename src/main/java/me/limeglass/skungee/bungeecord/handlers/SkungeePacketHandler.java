@@ -26,7 +26,6 @@ import me.limeglass.skungee.objects.packets.BungeePacketType;
 import me.limeglass.skungee.objects.packets.ServerInstancesPacket;
 import me.limeglass.skungee.objects.packets.ServerInstancesPacketType;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.utils.Utils;
 
 import java.util.concurrent.TimeUnit;
@@ -34,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -43,15 +41,11 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
-public class PacketHandler {
+public class SkungeePacketHandler {
 	
 	@SuppressWarnings("deprecation")
 	public static Object handlePacket(SkungeePacket packet, InetAddress address) {
-		if (!Skungee.getConfig().getBoolean("IgnoreSpamPackets", true)) {
-			Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
-		} else if (!(packet.getType() == SkungeePacketType.HEARTBEAT)) {
-			Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
-		}
+		Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
 		List<ProxiedPlayer> players = new ArrayList<ProxiedPlayer>();
 		if (packet.getPlayers() != null) {
 			for (SkungeePlayer player : packet.getPlayers()) {
@@ -69,17 +63,6 @@ public class PacketHandler {
 		}
 		Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
 		switch (packet.getType()) {
-			case HANDSHAKE:
-				break;
-			case HEARTBEAT:
-				break;
-			case ACTIONBAR:
-				if (!players.isEmpty() && packet.getObject() != null) {
-					for (ProxiedPlayer player : players) {
-						player.sendMessage(ChatMessageType.ACTION_BAR, new TextComponent((String) packet.getObject()));
-					}
-				}
-				break;
 			case PLAYERCHAT:
 				if (!players.isEmpty() && packet.getObject() != null) {
 					for (ProxiedPlayer player : players) {
@@ -666,13 +649,10 @@ public class PacketHandler {
 			case BUNGEEONLINEMODE:
 				return ProxyServer.getInstance().getConfig().isOnlineMode();
 			case CUSTOM:
+				//TODO
 				break;
-			case BTLP_TABLIST:
+			default:
 				break;
-		case BTLP_PLAYERTABLIST:
-			break;
-		default:
-			break;
 		}
 		return null;
 	}

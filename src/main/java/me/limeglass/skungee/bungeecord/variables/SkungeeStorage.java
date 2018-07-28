@@ -1,11 +1,14 @@
 package me.limeglass.skungee.bungeecord.variables;
 
+import java.io.File;
 import java.util.TreeMap;
 
+import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.objects.SkungeeVariable.Value;
 
 public abstract class SkungeeStorage {
 
+	protected final static String variablesFolder = Skungee.getInstance().getDataFolder().getAbsolutePath() + File.separator + "variables" + File.separator;
 	protected final static TreeMap<String, Value[]> variables = new TreeMap<String, Value[]>(String.CASE_INSENSITIVE_ORDER);
 	private final String[] names;
 	

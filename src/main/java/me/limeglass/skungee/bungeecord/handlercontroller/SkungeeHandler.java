@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import java.util.Set;
 
-import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
@@ -19,22 +18,27 @@ public abstract class SkungeeHandler {
 	protected InetAddress address;
 	protected String name;
 	
-	protected static void registerPacket(SkungeeHandler packet, String name) {
-		packet.setName(name);
-		if (!registered.contains(packet)) registered.add(packet);
+	protected static void registerHandler(SkungeeHandler handler, String name) {
+		handler.setName(name);
+		if (!registered.contains(handler)) registered.add(handler);
 	}
 	
-	protected static void registerPacket(SkungeeHandler packet, SkungeePacketType type) {
-		packet.setType(type);
-		registerPacket(packet, type.name());
+	protected static void registerHandler(SkungeeHandler handler, SkungeePacketType type) {
+		handler.setType(type);
+		registerHandler(handler, type.name());
 	}
 	
 	public static Optional<SkungeeHandler> getHandler(SkungeePacketType type) {
-		return registered.parallelStream().filter(packet -> packet.getType() == type).findFirst();
+		return registered.parallelStream().filter(handler -> handler.getType() == type).findFirst();
 	}
 	
 	public static Optional<SkungeeHandler> getHandler(String name) {
-		return registered.parallelStream().filter(packet -> packet.getName().equals(name)).findFirst();
+		return registered.parallelStream().filter(handler -> handler.getName().equals(name)).findFirst();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> Optional<T> getHandler(Class<? extends SkungeeHandler> type) {
+		return (Optional<T>) registered.parallelStream().filter(handler -> type.isAssignableFrom(handler.getClass())).findFirst();
 	}
 	
 	public SkungeePacketType getType() {
@@ -56,14 +60,13 @@ public abstract class SkungeeHandler {
 	public Object callPacket(SkungeePacket packet, InetAddress address) {
 		this.packet = packet;
 		this.address = address;
-		if (!Skungee.getConfig().getBoolean("IgnoreSpamPackets", true)) {
-			Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
-		} else if (packet.getType() != SkungeePacketType.HEARTBEAT) {
-			Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
-		}
+		String string = toString(packet);
+		if (string != null) Skungee.debugMessage("Recieved " + string);
 		if (!onPacketCall(packet, address)) return null;
 		return handlePacket(packet, address);
 	}
+	
+	public abstract String toString(SkungeePacket packet);
 	
 	public abstract Object handlePacket(SkungeePacket packet, InetAddress address);
 	

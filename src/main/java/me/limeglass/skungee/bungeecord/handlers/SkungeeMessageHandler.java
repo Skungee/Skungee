@@ -2,6 +2,7 @@ package me.limeglass.skungee.bungeecord.handlers;
 
 import java.net.InetAddress;
 
+import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeExecutor;
 import me.limeglass.skungee.bungeecord.sockets.BungeeSockets;
 import me.limeglass.skungee.objects.packets.BungeePacket;
@@ -12,7 +13,7 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 public class SkungeeMessageHandler extends SkungeeExecutor {
 
 	static {
-		registerPacket(new SkungeeMessageHandler(), SkungeePacketType.SKUNGEEMESSAGES);
+		registerHandler(new SkungeeMessageHandler(), SkungeePacketType.SKUNGEEMESSAGES);
 	}
 
 	@Override
@@ -21,5 +22,10 @@ public class SkungeeMessageHandler extends SkungeeExecutor {
 		String[] messages = (String[]) packet.getObject();
 		String[] channels = (String[]) packet.getSetObject();
 		BungeeSockets.sendAll(new BungeePacket(false, BungeePacketType.SKUNGEEMESSAGES, messages, channels));
+	}
+
+	@Override
+	public String toString(SkungeePacket packet) {
+		return UniversalSkungee.getPacketDebug(packet);
 	}
 }

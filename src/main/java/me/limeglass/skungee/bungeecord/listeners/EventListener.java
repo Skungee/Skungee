@@ -98,7 +98,6 @@ public class EventListener implements Listener {
 									image = null;
 								}
 							} else {
-								Skungee.consoleMessage("test");
 								image = ImageIO.read(new URL(location));
 							}
 							if (image != null) ping.setFavicon(Favicon.create(image));

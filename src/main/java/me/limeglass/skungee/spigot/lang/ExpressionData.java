@@ -16,13 +16,15 @@ public class ExpressionData {
 
 	private Expression<?>[] expressions;
 	private Map<String, Integer> syntax = new HashMap<String, Integer>();
-	public boolean nullable = false;
+	public boolean nullable;
+	private final String pattern;
 	
 	/**
 	 * Register an Expression for the abstract calling class
 	 * Useless on its own
 	*/
 	public ExpressionData(Expression<?>[] expressions, String pattern) {
+		this.pattern = pattern;
 		Matcher matcher = Pattern.compile("\\%([^\\%]+)\\%").matcher(pattern);
 		int i = 0;
 		while (matcher.find()) {
@@ -48,9 +50,10 @@ public class ExpressionData {
 		}
 		this.expressions = expressions;
 	}
-	
-	public ExpressionData(Expression<?>[] expressions) {
-		this.expressions = expressions;
+
+	public ExpressionData(ExpressionData clone) {
+		this.pattern = clone.getPattern();
+		new ExpressionData(clone.getExpressions(), pattern);
 	}
 	
 	/**
@@ -353,5 +356,9 @@ public class ExpressionData {
 		for (Expression<?> expression : expressions)
 			builder.append(expression.toString(event, debug) + "\n");
 		return builder.toString();
+	}
+
+	public String getPattern() {
+		return pattern;
 	}
 }

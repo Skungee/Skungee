@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import codecrafter47.bungeetablistplus.api.bungee.CustomTablist;
+import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
@@ -15,7 +16,7 @@ public class TablistTextHandler extends SkungeeBungeeHandler {
 	//BungeeTabListPlus
 	
 	static {
-		registerPacket(new TablistTextHandler(), SkungeePacketType.BTLP_TABLISTTEXT);
+		registerHandler(new TablistTextHandler(), SkungeePacketType.BTLP_TABLISTTEXT);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -30,5 +31,10 @@ public class TablistTextHandler extends SkungeeBungeeHandler {
 			text.add(tablist.getText((int)slots.get(0), (int)slots.get(1)));
 		}
 		return text;
+	}
+
+	@Override
+	public String toString(SkungeePacket packet) {
+		return UniversalSkungee.getPacketDebug(packet);
 	}
 }

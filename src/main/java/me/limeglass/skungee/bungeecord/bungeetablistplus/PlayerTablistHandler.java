@@ -3,6 +3,7 @@ package me.limeglass.skungee.bungeecord.bungeetablistplus;
 import java.net.InetAddress;
 
 import codecrafter47.bungeetablistplus.api.bungee.CustomTablist;
+import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeePlayerHandler;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
@@ -12,7 +13,7 @@ public class PlayerTablistHandler extends SkungeePlayerHandler {
 	//BungeeTabListPlus
 	
 	static {
-		registerPacket(new PlayerTablistHandler(), SkungeePacketType.BTLP_PLAYERTABLIST);
+		registerHandler(new PlayerTablistHandler(), SkungeePacketType.BTLP_PLAYERTABLIST);
 	}
 
 	@Override
@@ -37,5 +38,10 @@ public class PlayerTablistHandler extends SkungeePlayerHandler {
 				break;
 		}
 		return null;
+	}
+
+	@Override
+	public String toString(SkungeePacket packet) {
+		return UniversalSkungee.getPacketDebug(packet);
 	}
 }

@@ -1,7 +1,9 @@
 package me.limeglass.skungee.spigot.utils;
 
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;
+import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.expressions.base.EventValueExpression;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
@@ -35,9 +37,19 @@ public class TypeClassInfo<T> {
 		return null;
 	}
 	
-	public void register(){
+	public TypeClassInfo<T> serializer(Serializer<T> serializer) {
+		classInfo.serializer(serializer);
+		return this;
+	}
+	
+	public TypeClassInfo<T> changer(Changer<T> changer) {
+		classInfo.changer(changer);
+		return this;
+	}
+	
+	public ClassInfo<T> register(){
 		if (Classes.getExactClassInfo(clazz) == null) {
-			Classes.registerClass(classInfo.user(codeName + "s?").defaultExpression(new EventValueExpression<>(clazz)).parser(new Parser<T>(){
+			classInfo.user(codeName + "s?").defaultExpression(new EventValueExpression<>(clazz)).parser(new Parser<T>(){
 	
 				@Override
 				public String getVariableNamePattern() {
@@ -57,8 +69,11 @@ public class TypeClassInfo<T> {
 				@Override
 				public String toVariableNameString(T t) {
 					return codeName + ':' + t.toString();
-			}}).serializeAs(clazz));
+			}}).serializeAs(clazz);
+			if (classInfo.getSerializer() == null) classInfo.serializeAs(null);
+			Classes.registerClass(classInfo);
 			Skungee.debugMessage("&5Registered Type '" + codeName + "' with return class " + clazz.getName());
 		}
+		return classInfo;
 	}
 }

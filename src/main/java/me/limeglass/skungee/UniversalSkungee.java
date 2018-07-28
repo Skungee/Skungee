@@ -39,6 +39,9 @@ public class UniversalSkungee {
 		if (packet.getPlayers() != null) {
 			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(SkungeePlayer::getName).collect(Collectors.toList());
 		}
+		if (packet.getChangeMode() != null) {
+			debug = debug + " with change mode: " + packet.getChangeMode();
+		}
 		return debug;
 	}
 	

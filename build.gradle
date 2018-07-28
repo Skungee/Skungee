@@ -41,24 +41,28 @@ repositories {
 dependencies {
     
     //Skript
-    api (group: 'ch.njol', name: 'skript', version: '2.2-dev35b') {
-        transitive = false
-	}
+    //implementation (group: 'ch.njol', name: 'skript', version: '2.2-dev35b') {
+    //    transitive = false
+	//}
 	
-	//BungeeTabListPlus
+	//BungeeTabListPlusAPI
 	shade (group: 'codecrafter47.bungeetablistplus', name: 'bungeetablistplus-api-bungee', version: '2.8.4')
 	
 	//Nullable annotation
-	compile (group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '1.1.0')
+	implementation (group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '1.1.0')
 	
 	//Spigot/Bukkit
-	compile (group: 'org.spigotmc', name: 'spigot-api', version: '1.12.2-R0.1-SNAPSHOT')
+	implementation (group: 'org.spigotmc', name: 'spigot-api', version: '1.12.2-R0.1-SNAPSHOT')
 	
 	//Bungeecord
-	compile (group: 'net.md-5', name: 'bungeecord-api', version: '1.12-SNAPSHOT')
+	implementation (group: 'net.md-5', name: 'bungeecord-api', version: '1.13-SNAPSHOT')
+	implementation (group: 'net.md-5', name: 'bungeecord-proxy', version: '1.13-SNAPSHOT')
+	implementation (group: 'net.md-5', name: 'bungeecord-protocol', version: '1.13-SNAPSHOT')
 	
 	//Redis-Bungee
-	compile (group: 'com.imaginarycode.minecraft', name: 'RedisBungee', version: '0.3.8-SNAPSHOT')
+	implementation (group: 'com.imaginarycode.minecraft', name: 'RedisBungee', version: '0.3.8-SNAPSHOT')
+	
+	implementation fileTree(dir: 'lib', include: '*.jar')
 }
 
 jar {

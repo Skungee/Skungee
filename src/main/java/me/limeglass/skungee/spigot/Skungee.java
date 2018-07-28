@@ -87,6 +87,7 @@ public class Skungee extends JavaPlugin {
 		Sockets.send(new SkungeePacket(true, SkungeePacketType.DISCONNECT, Bukkit.getPort()));
 		PacketQueue.stop();
 		Sockets.onPluginDisabling();
+		getServer().getScheduler().cancelTasks(this);
 	}
 
 	public final static void exception(Throwable cause, String... info) {
