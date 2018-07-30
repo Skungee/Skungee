@@ -22,6 +22,6 @@ public class EffBungeeMessagePlayer extends SkungeeEffect {
 	protected void execute(Event event) {
 		if (areNull(event)) return;
 		SkungeePlayer[] players = Utils.toSkungeePlayers(expressions.get(1).getAll(event));
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.MESSAGEPLAYER, expressions.getAll(event, String.class, 0), players));
+		Sockets.send(new SkungeePacket(false, SkungeePacketType.MESSAGEPLAYERS, expressions.getAll(event, String.class, 0), players));
 	}
 }

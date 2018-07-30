@@ -33,12 +33,12 @@ public class Events {
 		Object[] values = new Object[] {true, patterns, getEventValues(event)};
 		String[] nodes = new String[] {"enabled", "patterns", "eventvalues"};
 		for (int i = 0; i < nodes.length; i++) {
-			if (!Skungee.getConfiguration("syntax").isSet("Syntax.Events." + event.getSimpleName() + "." + nodes[i])) {
-				Skungee.getConfiguration("syntax").set("Syntax.Events." + event.getSimpleName() + "." + nodes[i], values[i]);
+			if (!Skungee.getInstance().getConfiguration("syntax").isSet("Syntax.Events." + event.getSimpleName() + "." + nodes[i])) {
+				Skungee.getInstance().getConfiguration("syntax").set("Syntax.Events." + event.getSimpleName() + "." + nodes[i], values[i]);
 			}
 		}
 		Skungee.save("syntax");
-		if (Skungee.getConfiguration("syntax").getBoolean("Syntax.Events." + event.getSimpleName() + ".enabled", true)) {
+		if (Skungee.getInstance().getConfiguration("syntax").getBoolean("Syntax.Events." + event.getSimpleName() + ".enabled", true)) {
 			//TODO find a way to make the stupid Spigot Yaml read properly for user editing of event patterns.
 			Skript.registerEvent("Skungee " + event.getSimpleName(), skriptEvent, event, patterns);
 			Skungee.debugMessage("&5Registered Event " + event.getSimpleName() + " (" + skriptEvent.getCanonicalName() + ") with syntax " + Arrays.toString(patterns));

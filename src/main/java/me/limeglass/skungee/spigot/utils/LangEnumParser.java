@@ -26,7 +26,7 @@ public class LangEnumParser<T extends Enum<T>> extends SkungeeParser<T> {
 			for (final T e : clazz.getEnumConstants()) {
 				enumNames.addAll(Arrays.asList(Language.get_(variableNamePattern + "s" + "." + e.name())));
 			}
-			Skungee.getConfiguration("syntax").set("Syntax.Enums." + clazz.getSimpleName() + ".names", enumNames);
+			Skungee.getInstance().getConfiguration("syntax").set("Syntax.Enums." + clazz.getSimpleName() + ".names", enumNames);
 		} catch (NullPointerException error) {
 			Skungee.consoleMessage("&cThe class: " + clazz.getName() +  " for classinfo name: " + variableNamePattern + " isn't an Enum!");
 		}

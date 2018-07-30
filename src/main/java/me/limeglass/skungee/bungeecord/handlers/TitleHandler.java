@@ -2,7 +2,6 @@ package me.limeglass.skungee.bungeecord.handlers;
 
 import java.net.InetAddress;
 
-import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeePlayerHandler;
 import me.limeglass.skungee.objects.SkungeeBungeeTitle;
 import me.limeglass.skungee.objects.SkungeeTitle;
@@ -22,9 +21,5 @@ public class TitleHandler extends SkungeePlayerHandler {
 		title.send(players);
 		return null;
 	}
-
-	@Override
-	public String toString(SkungeePacket packet) {
-		return UniversalSkungee.getPacketDebug(packet);
-	}
+	
 }

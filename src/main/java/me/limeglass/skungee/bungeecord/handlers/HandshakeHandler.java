@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.bungeecord.sockets.ServerTracker;
@@ -65,9 +64,5 @@ public class HandshakeHandler extends SkungeeBungeeHandler {
 		}
 		return null;
 	}
-
-	@Override
-	public String toString(SkungeePacket packet) {
-		return UniversalSkungee.getPacketDebug(packet);
-	}
+	
 }

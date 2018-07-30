@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -63,15 +62,6 @@ public class SkungeePacketHandler {
 		}
 		Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
 		switch (packet.getType()) {
-			case PLAYERCHAT:
-				if (!players.isEmpty() && packet.getObject() != null) {
-					for (ProxiedPlayer player : players) {
-						for (String msg : (String[]) packet.getObject()) {
-							player.chat(ChatColor.stripColor(msg));
-						}
-					}
-				}
-				break;
 			case KICKPLAYERS:
 				String message = "Kicked from the bungeecord network.";
 				if (packet.getObject() != null) message = (String) packet.getObject();
@@ -95,30 +85,6 @@ public class SkungeePacketHandler {
 					}
 					for (ProxiedPlayer player : players) {
 						player.disconnect(new TextComponent(msg));
-					}
-				}
-				break;
-			case MESSAGEPLAYERS:
-				for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-					for (String msg : (String[]) packet.getObject()) {
-						p.sendMessage(new TextComponent(msg));
-					}
-				}
-				break;
-			case MESSAGEPLAYER:
-				if (!players.isEmpty() && packet.getObject() != null) {
-					for (ProxiedPlayer player : players) {
-						for (String msg : (String[]) packet.getObject()) {
-							player.sendMessage(new TextComponent(msg));
-						}
-					}
-				}
-				break;
-			case CONNECTPLAYER:
-				if (!players.isEmpty() && packet.getObject() != null) {
-					for (ProxiedPlayer player : players) {
-						ServerInfo serverinfo = ProxyServer.getInstance().getServerInfo((String) packet.getObject());
-						if (serverinfo != null) player.connect(serverinfo);
 					}
 				}
 				break;
@@ -178,33 +144,6 @@ public class SkungeePacketHandler {
 					allservers.add(entry.getKey());
 				}
 				return allservers;
-			case PLAYERIP:
-				if (!players.isEmpty()) {
-					Set<String> addresses = new HashSet<String>();
-					for (ProxiedPlayer player : players) {
-						addresses.add(player.getAddress().getHostName());
-					}
-					return addresses;
-				}
-				break;
-			case PLAYERNAME:
-				if (!players.isEmpty()) {
-					Set<String> names = new HashSet<String>();
-					for (ProxiedPlayer player : players) {
-						names.add(player.getName());
-					}
-					return names;
-				}
-				break;
-			case PLAYERSERVER:
-				if (!players.isEmpty()) {
-					Set<String> playerServers = new HashSet<String>();
-					for (ProxiedPlayer player : players) {
-						playerServers.add(player.getServer().getInfo().getName());
-					}
-					return playerServers;
-				}
-				break;
 			case SERVERIP:
 				if (packet.getObject() != null) {
 					Set<String> addresses = new HashSet<String>();
@@ -229,15 +168,6 @@ public class SkungeePacketHandler {
 					return motds;
 				}
 				break;
-			case PLAYERUUID:
-				if (!players.isEmpty()) {
-					Set<String> uniqueIds = new HashSet<String>();
-					for (ProxiedPlayer player : players) {
-						uniqueIds.add(player.getUniqueId().toString());
-					}
-					return uniqueIds;
-				}
-				break;
 			case PLAYERDISPLAYNAME:
 				if (!players.isEmpty()) {
 					Set<String> names = new HashSet<String>();
@@ -259,15 +189,6 @@ public class SkungeePacketHandler {
 						}
 					}
 					return names;
-				}
-				break;
-			case PLAYERPING:
-				if (!players.isEmpty()) {
-					Set<Number> pings = new HashSet<Number>();
-					for (ProxiedPlayer player : players) {
-						pings.add(player.getPing());
-					}
-					return pings;
 				}
 				break;
 			case MAXPLAYERS:
@@ -341,15 +262,6 @@ public class SkungeePacketHandler {
 						if (chatmode != null) settings.add(chatmode);
 					}
 					return settings;
-				}
-				break;
-			case PLAYERVIEWDISTANCE:
-				if (!players.isEmpty()) {
-					Set<Number> distances = new HashSet<Number>();
-					for (ProxiedPlayer player : players) {
-						if (player.getViewDistance() > 0) distances.add(player.getViewDistance());
-					}
-					return distances;
 				}
 				break;
 			case PLAYERRECONNECTSERVER:
@@ -648,9 +560,6 @@ public class SkungeePacketHandler {
 				return ProxyServer.getInstance().getConfig().getTimeout();
 			case BUNGEEONLINEMODE:
 				return ProxyServer.getInstance().getConfig().isOnlineMode();
-			case CUSTOM:
-				//TODO
-				break;
 			default:
 				break;
 		}

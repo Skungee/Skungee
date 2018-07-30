@@ -22,6 +22,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import me.limeglass.skungee.EncryptionUtil;
+import me.limeglass.skungee.SpigotConfigSaver;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.elements.Register;
@@ -52,7 +53,7 @@ public class Skungee extends JavaPlugin {
 		File config = new File(getDataFolder(), "config.yml");
 		if (!Objects.equals(getDescription().getVersion(), getConfig().getString("version"))) {
 			consoleMessage("&dNew update found! Updating files now...");
-			if (config.exists()) config.delete();
+			if (config.exists()) new SpigotConfigSaver(this).execute();
 		}
 		for (String name : Arrays.asList("config", "syntax")) { //replace config with future files here
 			File file = new File(getDataFolder(), name + ".yml");
@@ -186,14 +187,14 @@ public class Skungee extends JavaPlugin {
 	}
 	
 	//Grabs a FileConfiguration of a defined name. The name can't contain .yml in it.
-	public static FileConfiguration getConfiguration(String file) {
+	public FileConfiguration getConfiguration(String file) {
 		return (files.containsKey(file)) ? files.get(file) : null;
 	}
 	
 	public static void save(String configuration) {
 		try {
 			File configurationFile = new File(instance.getDataFolder(), configuration + ".yml");
-			getConfiguration(configuration).save(configurationFile);
+			instance.getConfiguration(configuration).save(configurationFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

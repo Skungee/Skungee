@@ -20,7 +20,7 @@ public class Register {
 	
 	static {
 		run : for (Class clazz : ReflectionUtil.getClasses(Skungee.getInstance(), Skungee.getInstance().getPackageName())) {
-			if (clazz.getName().contains("serverinstances") && !Skungee.getConfiguration("config").getBoolean("ServerInstances", false)) continue run;
+			if (clazz.getName().contains("serverinstances") && !Skungee.getInstance().getConfiguration("config").getBoolean("ServerInstances", false)) continue run;
 			if (!clazz.isAnnotationPresent(Disabled.class)) {
 				String[] syntax = null;
 				ExpressionType type = ExpressionType.COMBINED;

@@ -145,4 +145,5 @@ public class YamlHandler extends SkungeeBungeeHandler {
 		if (yamlPacket.getDelta() != null) output = output + " with delta: " + Arrays.toString(yamlPacket.getDelta());
 		return null;
 	}
+	
 }

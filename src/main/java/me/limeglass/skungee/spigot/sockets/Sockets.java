@@ -128,7 +128,7 @@ public class Sockets {
 				bungeecord = getSocketConnection();
 				checking = false;
 				if (bungeecord == null) {
-					if (Skungee.getConfiguration("config").getBoolean("hault", false)) {
+					if (Skungee.getInstance().getConfiguration("config").getBoolean("hault", false)) {
 						return send_i(packet);
 					} else {
 						Skungee.consoleMessage("Could not establish connection to Skungee on the Bungeecord!");

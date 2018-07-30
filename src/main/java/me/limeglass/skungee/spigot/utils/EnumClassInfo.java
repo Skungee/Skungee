@@ -88,7 +88,7 @@ public class EnumClassInfo<E extends Enum<E>> {
 				for (final E e : enumType.getEnumConstants()) {
 					enums.add(e.name());
 				}
-				Skungee.getConfiguration("syntax").set("Syntax.Enums." + enumType.getSimpleName() + ".enums", enums);
+				Skungee.getInstance().getConfiguration("syntax").set("Syntax.Enums." + enumType.getSimpleName() + ".enums", enums);
 			}
 			enumDebug("&5Registered Enum '" + codeName + "' with return class " + enumType.getName(), codeName, enumType);
 		}
@@ -97,7 +97,7 @@ public class EnumClassInfo<E extends Enum<E>> {
 	private void enumDebug(String message, String codeName, Class<?> clazz) {
 		if (codeName.equalsIgnoreCase(Skungee.getInstance().getConfig().getString("syntaxDebug"))) Skungee.debugMessage("&eRegistered syntaxDebug found enum classinfo: " + codeName + " (" + clazz.getCanonicalName() + ")");
 		else Skungee.debugMessage("&5Registered Enum '" + codeName + "' with return class " + enumType.getName());
-		Skungee.getConfiguration("syntax").set("Syntax.Enums." + clazz.getSimpleName() + ".user", user);
+		Skungee.getInstance().getConfiguration("syntax").set("Syntax.Enums." + clazz.getSimpleName() + ".user", user);
 		Skungee.save("syntax");
 	}
 }

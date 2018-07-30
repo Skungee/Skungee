@@ -15,6 +15,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import com.google.common.reflect.Reflection;
 
+import me.limeglass.skungee.BungeeConfigSaver;
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
@@ -57,26 +58,9 @@ public class Skungee extends Plugin {
 		encryption.hashFile();
 		//load handlers
 		Set<Class<?>> classes = BungeeReflectionUtil.getClasses(Skungee.getInstance(), "me.limeglass.skungee.bungeecord.handlers", "me.limeglass.skungee.bungeecord.protocol.handlers");
-		initialize(classes.toArray(new Class[classes.size()]));
+		initializeHandlers(classes.toArray(new Class[classes.size()]));
 		metrics = new BungecordMetrics(this);
-		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_plugins") {
-			@Override
-			public int getValue() {
-				return getProxy().getPluginManager().getPlugins().size();
-			}
-		});
-		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_network_variables") {
-			@Override
-			public int getValue() {
-				return VariableManager.getMainStorage().getSize();
-			}
-		});
-		metrics.addCustomChart(new BungecordMetrics.SingleLineChart("amount_of_global_scripts") {
-			@Override
-			public int getValue() {
-				return SCRIPTS_FOLDER.listFiles().length;
-			}
-		});
+		metrics();
 		if (getConfig().getBoolean("Events", false)) getProxy().getPluginManager().registerListener(this, new EventListener());
 		if (getConfig().getBoolean("Packets.Enabled", true)) getProxy().getPluginManager().registerListener(this, new ChannelListener());
 		VariableManager.setup();
@@ -89,8 +73,43 @@ public class Skungee extends Plugin {
 	}
 	
 	@SafeVarargs
-	public static void initialize(Class<?>... classes) {
+	public static void initializeHandlers(Class<?>... classes) {
 		Reflection.initialize(classes);
+	}
+	
+	private void metrics() {
+		metrics.addCustomChart(new BungecordMetrics.MultiLineChart("variables_and_scripts") {
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> map) {
+				map.put("amount of variables", VariableManager.getMainStorage().getSize());
+				map.put("amount of global scripts", SCRIPTS_FOLDER.listFiles().length);
+				return map;
+			}
+		});
+		metrics.addCustomChart(new BungecordMetrics.SimplePie("amount_of_plugins") {
+			@Override
+			public String getValue() {
+				return getProxy().getPluginManager().getPlugins().size() + "";
+			}
+		});
+		metrics.addCustomChart(new BungecordMetrics.SimplePie("storage_type") {
+			@Override
+			public String getValue() {
+				return VariableManager.getMainStorage().getNames()[0];
+			}
+		});
+		metrics.addCustomChart(new BungecordMetrics.SimplePie("using_serverinstnaces") {
+			@Override
+			public String getValue() {
+				return Premium.check() + "";
+			}
+		});
+		metrics.addCustomChart(new BungecordMetrics.SimplePie("packets_enabled") {
+			@Override
+			public String getValue() {
+				return Skungee.getConfiguration("config").getBoolean("Packets.Enabled") + "";
+			}
+		});
 	}
 	
 	private void loadConfiguration() {
@@ -99,9 +118,9 @@ public class Skungee extends Plugin {
 			if (!config.exists()) Files.copy(in, config.toPath());
 			Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(config);
 			if (!getDescription().getVersion().equals(configuration.getString("version"))) {
-				Files.delete(config.toPath());
-				loadConfiguration();
+				new BungeeConfigSaver(instance).execute();
 				consoleMessage("&eThere is a new Skungee version. Generating new config...");
+				loadConfiguration();
 				return;
 			}
 			addConfiguration("config", configuration);
@@ -268,25 +287,3 @@ public class Skungee extends Plugin {
 		}
 	}
 }
-/*
-TODO:
-
-Added title stuff:
-
-	(Returns SkungeeTitle)
-	[new] (skungee|bungee[[ ]cord]) title [with text] %string% [and] [with subtitle %-string%] [[that] lasts] for %timespan%[[,] [with] fade in %-timespan%][[,] [and] [with] fade out %-timespan%]
-	
-	(show|display|send) %skungeetitle% to bungee[[ ]cord]] [(player|uuid)][s] %strings/players%
-
-Added SkungeeTitle type. This is a custom title object that works on Spigot and Bungeecord. Mainly used internally.
-
-Added string of SkungeeTitle (Returns the main String of the title):
-
-	Has all changers but ADD.
-	[(all [[of] the]|the)] (message|string)[s] (of|from) [(skungee|bungee[[ ]cord])] title[s] %skungeetitles%
-
-Added subtitle of SkungeeTitle (Returns the subtitle String):
-
-	Has all changers but ADD.
-	[(all [[of] the]|the)] sub[-]title[s] (of|from) [(skungee|bungee[[ ]cord])] title[s] %skungeetitles%
-*/

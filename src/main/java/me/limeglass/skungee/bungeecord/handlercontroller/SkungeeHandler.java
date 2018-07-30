@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import java.util.Set;
 
+import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
@@ -66,7 +67,9 @@ public abstract class SkungeeHandler {
 		return handlePacket(packet, address);
 	}
 	
-	public abstract String toString(SkungeePacket packet);
+	protected String toString(SkungeePacket packet) {
+		return UniversalSkungee.getPacketDebug(packet);
+	}
 	
 	public abstract Object handlePacket(SkungeePacket packet, InetAddress address);
 	

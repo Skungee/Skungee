@@ -2,7 +2,6 @@ package me.limeglass.skungee.bungeecord.handlers;
 
 import java.net.InetAddress;
 
-import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.bungeecord.variables.VariableManager;
 import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
@@ -105,9 +104,5 @@ public class NetworkVariableHandler extends SkungeeBungeeHandler {
 		}*/
 		return null;
 	}
-
-	@Override
-	public String toString(SkungeePacket packet) {
-		return UniversalSkungee.getPacketDebug(packet);
-	}
+	
 }
