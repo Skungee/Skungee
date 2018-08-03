@@ -115,11 +115,14 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 	@Override
 	public void change(Event event, Object[] delta, ChangeMode mode) {
 		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
-		if (changer == null || delta == null) return;
-		Value[] values = new Value[delta.length];
-		for (int i = 0; i < delta.length; i++) {
-			ch.njol.skript.variables.SerializedVariable.Value value = Classes.serialize(delta[i]);
-			values[i] = new Value(value.type, value.data);
+		if (changer == null) return;
+		Value[] values = null;
+		if (delta != null) {
+			values = new Value[delta.length];
+			for (int i = 0; i < delta.length; i++) {
+				ch.njol.skript.variables.SerializedVariable.Value value = Classes.serialize(delta[i]);
+				values[i] = new Value(value.type, value.data);
+			}
 		}
 		SkungeeVariable variable = new SkungeeVariable(this.isSingle(), variableString.toString(event), values);
 		Sockets.send(new SkungeePacket(false, SkungeePacketType.NETWORKVARIABLE, variable, null, changer));

@@ -98,18 +98,31 @@ public class FlatFileStorage extends SkungeeStorage {
 	}
 
 	@Override
-	public void remove(String index) {
-		if (variables.containsKey(index)) {
-			if (!loadingHash) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					Skungee.exception(e, "Failed to remove ID: " + index + " from flatfile");
+	public void remove(String... indexes) {
+		Set<String> indexSet = Sets.newHashSet(indexes);
+		for (String index : indexes) {
+			if (index.endsWith("::*")) {
+				String varIndex = index.substring(0, index.length() - 3);
+				for (Entry<String, Value[]> entry : variables.entrySet()) {
+					if (entry.getKey().startsWith(varIndex)) {
+						indexSet.add(entry.getKey());
+					}
 				}
-				variables.remove(index);
-				loadFromHash();
 			}
 		}
+		try {
+			writer.close();
+		} catch (IOException e) {
+			Skungee.exception(e, "Failed to close writer for removing index");
+		}
+		for (String index : indexSet) {
+			if (variables.containsKey(index)) {
+				if (!loadingHash) {
+					variables.remove(index);
+				}
+			}
+		}
+		loadFromHash();
 	}
 
 	@Override

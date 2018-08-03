@@ -68,8 +68,11 @@ public class Utils {
 				try {
 					uuid = UUID.fromString((String) player);
 				} catch (IllegalArgumentException ex) {}
-				if (uuid != null) skungeePlayers.add(new SkungeePlayer(false, uuid, Bukkit.getPlayer(uuid).getName()));
-				else skungeePlayers.add(new SkungeePlayer(false, null, (String) player));
+				if (uuid != null) {
+					Player p = Bukkit.getPlayer(uuid);
+					if (p != null) skungeePlayers.add(new SkungeePlayer(false, uuid, Bukkit.getPlayer(uuid).getName()));
+					else skungeePlayers.add(new SkungeePlayer(false, null, (String) player));
+				} else skungeePlayers.add(new SkungeePlayer(false, null, (String) player));
 			}
 		}
 		return skungeePlayers.toArray(new SkungeePlayer[skungeePlayers.size()]);

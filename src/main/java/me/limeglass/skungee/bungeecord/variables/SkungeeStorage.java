@@ -32,7 +32,7 @@ public abstract class SkungeeStorage {
 	
 	public abstract void set(String index, Value[] objects);
 	
-	public abstract void remove(String index);
+	public abstract void remove(String... index);
 	
 	//Return true if initialization was successful.
 	protected abstract boolean initialize();
