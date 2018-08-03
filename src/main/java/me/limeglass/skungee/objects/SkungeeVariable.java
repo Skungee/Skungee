@@ -7,16 +7,18 @@ public class SkungeeVariable implements Serializable {
 
 	private static final long serialVersionUID = 1922196457419635337L;
 	//The variable name defined as the network variable on the Spigot side {this::without::brackets::*}
-	private String name;
-	private Value[] values;
+	private final Value[] values;
+	private final boolean single;
+	private final String name;
 	
 	public SkungeeVariable() {
-		this("used internally by gson", new Value());
+		this(false, "used internally by gson", new Value());
 	}
 	
-	public SkungeeVariable(final String name, final Value... values) {
-		this.name = name;
+	public SkungeeVariable(final boolean single, final String name, final Value... values) {
 		this.values = values;
+		this.single = single;
+		this.name = name;
 	}
 	
 	public String getVariableName() {
@@ -27,10 +29,14 @@ public class SkungeeVariable implements Serializable {
 		return values;
 	}
 	
+	public boolean isSingle() {
+		return single;
+	}
+	
 	public String toString() {
 		return "name=" + name + ", " + Arrays.toString(values);
 	}
-	
+
 	public final static class Value implements Serializable {
 
 		private static final long serialVersionUID = 1428760897685648784L;

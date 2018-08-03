@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -72,6 +73,23 @@ public class FlatFileStorage extends SkungeeStorage {
 	
 	@Override
 	public Value[] get(String index) {
+		if (index.endsWith("::*")) {
+			Set<Value> values = new HashSet<Value>();
+			for (Entry<String, Value[]> entry : variables.entrySet()) {
+				String varIndex = index.substring(0, index.length() - 3);
+				if (entry.getKey().startsWith(varIndex)) {
+					for (Value value : variables.get(varIndex)) {
+						values.add(value);
+					}
+				}
+			}
+			Value[] data = variables.get(index);
+			if (data == null) return null;
+			for (Value value : data) {
+				values.add(value);
+			}
+			return values.toArray(new Value[values.size()]);
+		}
 		return variables.get(index);
 	}
 

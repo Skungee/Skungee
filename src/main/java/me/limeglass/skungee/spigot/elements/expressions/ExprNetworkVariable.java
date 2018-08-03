@@ -103,7 +103,12 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 	
 	@Override
 	public Class<?>[] acceptChange(final ChangeMode mode) {
-		if (mode != ChangeMode.SET && mode != ChangeMode.RESET && mode != ChangeMode.DELETE) return null;
+		if (this.isSingle() && (mode == ChangeMode.ADD || mode == ChangeMode.REMOVE || mode == ChangeMode.REMOVE_ALL)) {
+			Skript.error("Skungee cannot " + mode.toString() + " values from a single variable. " + 
+					"Skungee would have to send two communication packets, thus resulting in performance loss. Please get, modify and set to " + mode.toString()
+					+ " single values if you insist on doing it this way.");
+			return null;
+		}
 		return CollectionUtils.array(this.isSingle() ? Object.class : Object[].class);
 	}
 	
@@ -116,7 +121,7 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 			ch.njol.skript.variables.SerializedVariable.Value value = Classes.serialize(delta[i]);
 			values[i] = new Value(value.type, value.data);
 		}
-		SkungeeVariable variable = new SkungeeVariable(variableString.toString(event), values);
+		SkungeeVariable variable = new SkungeeVariable(this.isSingle(), variableString.toString(event), values);
 		Sockets.send(new SkungeePacket(false, SkungeePacketType.NETWORKVARIABLE, variable, null, changer));
 	}
 }

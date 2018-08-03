@@ -1,0 +1,3 @@
+Fixed:
+- Network variables that wern't set caused errors on the Bungeecord.
+- 

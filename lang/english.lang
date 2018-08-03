@@ -1,4 +1,4 @@
-version: 1.0.5
+version: 1.0.7
 
 #@an makes the pattern allow for `an`.
 
@@ -12,6 +12,7 @@ chatmode:
 	hidden: hidden, disabled
 	shown: shown, enabled
 
+# Represents the setting that the player has for their hand.
 handsetting:
 	right: right, right hand
 	left: left, left hand
