@@ -119,8 +119,9 @@ public class Skungee extends Plugin {
 			Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(config);
 			if (!getDescription().getVersion().equals(configuration.getString("version"))) {
 				new BungeeConfigSaver(instance).execute();
-				consoleMessage("&eThere is a new Skungee version. Generating new config...");
 				loadConfiguration();
+				//Sends message after configuration has loaded. Important.
+				consoleMessage("&eThere is a new Skungee version. Generating new config...");
 				return;
 			}
 			addConfiguration("config", configuration);
