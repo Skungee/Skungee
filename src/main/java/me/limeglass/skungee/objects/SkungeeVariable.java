@@ -3,34 +3,30 @@ package me.limeglass.skungee.objects;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import me.limeglass.skungee.spigot.utils.Utils;
+
 public class SkungeeVariable implements Serializable {
 
 	private static final long serialVersionUID = 1922196457419635337L;
 	//The variable name defined as the network variable on the Spigot side {this::without::brackets::*}
-	private final Value[] values;
-	private final boolean single;
-	private final String name;
+	private Value[] values;
+	private String name;
 	
 	public SkungeeVariable() {
-		this(false, "used internally by gson", new Value());
+		this("used internally by gson", new Value());
 	}
 	
-	public SkungeeVariable(final boolean single, final String name, final Value... values) {
+	public SkungeeVariable(final String name, final Value... values) {
 		this.values = values;
-		this.single = single;
 		this.name = name;
 	}
 	
-	public String getVariableName() {
+	public String getVariableString() {
 		return name;
 	}
 	
 	public Value[] getValues() {
 		return values;
-	}
-	
-	public boolean isSingle() {
-		return single;
 	}
 	
 	public String toString() {
@@ -54,6 +50,10 @@ public class SkungeeVariable implements Serializable {
 		
 		public String toString() {
 			return "type=" + type + ", data=" + Arrays.toString(data);
+		}
+		
+		public boolean isSimilar(Value compare) {
+			return compare.type.equals(type) && Utils.compareArrays(compare.data, data);
 		}
 	}
 }

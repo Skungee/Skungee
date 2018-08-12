@@ -28,11 +28,13 @@ public abstract class SkungeeStorage {
 		return names;
 	}
 	
-	public abstract Value[] get(String index);
+	public abstract void remove(Value[] objects, String... index);
 	
 	public abstract void set(String index, Value[] objects);
 	
-	public abstract void remove(String... index);
+	public abstract void delete(String... index);
+	
+	public abstract Value[] get(String index);
 	
 	//Return true if initialization was successful.
 	protected abstract boolean initialize();

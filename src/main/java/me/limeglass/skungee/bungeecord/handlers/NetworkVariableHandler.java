@@ -1,9 +1,8 @@
 package me.limeglass.skungee.bungeecord.handlers;
 
 import java.net.InetAddress;
-import java.util.HashSet;
-
-import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import com.google.common.collect.Lists;
 
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.bungeecord.variables.VariableManager;
@@ -25,32 +24,31 @@ public class NetworkVariableHandler extends SkungeeBungeeHandler {
 		if (object == null) return null;
 		if (object instanceof SkungeeVariable) {
 			SkungeeVariable variable = (SkungeeVariable) object;
-			String variableName = variable.getVariableName();
+			String variableString = variable.getVariableString();
 			Value[] values = variable.getValues();
-			if (values == null || variableName == null) return null;
+			if (variableString == null) return null;
 			SkriptChangeMode mode = packet.getChangeMode();
 			if (mode != null) {
-				HashSet<Value> modify = new HashSet<Value>();
-				Value[] data = VariableManager.getMainStorage().get(variableName);
-				if (data != null) modify = Sets.newHashSet(data);
+				ArrayList<Value> modify = new ArrayList<Value>();
+				Value[] data = VariableManager.getMainStorage().get(variableString);
+				if (data != null) modify = Lists.newArrayList(data);
+				if (values == null && !(mode == SkriptChangeMode.RESET || mode == SkriptChangeMode.DELETE)) return null;
 				switch (mode) {
 					case ADD:
-						VariableManager.getMainStorage().remove(variableName);
+						VariableManager.getMainStorage().delete(variableString);
 						for (Value value : values) modify.add(value);
-						VariableManager.getMainStorage().set(variableName, modify.toArray(new Value[modify.size()]));
+						VariableManager.getMainStorage().set(variableString, modify.toArray(new Value[modify.size()]));
 						break;
 					case REMOVE_ALL:
 					case REMOVE:
-						VariableManager.getMainStorage().remove(variableName);
-						for (Value value : values) modify.remove(value);
-						VariableManager.getMainStorage().set(variableName, modify.toArray(new Value[modify.size()]));
+						VariableManager.getMainStorage().remove(values, variableString);
 						break;
 					case DELETE:
 					case RESET:
-						VariableManager.getMainStorage().remove(variableName);
+						VariableManager.getMainStorage().delete(variableString);
 						break;
 					case SET:
-						VariableManager.getMainStorage().set(variableName, values);
+						VariableManager.getMainStorage().set(variableString, values);
 						break;
 				}
 			}

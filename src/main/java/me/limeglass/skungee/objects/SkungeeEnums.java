@@ -31,4 +31,5 @@ public class SkungeeEnums {
 		DELETE,
 		RESET;
 	}
+
 }

@@ -1,8 +1,6 @@
 package me.limeglass.skungee.spigot.elements.expressions;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.ArrayList;
 import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -91,10 +89,8 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 			Skungee.consoleMessage("Report this type to the developers of Skungee: &f" + variable.getClass().getName());
 			return null;
 		}
-		Set<Object> objects = new HashSet<Object>();
-		Value[] values = (Value[]) variable;
-		for (Object object : values) {
-			Value value = (Value) object;
+		ArrayList<Object> objects = new ArrayList<Object>();
+		for (Value value : (Value[]) variable) {
 			objects.add(Classes.deserialize(value.type, value.data));
 		}
 		if (objects.isEmpty()) return null;
@@ -124,7 +120,7 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 				values[i] = new Value(value.type, value.data);
 			}
 		}
-		SkungeeVariable variable = new SkungeeVariable(this.isSingle(), variableString.toString(event), values);
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.NETWORKVARIABLE, variable, null, changer));
+		SkungeeVariable variable = new SkungeeVariable(variableString.toString(event), values);
+		Sockets.send(new SkungeePacket(true, SkungeePacketType.NETWORKVARIABLE, variable, changer));
 	}
 }

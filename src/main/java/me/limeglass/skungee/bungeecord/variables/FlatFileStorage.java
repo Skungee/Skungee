@@ -6,15 +6,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,7 +36,7 @@ public class FlatFileStorage extends SkungeeStorage {
 	}
 	
 	private final String DELIMITER = "@: ";
-	private boolean loadingHash;
+	private boolean loadingHash = false;
 	private File folder, file;
 	private FileWriter writer;
 	private Gson gson;
@@ -74,15 +73,14 @@ public class FlatFileStorage extends SkungeeStorage {
 	@Override
 	public Value[] get(String index) {
 		if (index.endsWith("::*")) {
-			Set<Value> values = new HashSet<Value>();
-			String varIndex = index.substring(0, index.length() - 3);
+			ArrayList<Value> values = new ArrayList<Value>();
+			index = index.substring(0, index.length() - 1);
 			for (Entry<String, Value[]> entry : variables.entrySet()) {
-				if (entry.getKey().startsWith(varIndex)) {
+				if (entry.getKey().startsWith(index)) {
 					Value[] data = variables.get(entry.getKey());
-					if (data != null) {
-						for (Value value : data) {
-							values.add(value);
-						}
+					if (data == null) continue;
+					for (Value value : data) {
+						values.add(value);
 					}
 				}
 			}
@@ -98,14 +96,14 @@ public class FlatFileStorage extends SkungeeStorage {
 	}
 
 	@Override
-	public void remove(String... indexes) {
-		Set<String> indexSet = Sets.newHashSet(indexes);
+	public void delete(String... indexes) {
+		ArrayList<String> list = Lists.newArrayList(indexes);
 		for (String index : indexes) {
 			if (index.endsWith("::*")) {
-				String varIndex = index.substring(0, index.length() - 3);
+				String varIndex = index.substring(0, index.length() - 1);
 				for (Entry<String, Value[]> entry : variables.entrySet()) {
 					if (entry.getKey().startsWith(varIndex)) {
-						indexSet.add(entry.getKey());
+						list.add(entry.getKey());
 					}
 				}
 			}
@@ -115,10 +113,48 @@ public class FlatFileStorage extends SkungeeStorage {
 		} catch (IOException e) {
 			Skungee.exception(e, "Failed to close writer for removing index");
 		}
-		for (String index : indexSet) {
-			if (variables.containsKey(index)) {
-				if (!loadingHash) {
+		for (String index : list) {
+			if (variables.containsKey(index) && !loadingHash) {
+				variables.remove(index);
+			}
+		}
+		loadFromHash();
+	}
+	
+	@Override
+	public void remove(Value[] objects, String... indexes) {
+		ArrayList<String> list = Lists.newArrayList(indexes);
+		for (String index : indexes) {
+			if (index.endsWith("::*")) {
+				index = index.substring(0, index.length() - 1);
+				for (Entry<String, Value[]> entry : variables.entrySet()) {
+					if (entry.getKey().startsWith(index)) {
+						list.add(entry.getKey());
+					}
+				}
+			}
+		}
+		try {
+			writer.close();
+		} catch (IOException e) {
+			Skungee.exception(e, "Failed to close writer for removing index");
+		}
+		for (String index : list) {
+			if (variables.containsKey(index) || !loadingHash) {
+				Value[] v = variables.get(index);
+				if (v == null) continue;
+				ArrayList<Value> values = Lists.newArrayList(v);
+				for (Value value : v) {
+					for (Value object : objects) {
+						if (value.isSimilar(object)) {
+							values.remove(value);
+						}
+					}
+				}
+				if (values.isEmpty()) {
 					variables.remove(index);
+				} else {
+					variables.put(index, values.toArray(new Value[values.size()]));
 				}
 			}
 		}
@@ -178,20 +214,15 @@ public class FlatFileStorage extends SkungeeStorage {
 				BungeeSockets.sendAll(new BungeePacket(false, BungeePacketType.UPDATEVARIABLES, name, values));
 			}
 		}
-		if (variables.containsKey(name)) {
-			if (!loadingHash) {
-				if (Skungee.getConfig().getBoolean("NetworkVariables.AllowOverrides", true)) {
-					try {
-						writer.close();
-					} catch (IOException e) {
-						Skungee.exception(e, "Failed to close the writer while setting the value: " + name);
-					}
-					variables.remove(name);
-					loadFromHash();
-				} else {
-					return;
-				}
+		if (variables.containsKey(name) && !loadingHash) {
+			if (!Skungee.getConfig().getBoolean("NetworkVariables.AllowOverrides", true)) return;
+			try {
+				writer.close();
+			} catch (IOException e) {
+				Skungee.exception(e, "Failed to close the writer while setting the value: " + name);
 			}
+			variables.remove(name);
+			loadFromHash();
 		}
 		variables.put(name, values);
 		try {
@@ -219,7 +250,7 @@ public class FlatFileStorage extends SkungeeStorage {
 			writer = new FileWriter(file);
 			header();
 			if (!variables.isEmpty()) {
-				Set<String> ids = Sets.newConcurrentHashSet(variables.keySet());
+				ArrayList<String> ids = Lists.newArrayList(variables.keySet());
 				Iterator<String> iterator = ids.iterator();
 				while (iterator.hasNext()) {
 					String ID = iterator.next();

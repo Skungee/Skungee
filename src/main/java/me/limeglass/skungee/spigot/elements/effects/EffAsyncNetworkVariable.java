@@ -30,8 +30,9 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 @Name("Network variable Async")
 @Description("Sets a defined variable on the Spigot side in a async cache from the network variables on the Bungeecord Skungee.")
-@Patterns("set async [variable] %objects% to [the] [skungee] (global|network|bungee[[ ]cord]) variable [(from|of)] %objects%")
-public class EffNetworkVariable extends SkungeeEffect {
+@Patterns({"set async [variable] %objects% to [the] [skungee] (global|network|bungee[[ ]cord]) variable [(from|of)] %objects%",
+		"set [variable] %objects% in async to [the] [skungee] (global|network|bungee[[ ]cord]) variable [(from|of)] %objects%"})
+public class EffAsyncNetworkVariable extends SkungeeEffect {
 
 	private VariableString variableString;
 	private static Variable<?> variable;
@@ -84,13 +85,15 @@ public class EffNetworkVariable extends SkungeeEffect {
 		Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), () -> {
 			Object object = Sockets.send(new SkungeePacket(true, SkungeePacketType.NETWORKVARIABLE, variableString.toString(event)));
 			if (object == null) return;
+			if (!(object instanceof Value[])) {
+				Skungee.consoleMessage("A network variable under the index of \"" + variableString.toString(event) + "\" returned a value that could not be handled.");
+				Skungee.consoleMessage("This could be due to an old format, in that case please reset this value or reset it.");
+				Skungee.consoleMessage("Report this type to the developers of Skungee: &f" + variable.getClass().getName());
+				return;
+			}
 			Set<Object> objects = new HashSet<Object>();
-			if (object instanceof Set) {
-				@SuppressWarnings("unchecked")
-				Set<Value> values = (Set<Value>) object;
-				for (Value value : values) {
-					objects.add(Classes.deserialize(value.type, value.data));
-				}
+			for (Value value : (Value[]) object) {
+				objects.add(Classes.deserialize(value.type, value.data));
 			}
 			if (objects.isEmpty()) return;
 			Object[] delta = objects.toArray(new Object[objects.size()]);

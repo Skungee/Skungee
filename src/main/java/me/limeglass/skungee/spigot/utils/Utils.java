@@ -35,6 +35,15 @@ public class Utils {
 		return Arrays.equals(arg1, arg2);
 	}
 	
+	public static boolean compareArrays(byte[] arg1, byte[] arg2) {
+		if (arg1.length != arg2.length) {
+			return false;
+		}
+		Arrays.sort(arg1);
+		Arrays.sort(arg2);
+		return Arrays.equals(arg1, arg2);
+	}
+	
 	public static Boolean isEnum(Class<?> clazz, String object) {
 		try {
 			final Method method = clazz.getMethod("valueOf", String.class);
