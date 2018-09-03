@@ -5,12 +5,12 @@ import org.bukkit.event.HandlerList;
 
 import me.limeglass.skungee.objects.packets.ServerPingPacket;
 
-public class PingEvent extends Event {
+public class SkungeePingEvent extends Event {
 	
 	private static final HandlerList handlers = new HandlerList();
 	private final ServerPingPacket packet;
 	
-	public PingEvent(ServerPingPacket packet) {
+	public SkungeePingEvent(ServerPingPacket packet) {
 		this.packet = packet;
 	}
 	

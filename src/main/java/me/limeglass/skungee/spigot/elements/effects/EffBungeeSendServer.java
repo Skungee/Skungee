@@ -23,4 +23,5 @@ public class EffBungeeSendServer extends SkungeeEffect {
 		SkungeePlayer[] players = Utils.toSkungeePlayers(expressions.get(0).getAll(event));
 		Sockets.send(new SkungeePacket(false, SkungeePacketType.CONNECTPLAYER, expressions.get(1).getSingle(event), null, players));
 	}
+
 }

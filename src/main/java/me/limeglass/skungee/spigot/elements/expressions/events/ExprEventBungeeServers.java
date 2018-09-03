@@ -8,8 +8,8 @@ import org.bukkit.event.Event;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
-import me.limeglass.skungee.objects.events.PlayerDisconnectEvent;
-import me.limeglass.skungee.objects.events.PlayerSwitchServerEvent;
+import me.limeglass.skungee.objects.events.SkungeePlayerDisconnect;
+import me.limeglass.skungee.objects.events.SkungeePlayerSwitchServer;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.DetermineSingle;
 import me.limeglass.skungee.spigot.utils.annotations.Events;
@@ -21,7 +21,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 @Patterns("[(all [[of] the]|the)] event (skungee|bungee[[ ]cord]) server[s]")
 @ExpressionProperty(ExpressionType.SIMPLE)
 @DetermineSingle("servers")
-@Events({PlayerDisconnectEvent.class, PlayerSwitchServerEvent.class})
+@Events({SkungeePlayerDisconnect.class, SkungeePlayerSwitchServer.class})
 public class ExprEventBungeeServers extends SkungeeExpression<String> {
 	
 	//TODO get rid of the other stuff thing ya

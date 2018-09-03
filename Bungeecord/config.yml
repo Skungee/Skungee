@@ -1,7 +1,7 @@
 # Skungee (Bungeecord) - The #1 Skript addon for Bungeecord.
 
 # The version is to help determine which version this configuration is. Please do not modify this value.
-version: "1.0.7c"
+version: "1.0.7d"
 
 # This is the main port for the Skungee network system. Skungee will setup this port on this Bungeecord machine.
 # Make sure the port is "port forward" or that you have access to this port to be running, if not change this to an available port.

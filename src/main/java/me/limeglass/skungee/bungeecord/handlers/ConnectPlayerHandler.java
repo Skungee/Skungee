@@ -23,5 +23,5 @@ public class ConnectPlayerHandler extends SkungeePlayerHandler {
 		}
 		return null;
 	}
-	
+
 }

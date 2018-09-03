@@ -19,10 +19,10 @@ import java.util.Set;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.objects.SkungeeVariable.Value;
-import me.limeglass.skungee.objects.events.PingEvent;
-import me.limeglass.skungee.objects.events.PlayerDisconnectEvent;
-import me.limeglass.skungee.objects.events.PlayerSwitchServerEvent;
 import me.limeglass.skungee.objects.events.SkungeeMessageEvent;
+import me.limeglass.skungee.objects.events.SkungeePingEvent;
+import me.limeglass.skungee.objects.events.SkungeePlayerDisconnect;
+import me.limeglass.skungee.objects.events.SkungeePlayerSwitchServer;
 import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.objects.packets.BungeePacketType;
 import me.limeglass.skungee.objects.packets.ServerPingPacket;
@@ -65,12 +65,12 @@ public class SpigotPacketHandler {
 				break;
 			case PLAYERDISCONNECT:
 				if (packet.getObject() != null && packet.getPlayers() != null) {
-					Bukkit.getPluginManager().callEvent(new PlayerDisconnectEvent((String)packet.getObject(), packet.getFirstPlayer()));
+					Bukkit.getPluginManager().callEvent(new SkungeePlayerDisconnect((String)packet.getObject(), packet.getFirstPlayer()));
 				}
 				break;
 			case PLAYERSWITCH:
 				if (packet.getObject() != null && packet.getPlayers() != null) {
-					Bukkit.getPluginManager().callEvent(new PlayerSwitchServerEvent((String)packet.getObject(), packet.getFirstPlayer()));
+					Bukkit.getPluginManager().callEvent(new SkungeePlayerSwitchServer((String)packet.getObject(), packet.getFirstPlayer()));
 				}
 				break;
 			case PLAYERLOGIN:
@@ -177,7 +177,7 @@ public class SpigotPacketHandler {
 				break;
 			case SERVERLISTPING:
 				if (packet instanceof ServerPingPacket) {
-					PingEvent event = new PingEvent((ServerPingPacket) packet);
+					SkungeePingEvent event = new SkungeePingEvent((ServerPingPacket) packet);
 					Bukkit.getPluginManager().callEvent(event);
 					return event.getPacket();
 				}

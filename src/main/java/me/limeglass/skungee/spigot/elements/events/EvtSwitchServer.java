@@ -6,13 +6,13 @@ import org.eclipse.jdt.annotation.Nullable;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
-import me.limeglass.skungee.objects.events.PlayerSwitchServerEvent;
+import me.limeglass.skungee.objects.events.SkungeePlayerSwitchServer;
 import me.limeglass.skungee.spigot.elements.Events;
 
 public class EvtSwitchServer extends SkriptEvent {
 	
 	static {
-		Events.registerEvent(EvtSwitchServer.class, PlayerSwitchServerEvent.class, "[player] switching of server[s] [to %string%]", "[player] switch server[s] [to %string%]", "[player] server switch [to %string%]");
+		Events.registerEvent(EvtSwitchServer.class, SkungeePlayerSwitchServer.class, "[player] switching of server[s] [to %string%]", "[player] switch server[s] [to %string%]", "[player] server switch [to %string%]");
 	}
 	
 	@Nullable
@@ -28,11 +28,11 @@ public class EvtSwitchServer extends SkriptEvent {
 	
 	@Override
 	public String toString(@Nullable Event event, boolean debug) {
-		return "Player switch servers for player: " + ((PlayerSwitchServerEvent)event).getPlayer().getName() + " with argument: " + server != null ? server.toString(event, debug) : "";
+		return "Player switch servers for player: " + ((SkungeePlayerSwitchServer)event).getServer() + " with argument: " + server != null ? server.toString(event, debug) : "";
 	}
 
 	public boolean check(Event event) {
 		if (server == null || server.getSingle(event) == null) return true;
-		return ((PlayerSwitchServerEvent)event).getServer().equals(server.getSingle(event));
+		return ((SkungeePlayerSwitchServer)event).getServer().equals(server.getSingle(event));
 	}
 }

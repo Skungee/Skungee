@@ -14,7 +14,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
 import me.limeglass.skungee.objects.Returnable;
 import me.limeglass.skungee.objects.SkungeePlayer;
-import me.limeglass.skungee.objects.events.PingEvent;
+import me.limeglass.skungee.objects.events.SkungeePingEvent;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
 import me.limeglass.skungee.spigot.utils.annotations.Events;
@@ -27,7 +27,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Settable;
 @Patterns({"(ping|server list|event) bungee[[ ]cord] [listed ]player(s| list)", "bungee[[ ]cord] (ping|server list|event) [listed ]player(s| list)"})
 @ExpressionProperty(ExpressionType.SIMPLE)
 @Settable({OfflinePlayer[].class, Player[].class, String[].class})
-@Events(PingEvent.class)
+@Events(SkungeePingEvent.class)
 @AllChangers
 public class ExprPingPlayers extends SkungeeExpression<Object> implements Returnable {
 	
@@ -38,8 +38,8 @@ public class ExprPingPlayers extends SkungeeExpression<Object> implements Return
 	
 	@Override
 	protected Object[] get(Event event) {
-		if (((PingEvent)event).getPacket().getPlayers() == null) return null;
-		return convert(((PingEvent)event).getPacket().getPlayers());
+		if (((SkungeePingEvent)event).getPacket().getPlayers() == null) return null;
+		return convert(((SkungeePingEvent)event).getPacket().getPlayers());
 	}
 	
 	@Override
@@ -49,8 +49,8 @@ public class ExprPingPlayers extends SkungeeExpression<Object> implements Return
 			((PingEvent)event).getPacket().setPlayers(new SkungeePlayer[] {new SkungeePlayer(false, UUID.randomUUID(), "")});
 		}*/
 		List<SkungeePlayer> players = new ArrayList<SkungeePlayer>();
-		if (((PingEvent)event).getPacket().getPlayers() != null) {
-			for (SkungeePlayer skungeePlayer : ((PingEvent)event).getPacket().getPlayers()) {
+		if (((SkungeePingEvent)event).getPacket().getPlayers() != null) {
+			for (SkungeePlayer skungeePlayer : ((SkungeePingEvent)event).getPacket().getPlayers()) {
 				if (skungeePlayer != null) players.add(skungeePlayer);
 			}
 		}
@@ -96,7 +96,7 @@ public class ExprPingPlayers extends SkungeeExpression<Object> implements Return
 				players.clear();
 				break;
 		}
-		if (players == null || players.isEmpty()) ((PingEvent)event).getPacket().setPlayers(null);
-		else ((PingEvent)event).getPacket().setPlayers(players.toArray(new SkungeePlayer[players.size()]));
+		if (players == null || players.isEmpty()) ((SkungeePingEvent)event).getPacket().setPlayers(null);
+		else ((SkungeePingEvent)event).getPacket().setPlayers(players.toArray(new SkungeePlayer[players.size()]));
 	}
 }

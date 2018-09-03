@@ -11,7 +11,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
 import me.limeglass.skungee.spigot.Skungee;
-import me.limeglass.skungee.objects.events.PingEvent;
+import me.limeglass.skungee.objects.events.SkungeePingEvent;
 import me.limeglass.skungee.objects.packets.ServerPingPacket;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Changers;
@@ -26,13 +26,13 @@ import me.limeglass.skungee.spigot.utils.annotations.Settable;
 @ExpressionProperty(ExpressionType.SIMPLE)
 @Changers(ChangeMode.SET)
 @Settable({String.class, Number.class})
-@Events(PingEvent.class)
+@Events(SkungeePingEvent.class)
 public class ExprPingProtocol extends SkungeeExpression<String> {
 	
 	@Override
 	protected String[] get(Event event) {
-		if (((PingEvent)event).getPacket().getVersion() == null) return null;
-		ServerPingPacket packet = ((PingEvent)event).getPacket();
+		if (((SkungeePingEvent)event).getPacket().getVersion() == null) return null;
+		ServerPingPacket packet = ((SkungeePingEvent)event).getPacket();
 		if (patternMark > 0) {
 			String[] protocol = packet.getVersion().split(Pattern.quote(":"));
 			if (protocol.length < 2) {
@@ -41,15 +41,15 @@ public class ExprPingProtocol extends SkungeeExpression<String> {
 			}
 			return new String[] {(patternMark == 1) ? protocol[0] : protocol[1]};
 		}
-		return new String[] {((PingEvent)event).getPacket().getVersion()};
+		return new String[] {((SkungeePingEvent)event).getPacket().getVersion()};
 	}
 	
 	@Override
 	public void change(Event event, Object[] delta, ChangeMode mode) {
-		if (delta == null || ((PingEvent)event).getPacket().getObject() == null) return;
-		ServerPingPacket packet = ((PingEvent)event).getPacket();
+		if (delta == null || ((SkungeePingEvent)event).getPacket().getObject() == null) return;
+		ServerPingPacket packet = ((SkungeePingEvent)event).getPacket();
 		@SuppressWarnings("unchecked")
-		List<Integer> protocols = (List<Integer>) ((PingEvent)event).getPacket().getObject();
+		List<Integer> protocols = (List<Integer>) ((SkungeePingEvent)event).getPacket().getObject();
 		if (patternMark > 0) {
 			String[] protocol = packet.getVersion().split(Pattern.quote(":"));
 			if (protocol.length < 2) {

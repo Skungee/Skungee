@@ -14,11 +14,12 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public abstract class SkungeePlayerHandler extends SkungeeHandler {
 	
-	protected Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
+	protected final Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
 	protected Set<ProxiedPlayer> players = new HashSet<ProxiedPlayer>();
 	
 	@Override
 	public Boolean onPacketCall(SkungeePacket packet, InetAddress address) {
+		players.clear();
 		if (packet.getPlayers() != null) {
 			for (SkungeePlayer player : packet.getPlayers()) {
 				ProxiedPlayer proxiedPlayer = null;
@@ -37,4 +38,5 @@ public abstract class SkungeePlayerHandler extends SkungeeHandler {
 	}
 	
 	public abstract Object handlePacket(SkungeePacket packet, InetAddress address);
+
 }
