@@ -7,10 +7,10 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public class MessagePlayerHandler extends SkungeePlayerHandler {
+public class PlayerMessageHandler extends SkungeePlayerHandler {
 
 	static {
-		registerHandler(new MessagePlayerHandler(), SkungeePacketType.MESSAGEPLAYERS);
+		registerHandler(new PlayerMessageHandler(), SkungeePacketType.MESSAGEPLAYERS);
 	}
 
 	@Override

@@ -11,8 +11,9 @@ public abstract class SkungeeBungeeHandler extends SkungeeHandler {
 	
 	protected Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
 	
-	public abstract Object handlePacket(SkungeePacket packet, InetAddress address);
-	
 	@Override
-	public Boolean onPacketCall(SkungeePacket packet, InetAddress address) {return true;}
+	public Boolean onPacketCall(SkungeePacket packet, InetAddress address) {
+		return true;
+	}
+
 }

@@ -60,7 +60,6 @@ public class SkungeePacketHandler {
 				if (proxiedPlayer != null) players.add(proxiedPlayer);
 			}
 		}
-		Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
 		switch (packet.getType()) {
 			case KICKPLAYERS:
 				String message = "Kicked from the bungeecord network.";
@@ -111,14 +110,6 @@ public class SkungeePacketHandler {
 					}
 				}
 				break;
-			case PROXYSTOP:
-				if (packet.getObject() != null) {
-					String msg = (String) packet.getObject();
-					ProxyServer.getInstance().stop(msg);
-				} else {
-					ProxyServer.getInstance().stop();
-				}
-				break;
 			case GLOBALPLAYERS:
 				Set<SkungeePlayer> allPlayers = new HashSet<SkungeePlayer>();
 				for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
@@ -138,12 +129,6 @@ public class SkungeePacketHandler {
 					return skungeePlayers;
 				}
 				break;
-			case ALLSERVERS:
-				Set<String> allservers = new HashSet<String>();
-				for (Entry<String, ServerInfo> entry : servers.entrySet()) {
-					allservers.add(entry.getKey());
-				}
-				return allservers;
 			case SERVERIP:
 				if (packet.getObject() != null) {
 					Set<String> addresses = new HashSet<String>();
