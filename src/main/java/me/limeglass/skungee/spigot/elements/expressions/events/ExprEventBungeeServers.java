@@ -1,13 +1,11 @@
 package me.limeglass.skungee.spigot.elements.expressions.events;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
+import me.limeglass.skungee.objects.events.BungeecordEvent;
 import me.limeglass.skungee.objects.events.SkungeePlayerDisconnect;
 import me.limeglass.skungee.objects.events.SkungeePlayerSwitchServer;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
@@ -24,28 +22,9 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 @Events({SkungeePlayerDisconnect.class, SkungeePlayerSwitchServer.class})
 public class ExprEventBungeeServers extends SkungeeExpression<String> {
 	
-	//TODO get rid of the other stuff thing ya
-	
 	@Override
 	protected String[] get(Event event) {
-		try {
-			Method method = (isSingle()) ? event.getClass().getDeclaredMethod("getServer") : event.getClass().getDeclaredMethod("getServers");
-			if (method == null) return null;
-			method.setAccessible(true);
-			String[] servers = getServers(method.invoke(event));
-			return servers;
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
-		return null;
+		return new String[] {((BungeecordEvent) event).getServer()};
 	}
-	
-	private String[] getServers(Object servers) {
-		if (servers instanceof String) {
-			return getServers_i((String)servers);
-		}
-		return getServers_i((String[])servers);
-	}
-	
-	private String[] getServers_i(String... servers) {
-		return servers;
-	}
+
 }

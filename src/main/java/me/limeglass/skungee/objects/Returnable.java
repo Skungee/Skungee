@@ -17,10 +17,16 @@ public interface Returnable {
 	public default Object[] convert(SkungeePlayer... players) {
 		Set<Object> converted = new HashSet<Object>();
 		for (SkungeePlayer player : players) {
+			if (player == null)
+				continue;
 			switch (returnable) {
 				case OFFLINEPLAYER:
-					if (Skungee.getInstance().getConfig().getBoolean("SkungeeReturnUUID", false)) converted.add(Bukkit.getOfflinePlayer(player.getUUID()));
-					else converted.add(Bukkit.getOfflinePlayer(player.getName()));
+					OfflinePlayer offline = Bukkit.getOfflinePlayer(player.getUUID());
+					if (Skungee.getInstance().getConfig().getBoolean("SkungeeReturnUUID", false) && offline != null) {
+						converted.add(Bukkit.getOfflinePlayer(player.getUUID()));
+					} else {
+						converted.add(Bukkit.getOfflinePlayer(player.getName()));
+					}
 					break;
 				case SKUNGEE:
 					converted.add(player);

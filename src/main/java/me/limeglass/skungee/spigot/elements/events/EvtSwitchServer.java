@@ -21,7 +21,6 @@ public class EvtSwitchServer extends SkriptEvent {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Literal<?>[] args, int matchedPattern, ParseResult parseResult) {
-		if (args == null || args.length == 0) return true;
 		server = (Literal<String>) args[0];
 		return true;
 	}
@@ -32,7 +31,9 @@ public class EvtSwitchServer extends SkriptEvent {
 	}
 
 	public boolean check(Event event) {
-		if (server == null || server.getSingle(event) == null) return true;
+		if (server == null)
+			return true;
 		return ((SkungeePlayerSwitchServer)event).getServer().equals(server.getSingle(event));
 	}
+
 }

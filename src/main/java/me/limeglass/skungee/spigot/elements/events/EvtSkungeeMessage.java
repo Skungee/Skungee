@@ -14,7 +14,7 @@ import me.limeglass.skungee.spigot.elements.Events;
 public class EvtSkungeeMessage extends SkriptEvent {
 	
 	static {
-		Events.registerEvent(EvtSkungeeMessage.class, SkungeeMessageEvent.class, "(bungeecord|skungee) message [from [channel[s]] %strings%]");
+		Events.registerEvent(EvtSkungeeMessage.class, SkungeeMessageEvent.class, "(bungeecord|skungee) message [[from] [channel[s]] %strings%]");
 		EventValues.registerEventValue(SkungeeMessageEvent.class, String.class, new Getter<String, SkungeeMessageEvent>() {
 			@Override
 			@Nullable

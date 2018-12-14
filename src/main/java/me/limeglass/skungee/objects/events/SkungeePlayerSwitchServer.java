@@ -2,9 +2,10 @@ package me.limeglass.skungee.objects.events;
 
 import me.limeglass.skungee.objects.SkungeePlayer;
 
-public class SkungeePlayerSwitchServer extends BungeecordEvent {
+public class SkungeePlayerSwitchServer extends SkungeePlayerEvent {
 
-	public SkungeePlayerSwitchServer(String server, SkungeePlayer player) {
-		super(server, player);
+	public SkungeePlayerSwitchServer(String server, SkungeePlayer... players) {
+		super(server, players);
 	}
+
 }

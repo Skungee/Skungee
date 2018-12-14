@@ -65,12 +65,12 @@ public class SpigotPacketHandler {
 				break;
 			case PLAYERDISCONNECT:
 				if (packet.getObject() != null && packet.getPlayers() != null) {
-					Bukkit.getPluginManager().callEvent(new SkungeePlayerDisconnect((String)packet.getObject(), packet.getFirstPlayer()));
+					Bukkit.getPluginManager().callEvent(new SkungeePlayerDisconnect((String)packet.getObject(), packet.getPlayers()));
 				}
 				break;
 			case PLAYERSWITCH:
 				if (packet.getObject() != null && packet.getPlayers() != null) {
-					Bukkit.getPluginManager().callEvent(new SkungeePlayerSwitchServer((String)packet.getObject(), packet.getFirstPlayer()));
+					Bukkit.getPluginManager().callEvent(new SkungeePlayerSwitchServer((String)packet.getObject(), packet.getPlayers()));
 				}
 				break;
 			case PLAYERLOGIN:
@@ -136,10 +136,15 @@ public class SpigotPacketHandler {
 								//String name = scriptsFolder + File.separator + newScript.getName();
 								//Config config = new Config(new FileInputStream(newScript), name, newScript, true, false, ":");
 								//ScriptLoader.loadScripts(config);
-								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload " + entry.getKey());
-								if (Skungee.getInstance().getConfig().getBoolean("GlobalScriptMessages", true)) {
-									Skungee.consoleMessage("&6GlobalScripts: reloaded script " + entry.getKey() + " for this server!");
-								}
+								Bukkit.getScheduler().runTask(Skungee.getInstance(), new Runnable() {
+									@Override
+									public void run() {
+										Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload " + entry.getKey());
+										if (Skungee.getInstance().getConfig().getBoolean("GlobalScriptMessages", true)) {
+											Skungee.consoleMessage("&6GlobalScripts: reloaded script " + entry.getKey() + " for this server!");
+										}
+									}
+								});
 							}
 							script.delete();
 						} else {
