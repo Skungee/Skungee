@@ -7,6 +7,7 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerConnectRequest;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.event.ServerConnectEvent.Reason;
 
 public class PlayerConnectHandler extends SkungeePlayerHandler {
 
@@ -21,7 +22,11 @@ public class PlayerConnectHandler extends SkungeePlayerHandler {
 		ServerInfo server = ProxyServer.getInstance().getServerInfo((String) packet.getObject());
 		if (server == null)
 			return null;
+		Reason reason = Reason.PLUGIN;
+		if (packet.getSetObject() != null)
+			reason = Reason.valueOf((String) packet.getSetObject());
 		ServerConnectRequest connection = ServerConnectRequest.builder()
+				.reason(reason)
 				.target(server)
 				.retry(true)
 				.build();

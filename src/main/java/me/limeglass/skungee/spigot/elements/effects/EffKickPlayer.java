@@ -15,7 +15,7 @@ import org.bukkit.event.Event;
 @Name("Kick player")
 @Description("Kicks a player from the bungeecord network. You can add a message aswell, if it's not set, a default message will be used.")
 @Patterns({"[skungee] kick bungee[[ ]cord] [(player|uuid)[s]] %strings/players% [(by reason [of]|because [of]|on account of|due to) %-string%]", "[skungee] kick [(player|uuid)[s]] %strings/players% from [the] bungee[[ ]cord] [(by reason [of]|because [of]|on account of|due to) %-string%]"})
-public class EffBungeeKickPlayer extends SkungeeEffect {
+public class EffKickPlayer extends SkungeeEffect {
 
 	@Override
 	protected void execute(Event event) {

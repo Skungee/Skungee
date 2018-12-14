@@ -10,14 +10,14 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 import org.bukkit.event.Event;
 
-@Name("Bungeecord message players")
-@Description("Message all of the players from the bungeecord network.")
-@Patterns("[skungee] (message|send|msg) %strings% to [(all [[of] the]|the)] bungee[[ ][cord]] players")
-public class EffBungeeMessagePlayers extends SkungeeEffect {
+@Name("Bungeecord unregister listeners")
+@Description("Unregister the listeners from the defiend plugin(s). This makes it so the plugin doesn't recieve any events. Good if you have a bad plugin.")
+@Patterns("unregister [the] listeners from [the] [bungee[[ ]cord]] plugin[s] %strings%")
+public class EffUnregisterListeners extends SkungeeEffect {
 
 	@Override
 	protected void execute(Event event) {
 		if (areNull(event)) return;
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.MESSAGEPLAYERS, expressions.getAll(event, String.class)));
+		Sockets.send(new SkungeePacket(false, SkungeePacketType.UNREGISTERLISTENERS, expressions.getAll(event, String.class)));
 	}
 }

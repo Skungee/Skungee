@@ -12,7 +12,7 @@ import org.bukkit.event.Event;
 @Description("Clears the SkugneeTitle(s). This will remove the view of any of these titles from the players instantly.")
 @Patterns("(hide|clear|stop|remove) [bungee[[ ]cord] title[s] %skungeetitles%")
 @Disabled
-public class EffBungeeClearTitle extends SkungeeEffect {
+public class EffClearTitle extends SkungeeEffect {
 
 	@Override
 	protected void execute(Event event) {

@@ -10,14 +10,14 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 import org.bukkit.event.Event;
 
-@Name("Bungeecord unregister listeners")
-@Description("Unregister the listeners from the defiend plugin(s). This makes it so the plugin doesn't recieve any events. Good if you have a bad plugin.")
-@Patterns("unregister [the] listeners from [the] [bungee[[ ]cord]] plugin[s] %strings%")
-public class EffBungeeUnregisterListeners extends SkungeeEffect {
+@Name("Bungeecord enable plugins")
+@Description("Enable all bungeecord plugins.")
+@Patterns("enable [(all [[of] the]|the)] bungee[[ ]cord] plugins")
+public class EffEnablePlugins extends SkungeeEffect {
 
 	@Override
 	protected void execute(Event event) {
 		if (areNull(event)) return;
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.UNREGISTERLISTENERS, expressions.getAll(event, String.class)));
+		Sockets.send(new SkungeePacket(false, SkungeePacketType.ENABLEPLUGINS));
 	}
 }

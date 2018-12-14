@@ -10,14 +10,14 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 import org.bukkit.event.Event;
 
-@Name("Evaluate")
-@Description("Evaluate effects on different servers across the Bungeecord network.")
-@Patterns("[skungee] eval[uate] [[skript] code] %strings% on [[the] bungee[[ ]cord]] [server[s]] %strings%")
-public class EffBungeeEvaluate extends SkungeeEffect {
+@Name("Bungeecord message players")
+@Description("Message all of the players from the bungeecord network.")
+@Patterns("[skungee] (message|send|msg) %strings% to [(all [[of] the]|the)] bungee[[ ][cord]] players")
+public class EffMessagePlayers extends SkungeeEffect {
 
 	@Override
 	protected void execute(Event event) {
 		if (areNull(event)) return;
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.EVALUATE, expressions.get(0).getArray(event), expressions.get(1).getArray(event)));
+		Sockets.send(new SkungeePacket(false, SkungeePacketType.MESSAGEPLAYERS, expressions.getAll(event, String.class)));
 	}
 }

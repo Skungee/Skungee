@@ -18,7 +18,7 @@ import org.bukkit.event.Event;
 	"execute [bungee[[ ]cord]] command[s] %strings% (from|by) bungee[[ ]cord]] [(player|uuid)] %strings/players%",
 	"[execute] bungee[[ ]cord]] [(player|uuid)] %strings/players% command %strings%",
 	"(force|let|make) bungee[[ ]cord]] [(player|uuid)] %strings/players% execute [[the] command] %strings% [on [the] bungee[[ ]cord]]"})
-public class EffBungeePlayerChat extends SkungeeEffect {
+public class EffPlayerChat extends SkungeeEffect {
 
 	@Override
 	protected void execute(Event event) {

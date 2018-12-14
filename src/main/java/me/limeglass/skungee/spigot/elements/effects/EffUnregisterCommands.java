@@ -10,14 +10,14 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 import org.bukkit.event.Event;
 
-@Name("Bungeecord enable plugins")
-@Description("Enable all bungeecord plugins.")
-@Patterns("enable [(all [[of] the]|the)] bungee[[ ]cord] plugins")
-public class EffBungeeEnablePlugins extends SkungeeEffect {
+@Name("Bungeecord unregister commands")
+@Description("Unregister the commands from the defiend plugin(s).")
+@Patterns("unregister [the] commands from [the] [bungee[[ ]cord]] plugin[s] %strings%")
+public class EffUnregisterCommands extends SkungeeEffect {
 
 	@Override
 	protected void execute(Event event) {
 		if (areNull(event)) return;
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.ENABLEPLUGINS));
+		Sockets.send(new SkungeePacket(false, SkungeePacketType.UNREGISTERCOMMANDS, expressions.getAll(event, String.class)));
 	}
 }
