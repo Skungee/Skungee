@@ -103,6 +103,7 @@ public class ServerTracker {
 					}
 					data.put(script.getName(), Files.readAllLines(script.toPath(), chars));
 				} catch (IOException e) {
+					Skungee.infoMessage("Charset " + charset + " does not support some symbols in script " + script.getName());
 					e.printStackTrace();
 				}
 			}

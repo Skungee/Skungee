@@ -7,8 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -16,8 +18,9 @@ import java.util.Base64;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import me.limeglass.skungee.spigot.Skungee;
 
@@ -50,22 +53,6 @@ public class EncryptionUtil {
 			algorithm = me.limeglass.skungee.bungeecord.Skungee.getConfig().getString("security.encryption.cipherAlgorithm", "AES/CTS/PKCS5Padding");
 			printErrors = me.limeglass.skungee.bungeecord.Skungee.getConfig().getBoolean("security.encryption.printEncryptionErrors", true);
 		}
-	}
-
-	public final byte[] encrypt(byte[] input) {
-		try {
-			KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-			Cipher cipher = Cipher.getInstance(algorithm);
-			cipher.init(Cipher.ENCRYPT_MODE, keyGenerator.generateKey());
-			return cipher.doFinal(input);
-		} catch (NoSuchAlgorithmException e) {
-			exception(e, "The algorithm `" + algorithm + "` does not exist for your system. Please use a different algorithm.");
-		} catch (NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-			if (printErrors) {
-				exception(e, "There was an error encrypting.");
-			}
-		}
-		return null;
 	}
 	
 	public final void hashFile() {
@@ -152,19 +139,42 @@ public class EncryptionUtil {
 		return null;
 	}
 	
-	public final byte[] decrypt(byte[] input) {
+	public byte[] encrypt(String keyString, String algorithm, byte[] packet) {
 		try {
-			KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+			byte[] serializedKey = keyString.getBytes(Charset.forName("UTF-8"));
+			if (serializedKey.length != 16) {
+				Skungee.infoMessage("The cipher key length is invalid. The length needs to be 16 but was: " + serializedKey.length);
+				return null;
+			}
+			SecretKeySpec key = new SecretKeySpec(serializedKey, "AES");
 			Cipher cipher = Cipher.getInstance(algorithm);
-			cipher.init(Cipher.DECRYPT_MODE, keyGenerator.generateKey());
-			return cipher.doFinal(input);
+			cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(new byte[16]));
+			return Base64.getEncoder().encode(cipher.doFinal(packet));
 		} catch (NoSuchAlgorithmException e) {
 			exception(e, "The algorithm `" + algorithm + "` does not exist for your system. Please use a different algorithm.");
-		} catch (NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-			if (printErrors) {
+		} catch (InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
+			if (printErrors)
+				exception(e, "There was an error encrypting.");
+		}
+		return null;
+	}
+	
+	public Object decrypt(String keyString, String algorithm, byte[] input) {
+		try {
+			byte[] serializedKey = keyString.getBytes(Charset.forName("UTF-8"));
+			if (serializedKey.length != 16)
+				Skungee.exception(new IllegalArgumentException(), "Invalid key size.");
+			SecretKeySpec key = new SecretKeySpec(serializedKey, "AES");
+			Cipher cipher = Cipher.getInstance(algorithm);
+			cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(new byte[16]));
+			byte[] decoded = Base64.getDecoder().decode((byte[]) input);
+			return deserialize(cipher.doFinal(decoded));
+		} catch (NoSuchAlgorithmException e) {
+			exception(e, "The algorithm `" + algorithm + "` does not exist for your system. Please use a different algorithm.");
+		} catch (InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
+			if (printErrors)
 				exception(e, "There was an error decrypting.");
-			}
-		}	
+		}
 		return null;
 	}
 	

@@ -1,10 +1,11 @@
 # Skungee (Bungeecord) - The #1 Skript addon for Bungeecord.
 
-# The version is to help determine which version this configuration is. Please do not modify this value.
-version: "1.0.7f"
+# The version is to help determine which version this configuration is.
+# Please do not modify this value, it may result in the configuration resetting!
+version: "1.0.8"
 
 # This is the main port for the Skungee network system. Skungee will setup this port on this Bungeecord machine.
-# Make sure the port is "port forward" or that you have access to this port to be running, if not change this to an available port.
+# Make sure the port is "port forward/open" or that you have access to this port to be running, if not change this to an available port.
 
 # If you don't know what ports you can access, contact your hosting company and ask for some ports.
 # You can say "May I get some Votifier ports" to make it more clear to them, and they should give you a few ports. Normally all 4 digit ports above 1000 are available to you.
@@ -21,22 +22,25 @@ debug: false
 IgnoreSpamPackets: true
 
 # All security options to protect your Skungee on Bungeecord and Spigot from possible external sources.
-# Everything in this section must match the same values as the Skungee config.yml on the Bungeecord.
+# Everything in this section must match the same values as the Skungee config.yml on the Spigot servers.
 security:
+    # Debug option for security, a Skungee developer may ask you to enable this.
+    debug: false
+    # All strings get decoded in UTF_8, some symbols may not apply.
     password:
         # Should all packets require a password in order to be processed.
         enabled: false
         # Password can't be "hashed" unless instructed too (read below)
         password: "insert password"
         # Should Skungee add a protected hash to the password using a one-way encryption.
-        # This makes the password nearly impossible to decode if an external source somehow gets it.
+        # This makes the password nearly impossible to decode if an external source somehow gets their hands on the packet.
         hash: true
         # If the hashFile option is true, set the password and then restart the server.
         # Skungee will create a hashed file in the Skungee folder location containing your password in a hashed format.
         # Keep in mind that the hash option above needs to be set to true.
         # After the file has been generated, set the password option above to "hashed" (Case sensitive)
         # Skungee will remember your original password until you change the password to anything other than "hashed" and this will be repeated.
-        # This creates a more secure system so that if someone invades your servers files, your Skungee password is protected and all your Skungee servers are protected.
+        # This creates a more secure system so that if someone invades your servers files, your Skungee password is protected and all your Skungee servers aswell.
         # If you require any assistance with this option, please contact a Skungee developer.
         hashFile: false
         # Choose which algorithm you would like to use for the hash.
@@ -44,11 +48,12 @@ security:
         hashAlgorithm: "SHA-256"
     encryption:
         # Should Skungee encrypt all sent packets.
-        # Currently this only encrypts it in Base64. So the algorithm option below does nothing.
-        # Constantly keep nagging at the developers of Skungee to finish this. (Shh I didn't put this here)
         enabled: false
         # Set which Cipher algorithm you would like to use.
-        cipherAlgorithm: "AES/CTS/PKCS5Padding"
+        cipherAlgorithm: "AES/CBC/PKCS5Padding"
+        # The cipher key is like another password.
+        # Must match the key placed in the Skungee Spigot config.yml
+        cipherKey: "insert 16 length"
         # Should Skungee print any errors that may happen.
         # If you come across any errors with encryption, make sure you message the developers of Skungee, and not to users in a public setting.
         printEncryptionErrors: true
@@ -99,10 +104,12 @@ Tracker:
     # If a spigot server goes unresponsive and this is true, Skungee will stop tracking it.
     DisableTracking: false
     
-# If you have scripts in the folder plugins/Skungee/scripts/
+# If you have scripts in the folder Bungeecord/plugins/Skungee/scripts/
 # Skungee will relay these scripts to all connected servers.
 # This acts like global scripts to keep all servers up to date.
 # All connected servers need to have the "Reciever" option enabled in the Skungee settings.
+# If you place folders within the scripts folder, they will be routed to the server that the folder is named.
+# Example: Bungeecord/plugins/Skungee/scripts/Hub/ will only go to the server named "Hub" aswell as any scripts in Bungeecord/plugins/Skungee/scripts/
 GlobalScripts:
     Enabled: true
     # Charset is the set of characters to use. If you would like symbols and such, you can adjust that setting here.
@@ -116,8 +123,12 @@ GlobalScripts:
     #   UTF-16LE - Sixteen-bit UCS Transformation Format, little-endian byte order
     #   UTF-16 - Sixteen-bit UCS Transformation Format, byte order identified by an optional byte-order mark
     Charset: "default"
+    # Should all the scripts of the Spigot servers mimic the exact scripts on the Bungeecord Skungee.
+    # WARNING: This will override any scripts that don't match the ones in the Bungeecord Skungee scripts folder.
+    # Make sure you don't have any scripts in the scripts folder of Skript on the Spigot servers.
+    MimicExact: false
 
-# Bungeecord events.
+# Bungeecord events. This also needs to be disabled on the Spigot servers if you're disabling this option.
 Events: true
 
 # To be honest the "[on] bungee[[ ]cord] [server list] ping" event can be very laggy on your server, if you have a high player database Skungee will be working hard.

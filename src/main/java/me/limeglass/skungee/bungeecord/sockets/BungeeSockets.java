@@ -19,6 +19,8 @@ import me.limeglass.skungee.objects.ConnectedServer;
 import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.objects.packets.BungeePacketType;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.config.Configuration;
+import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 
@@ -49,15 +51,16 @@ public class BungeeSockets {
 			spigot = getSocketConnection(server);
 			if (spigot == null) return null;
 			checking = false;
-			if (!Skungee.getConfig().getBoolean("IgnoreSpamPackets", true)) {
+			Configuration configuration = Skungee.getConfig();
+			if (!configuration.getBoolean("IgnoreSpamPackets", true)) {
 				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
 			} else if (!(packet.getType() == BungeePacketType.GLOBALSCRIPTS)) {
 				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
 			}
-			if (Skungee.getConfig().getBoolean("security.password.enabled", false)) {
-				byte[] password = Skungee.getEncrypter().serialize(Skungee.getConfig().getString("security.password.password"));
-				if (Skungee.getConfig().getBoolean("security.password.hash", true)) {
-					if (Skungee.getConfig().getBoolean("security.password.hashFile", false) && Skungee.getEncrypter().isFileHashed()) {
+			if (configuration.getBoolean("security.password.enabled", false)) {
+				byte[] password = Skungee.getEncrypter().serialize(configuration.getString("security.password.password"));
+				if (configuration.getBoolean("security.password.hash", true)) {
+					if (configuration.getBoolean("security.password.hashFile", false) && Skungee.getEncrypter().isFileHashed()) {
 						password = Skungee.getEncrypter().getHashFromFile();
 					} else {
 						password = Skungee.getEncrypter().hash();
@@ -68,17 +71,20 @@ public class BungeeSockets {
 			try {
 				spigot.setSoTimeout(10000);
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(spigot.getOutputStream());
-				//TODO Add cipher encryption + change config message.
-				if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {
-					byte[] serialized = Skungee.getEncrypter().serialize(packet);
-					objectOutputStream.writeObject(Base64.getEncoder().encode(serialized));
+				if (configuration.getBoolean("security.encryption.enabled", false)) {
+					String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
+					String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
+					EncryptionUtil encrption = Skungee.getEncrypter();
+					byte[] serialized = encrption.serialize(packet);
+					byte[] encrypted = encrption.encrypt(keyString, algorithm, serialized);
+					objectOutputStream.writeObject(encrypted);
 				} else {
 					objectOutputStream.writeObject(packet);
 				}
 				ObjectInputStream objectInputStream = new ObjectInputStream(spigot.getInputStream());
 				if (packet.isReturnable()) {
-					//TODO Add cipher encryption + change config message.
-					if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {
+					//TODO Add cipher encryption + change configuration message.
+					if (configuration.getBoolean("security.encryption.enabled", false)) {
 						byte[] decoded = Base64.getDecoder().decode((byte[]) objectInputStream.readObject());
 						return Skungee.getEncrypter().deserialize(decoded);
 					} else {
@@ -88,7 +94,9 @@ public class BungeeSockets {
 				objectOutputStream.close();
 				objectInputStream.close();
 				spigot.close();
-			} catch (IOException | ClassNotFoundException e) {}
+			} catch (IOException | ClassNotFoundException e) {
+				Skungee.exception(e, "Could not encrypt packet " + packet.toString());
+			}
 		} else {
 			//TODO wait until it becomes available
 		}

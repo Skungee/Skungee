@@ -14,8 +14,10 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.eclipse.jdt.annotation.Nullable;
 
+import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.spigot.Skungee;
 
@@ -31,8 +33,9 @@ public class SpigotRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		if (Skungee.getInstance().getConfig().getBoolean("security.breaches.enabled", false)) {
-			List<String> addresses = Skungee.getInstance().getConfig().getStringList("security.breaches.blacklisted");
+		FileConfiguration configuration = Skungee.getInstance().getConfig();
+		if (configuration.getBoolean("security.breaches.enabled", false)) {
+			List<String> addresses = configuration.getStringList("security.breaches.blacklisted");
 			if (Sockets.blocked.contains(address) || addresses.contains(address.getHostName())) return;
 		}
 		try {
@@ -41,22 +44,25 @@ public class SpigotRunnable implements Runnable {
 			Object object = objectInputStream.readObject();
 			if (object != null) {
 				BungeePacket packet;
-				//TODO Add cipher encryption + change config message.
 				try {
-					if (Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false)) {
-						byte[] decoded = Base64.getDecoder().decode((byte[]) object);
-						packet = (BungeePacket) Skungee.getInstance().getEncrypter().deserialize(decoded);
+					if (configuration.getBoolean("security.encryption.enabled", false)) {
+						String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
+						String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
+						EncryptionUtil encyption = Skungee.getInstance().getEncrypter();
+						packet = (BungeePacket) encyption.decrypt(keyString, algorithm, (byte[]) object);
 					} else {
 						packet = (BungeePacket) object;
 					}
 				} catch (ClassCastException e) {
-					Skungee.consoleMessage("", "Some security settings didn't match for the incoming packet.", "Make sure all your security options on the Spigot servers match the same as in the Bungeecord Skungee config.yml", "The packet could not be read, thus being cancelled.");
+					Skungee.consoleMessage("", "Some security settings didn't match for the incoming packet.", "Make sure all your security options on the Spigot servers match the same as in the Bungeecord Skungee configuration.yml", "The packet could not be read, thus being cancelled.");
+					if (configuration.getBoolean("security.debug"))
+						e.printStackTrace();
 					attempt(address, null);
 					return;
 				}
 				if (packet.getPassword() != null) {
-					if (Skungee.getInstance().getConfig().getBoolean("security.password.hash", true)) {
-						if (Skungee.getInstance().getConfig().getBoolean("security.password.hashFile", false) && Skungee.getInstance().getEncrypter().isFileHashed()) {
+					if (configuration.getBoolean("security.password.hash", true)) {
+						if (configuration.getBoolean("security.password.hashFile", false) && Skungee.getInstance().getEncrypter().isFileHashed()) {
 							if (!Arrays.equals(Skungee.getInstance().getEncrypter().getHashFromFile(), packet.getPassword())) {
 								incorrectPassword(packet);
 								return;
@@ -67,20 +73,20 @@ public class SpigotRunnable implements Runnable {
 						}
 					} else {
 						String password = (String) Skungee.getInstance().getEncrypter().deserialize(packet.getPassword());
-						if (!password.equals(Skungee.getInstance().getConfig().getString("security.password.password"))){
+						if (!password.equals(configuration.getString("security.password.password"))){
 							incorrectPassword(packet);
 							return;
 						}
 					}
-				} else if (Skungee.getInstance().getConfig().getBoolean("security.password.enabled", false)) {
+				} else if (configuration.getBoolean("security.password.enabled", false)) {
 					incorrectPassword(packet);
 					return;
 				}
 				if (Sockets.attempts.containsKey(address)) Sockets.attempts.remove(address);
 				Object packetData = SpigotPacketHandler.handlePacket(packet, address);
 				if (packetData != null) {
-					//TODO Add cipher encryption + change config message.
-					if (Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false)) {
+					//TODO Add cipher encryption + change configuration message.
+					if (configuration.getBoolean("security.encryption.enabled", false)) {
 						byte[] serialized = Skungee.getInstance().getEncrypter().serialize(packetData);
 						objectOutputStream.writeObject(Base64.getEncoder().encode(serialized));
 					} else {
@@ -107,7 +113,8 @@ public class SpigotRunnable implements Runnable {
 	}
 	
 	private void attempt(InetAddress address, @Nullable BungeePacket packet) {
-		if (Skungee.getInstance().getConfig().getBoolean("security.breaches.enabled", false)) {
+		FileConfiguration configuration = Skungee.getInstance().getConfig();
+		if (configuration.getBoolean("security.breaches.enabled", false)) {
 			int attempts = 0;
 			if (Sockets.attempts.containsKey(address)) {
 				attempts = Sockets.attempts.get(address);
@@ -115,15 +122,15 @@ public class SpigotRunnable implements Runnable {
 			}
 			attempts++;
 			Sockets.attempts.put(address, attempts);
-			if (attempts >= Skungee.getInstance().getConfig().getInt("security.breaches.attempts", 30)) {
-				if (Skungee.getInstance().getConfig().getBoolean("security.breaches.log", false)) {
+			if (attempts >= configuration.getInt("security.breaches.attempts", 30)) {
+				if (configuration.getBoolean("security.breaches.log", false)) {
 					log("", "&cA BungeePacket with an incorrect password has just been recieved and blocked!", "&cThe packet came from: " + socket.getInetAddress());
 					if (packet != null) log("&cThe packet type was: " + packet.getType());
 				}
-				if (Skungee.getInstance().getConfig().getBoolean("security.breaches.shutdown", false)) {
+				if (configuration.getBoolean("security.breaches.shutdown", false)) {
 					Bukkit.shutdown();
 				}
-				if (Skungee.getInstance().getConfig().getBoolean("security.breaches.blockAddress", false)) {
+				if (configuration.getBoolean("security.breaches.blockAddress", false)) {
 					if (!Sockets.blocked.contains(address)) Sockets.blocked.add(address);
 				}
 			}

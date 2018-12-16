@@ -1,7 +1,7 @@
 # Skungee (Spigot) - The #1 Skript addon for Bungeecord.
 
 # The version is to help determine which version this config is. Please don't modify this value.
-version: "1.0.7f"
+version: "1.0.8"
 
 # Print additional information in the console. The developers of Skungee may ask you to enable this when reporting an error.
 debug: false
@@ -17,6 +17,9 @@ port: 1337
 # All security options to protect your Skungee on Bungeecord and Spigot from possible external sources.
 # Everything in this section must match the same values as the Skungee config.yml on the Spigot servers.
 security:
+    # Debug option for security, a Skungee developer may ask you to enable this.
+    debug: false
+    # All strings get decoded in UTF_8, some symbols may not apply.
     password:
         # Should all packets require a password in order to be processed.
         enabled: false
@@ -42,7 +45,9 @@ security:
         # Constantly keep nagging at the developers of Skungee to finish this. (Shh I didn't put this here)
         enabled: false
         # Set which Cipher algorithm you would like to use.
-        cipherAlgorithm: "AES/CTS/PKCS5Padding"
+        cipherAlgorithm: "AES/CBC/PKCS5Padding"
+        # The cipher key is like another password.
+        cipherKey: "insert 16 length"
         # Should Skungee print any errors that may happen.
         # If you come across any errors with encryption, make sure you message the developers of Skungee, and not to users in a public setting.
         printEncryptionErrors: true
@@ -161,8 +166,8 @@ Reciever:
     # If this is false it will use the port option above.
     automatic: true
     # Define the range that should be scanned for the Automatic port finder.
-    maxPort: 65534
     startingPort: 1000
+    maxPort: 65534
   
 # Bungeecord events.
 Events: true
