@@ -25,9 +25,9 @@ import net.md_5.bungee.api.ProxyServer;
 
 public class ServerTracker {
 	
-	private static Set<ConnectedServer> servers = new HashSet<ConnectedServer>();
 	private static Set<ConnectedServer> notRespondingServers = new HashSet<ConnectedServer>();
 	private static Map<ConnectedServer, Long> tracker = new HashMap<ConnectedServer, Long>();
+	private static Set<ConnectedServer> servers = new HashSet<ConnectedServer>();
 	
 	public static void tracker() {
 		ProxyServer.getInstance().getScheduler().schedule(Skungee.getInstance(), new Runnable() {
@@ -87,17 +87,21 @@ public class ServerTracker {
 	private static void globalScripts(ConnectedServer server) {
 		if (Skungee.getConfig().getBoolean("GlobalScripts.Enabled", true) && Skungee.getInstance().getScriptsFolder().listFiles().length > 0) {
 			Map<String, List<String>> data = new HashMap<String, List<String>>();
+			String charset = Skungee.getConfig().getString("GlobalScripts.Charset", "default");
+			Charset chars = Charset.defaultCharset();
+			if (!charset.equals("default"))
+				chars = Charset.forName(charset);
 			file : for (File script : Skungee.getInstance().getScriptsFolder().listFiles()) {
 				try {
 					if (script.isDirectory()) {
 						if (script.getName().equalsIgnoreCase(server.getName())) {
 							for (File directory : script.listFiles()) {
-								data.put(directory.getName(), Files.readAllLines(directory.toPath(), Charset.defaultCharset()));
+								data.put(directory.getName(), Files.readAllLines(directory.toPath(), chars));
 							}
 						}
 						continue file;
 					}
-					data.put(script.getName(), Files.readAllLines(script.toPath(), Charset.defaultCharset()));
+					data.put(script.getName(), Files.readAllLines(script.toPath(), chars));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

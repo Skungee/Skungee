@@ -105,6 +105,17 @@ Tracker:
 # All connected servers need to have the "Reciever" option enabled in the Skungee settings.
 GlobalScripts:
     Enabled: true
+    # Charset is the set of characters to use. If you would like symbols and such, you can adjust that setting here.
+    # By default special symbols outside of the UTF-8 aren't supported. It's the default of your Java machine.
+    # Charsets are by follows:
+    #   default - The default charset of this Java virtual machine.
+    #   US-ASCII - Seven-bit ASCII, a.k.a. ISO646-US, a.k.a. the Basic Latin block of the Unicode character set
+    #   ISO-8859-1 - ISO Latin Alphabet No. 1, a.k.a. ISO-LATIN-1
+    #   UTF-8 - Eight-bit UCS Transformation Format
+    #   UTF-16BE - Sixteen-bit UCS Transformation Format, big-endian byte order
+    #   UTF-16LE - Sixteen-bit UCS Transformation Format, little-endian byte order
+    #   UTF-16 - Sixteen-bit UCS Transformation Format, byte order identified by an optional byte-order mark
+    Charset: "default"
 
 # Bungeecord events.
 Events: true

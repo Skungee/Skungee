@@ -15,6 +15,8 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.FileConfiguration;
+
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.objects.SkungeePlayer;
@@ -74,7 +76,8 @@ public class Sockets {
 		for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
 			whitelisted.add(new SkungeePlayer(true, player.getUniqueId(), player.getName()));
 		}
-		ArrayList<Object> data = new ArrayList<Object>(Arrays.asList(Skungee.getInstance().getConfig().getBoolean("Reciever.enabled", false), Reciever.getReciever().getLocalPort(), Bukkit.getPort(), whitelisted, Skungee.getInstance().getConfig().getInt("heartbeat", 30) * 60, Bukkit.getMotd(), Bukkit.getMaxPlayers()));
+		FileConfiguration configuration = Skungee.getInstance().getConfig();
+		ArrayList<Object> data = new ArrayList<Object>(Arrays.asList(configuration.getBoolean("Reciever.enabled", false), Reciever.getReciever().getLocalPort(), Bukkit.getPort(), whitelisted, configuration.getInt("heartbeat", 30) * 60, Bukkit.getMotd(), Bukkit.getMaxPlayers()));
 		Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
