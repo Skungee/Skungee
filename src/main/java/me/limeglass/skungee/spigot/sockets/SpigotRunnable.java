@@ -7,7 +7,6 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -18,6 +17,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.limeglass.skungee.EncryptionUtil;
+import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.spigot.Skungee;
 
@@ -39,40 +39,40 @@ public class SpigotRunnable implements Runnable {
 			if (Sockets.blocked.contains(address) || addresses.contains(address.getHostName())) return;
 		}
 		try {
+			String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
+			String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
 			ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+			EncryptionUtil encryption = Skungee.getInstance().getEncrypter();
 			Object object = objectInputStream.readObject();
 			if (object != null) {
-				BungeePacket packet;
+				BungeePacket packet = null;
 				try {
 					if (configuration.getBoolean("security.encryption.enabled", false)) {
-						String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
-						String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
-						EncryptionUtil encyption = Skungee.getInstance().getEncrypter();
-						packet = (BungeePacket) encyption.decrypt(keyString, algorithm, (byte[]) object);
+						packet = (BungeePacket) encryption.decrypt(keyString, algorithm, (byte[]) object);
 					} else {
 						packet = (BungeePacket) object;
 					}
 				} catch (ClassCastException e) {
 					Skungee.consoleMessage("", "Some security settings didn't match for the incoming packet.", "Make sure all your security options on the Spigot servers match the same as in the Bungeecord Skungee configuration.yml", "The packet could not be read, thus being cancelled.");
 					if (configuration.getBoolean("security.debug"))
-						e.printStackTrace();
+						Skungee.exception(e, "Could not decrypt packet " + UniversalSkungee.getPacketDebug(packet));
 					attempt(address, null);
 					return;
 				}
 				if (packet.getPassword() != null) {
 					if (configuration.getBoolean("security.password.hash", true)) {
-						if (configuration.getBoolean("security.password.hashFile", false) && Skungee.getInstance().getEncrypter().isFileHashed()) {
-							if (!Arrays.equals(Skungee.getInstance().getEncrypter().getHashFromFile(), packet.getPassword())) {
+						if (configuration.getBoolean("security.password.hashFile", false) && encryption.isFileHashed()) {
+							if (!Arrays.equals(encryption.getHashFromFile(), packet.getPassword())) {
 								incorrectPassword(packet);
 								return;
 							}
-						} else if (!Arrays.equals(Skungee.getInstance().getEncrypter().hash(), packet.getPassword())) {
+						} else if (!Arrays.equals(encryption.hash(), packet.getPassword())) {
 							incorrectPassword(packet);
 							return;
 						}
 					} else {
-						String password = (String) Skungee.getInstance().getEncrypter().deserialize(packet.getPassword());
+						String password = (String) encryption.deserialize(packet.getPassword());
 						if (!password.equals(configuration.getString("security.password.password"))){
 							incorrectPassword(packet);
 							return;
@@ -85,10 +85,10 @@ public class SpigotRunnable implements Runnable {
 				if (Sockets.attempts.containsKey(address)) Sockets.attempts.remove(address);
 				Object packetData = SpigotPacketHandler.handlePacket(packet, address);
 				if (packetData != null) {
-					//TODO Add cipher encryption + change configuration message.
 					if (configuration.getBoolean("security.encryption.enabled", false)) {
-						byte[] serialized = Skungee.getInstance().getEncrypter().serialize(packetData);
-						objectOutputStream.writeObject(Base64.getEncoder().encode(serialized));
+						byte[] serialized = encryption.serialize(packetData);
+						byte[] encrypted = encryption.encrypt(keyString, algorithm, serialized);
+						objectOutputStream.writeObject(encrypted);
 					} else {
 						objectOutputStream.writeObject(packetData);
 					}
@@ -96,7 +96,10 @@ public class SpigotRunnable implements Runnable {
 			}
 			objectInputStream.close();
 			objectOutputStream.close();
-		} catch(IOException | ClassNotFoundException e) {}
+		} catch (IOException | ClassNotFoundException e) {
+			if (configuration.getBoolean("security.debug"))
+				Skungee.exception(e, "Failed to encrypt packet");
+		}
 		try {
 			socket.close();
 		} catch (IOException e) {
@@ -150,4 +153,5 @@ public class SpigotRunnable implements Runnable {
 			Skungee.exception(e, "Error logging a breach.");
 		}
 	}
+
 }

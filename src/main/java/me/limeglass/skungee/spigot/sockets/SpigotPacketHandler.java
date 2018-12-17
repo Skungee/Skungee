@@ -190,7 +190,7 @@ public class SpigotPacketHandler {
 			case SKUNGEEMESSAGES:
 				if (packet.getObject() != null && packet.getSetObject() != null) {
 					for (String channel : (String[])packet.getSetObject()) {
-						Bukkit.getPluginManager().callEvent(new SkungeeMessageEvent(channel, (String[])packet.getObject()));
+						Bukkit.getScheduler().runTask(Skungee.getInstance(), () -> Bukkit.getPluginManager().callEvent(new SkungeeMessageEvent(channel, (String[])packet.getObject())));
 					}
 				}
 				break;
