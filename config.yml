@@ -41,8 +41,6 @@ security:
         hashAlgorithm: "SHA-256"
     encryption:
         # Should Skungee encrypt all sent packets.
-        # Currently this only encrypts it in Base64. So the algorithm option below does nothing.
-        # Constantly keep nagging at the developers of Skungee to finish this. (Shh I didn't put this here)
         enabled: false
         # Set which Cipher algorithm you would like to use.
         cipherAlgorithm: "AES/CBC/PKCS5Padding"

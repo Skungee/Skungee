@@ -21,8 +21,8 @@ import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
 import me.limeglass.skungee.bungeecord.protocol.channel.ChannelListener;
 import me.limeglass.skungee.bungeecord.serverinstances.Premium;
+import me.limeglass.skungee.bungeecord.sockets.BungeeRunnable;
 import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
-import me.limeglass.skungee.bungeecord.sockets.SocketRunnable;
 import me.limeglass.skungee.bungeecord.utils.BungeeReflectionUtil;
 import me.limeglass.skungee.bungeecord.variables.VariableManager;
 import net.md_5.bungee.api.ChatColor;
@@ -139,7 +139,7 @@ public class Skungee extends Plugin {
 				public void run() {
 					while (!serverSocket.isClosed()) {
 						try {
-							new Thread(new SocketRunnable(serverSocket.accept())).start();
+							new Thread(new BungeeRunnable(serverSocket.accept())).start();
 						} catch (IOException e) {
 							Skungee.exception(e, "Socket couldn't be accepted.");
 						}

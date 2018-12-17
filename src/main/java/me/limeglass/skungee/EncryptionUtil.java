@@ -217,4 +217,5 @@ public class EncryptionUtil {
 		if (spigot) Skungee.exception(e, reason);
 		else me.limeglass.skungee.bungeecord.Skungee.exception(e, reason);
 	}
+
 }

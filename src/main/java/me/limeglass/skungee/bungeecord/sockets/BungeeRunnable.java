@@ -7,7 +7,6 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.FileHandler;
@@ -17,67 +16,73 @@ import java.util.logging.SimpleFormatter;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.config.Configuration;
+import me.limeglass.skungee.EncryptionUtil;
+import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
 import me.limeglass.skungee.bungeecord.handlers.SkungeePacketHandler;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 
-public class SocketRunnable implements Runnable {
+public class BungeeRunnable implements Runnable {
 
-	private Socket socket = null;
 	private InetAddress address;
+	private Socket socket;
 
-	public SocketRunnable(Socket socket) {
-		this.socket = socket;
+	public BungeeRunnable(Socket socket) {
 		this.address = socket.getInetAddress();
+		this.socket = socket;
 	}
 
 	@Override
 	public void run() {
-		if (Skungee.getConfig().getBoolean("security.breaches.enabled", false)) {
-			List<String> addresses = Skungee.getConfig().getStringList("security.breaches.blacklisted");
-			if (!Skungee.getConfig().getBoolean("security.breaches.blacklist-is-whitelist", false)) {
+		Configuration configuration = Skungee.getConfig();
+		if (configuration.getBoolean("security.breaches.enabled", false)) {
+			List<String> addresses = configuration.getStringList("security.breaches.blacklisted");
+			if (!configuration.getBoolean("security.breaches.blacklist-is-whitelist", false)) {
 				if (BungeeSockets.blocked.contains(address) || addresses.contains(address.getHostName())) return;
 			} else if (!addresses.contains(address.getHostName())) return;
 		}
 		try {
-			ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+			String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
+			String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+			ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+			EncryptionUtil encryption = Skungee.getEncrypter();
 			Object object = objectInputStream.readObject();
 			if (object != null) {
-				SkungeePacket packet;
-				//TODO Add cipher encryption + change config message.
+				SkungeePacket packet = null;
 				try {
-					if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {
-						byte[] decoded = Base64.getDecoder().decode((byte[]) object);
-						packet = (SkungeePacket) Skungee.getEncrypter().deserialize(decoded);
+					if (configuration.getBoolean("security.encryption.enabled", false)) {
+						packet = (SkungeePacket) encryption.decrypt(keyString, algorithm, (byte[]) object);
 					} else {
 						packet = (SkungeePacket) object;
 					}
 				} catch (ClassCastException e) {
 					Skungee.consoleMessage("", "Some security settings didn't match for the incoming packet.", "Make sure all your security options on the Spigot servers match the same as in the Bungeecord Skungee config.yml", "The packet could not be read, thus being cancelled.");
 					attempt(address, null);
+					if (configuration.getBoolean("security.debug"))
+						Skungee.exception(e, "Could not decrypt packet " + UniversalSkungee.getPacketDebug(packet));
 					return;
 				}
 				if (packet.getPassword() != null) {
-					if (Skungee.getConfig().getBoolean("security.password.hash", true)) {
-						if (Skungee.getConfig().getBoolean("security.password.hashFile", false) && Skungee.getEncrypter().isFileHashed()) {
-							if (!Arrays.equals(Skungee.getEncrypter().getHashFromFile(), packet.getPassword())) {
-								incorrectPassword(packet);
-								return;
-							}
-						} else if (!Arrays.equals(Skungee.getEncrypter().hash(), packet.getPassword())) {
+					if (configuration.getBoolean("security.password.hash", true)) {
+						byte[] password = encryption.hash();
+						if (configuration.getBoolean("security.password.hashFile", false) && encryption.isFileHashed()) {
+							password = encryption.getHashFromFile();
+						}
+						if (!Arrays.equals(password, packet.getPassword())) {
 							incorrectPassword(packet);
 							return;
 						}
 					} else {
-						String password = (String) Skungee.getEncrypter().deserialize(packet.getPassword());
-						if (!password.equals(Skungee.getConfig().getString("security.password.password"))){
+						String password = (String) encryption.deserialize(packet.getPassword());
+						if (!password.equals(configuration.getString("security.password.password"))){
 							incorrectPassword(packet);
 							return;
 						}
 					}
-				} else if (Skungee.getConfig().getBoolean("security.password.enabled", false)) {
+				} else if (configuration.getBoolean("security.password.enabled", false)) {
 					incorrectPassword(packet);
 					return;
 				}
@@ -96,10 +101,10 @@ public class SocketRunnable implements Runnable {
 					}
 				}
 				if (packetData != null) {
-					//TODO Add cipher encryption + change config message.
-					if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {
-						byte[] serialized = Skungee.getEncrypter().serialize(packetData);
-						objectOutputStream.writeObject(Base64.getEncoder().encode(serialized));
+					if (configuration.getBoolean("security.encryption.enabled", false)) {
+						byte[] serialized = encryption.serialize(packetData);
+						byte[] encrypted = encryption.encrypt(keyString, algorithm, serialized);
+						objectOutputStream.writeObject(encrypted);
 					} else {
 						objectOutputStream.writeObject(packetData);
 					}
@@ -107,7 +112,10 @@ public class SocketRunnable implements Runnable {
 			}
 			objectInputStream.close();
 			objectOutputStream.close();
-		} catch(IOException | ClassNotFoundException e) {}
+		} catch(IOException | ClassNotFoundException e) {
+			if (configuration.getBoolean("security.debug"))
+				Skungee.exception(e, "Could not read incoming packet");
+		}
 		try {
 			socket.close();
 		} catch (IOException e) {

@@ -7,7 +7,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,7 +32,6 @@ public class Sockets {
 	public static Long lastSent = System.currentTimeMillis();
 	private static int task, heartbeat, keepAlive;
 	public static Socket bungeecord;
-	//private static EncryptionUtil encrypter = Skungee.getEncrypter();
 	
 	//TODO create a system to cache failed packets, It already does but it gives up after a few times and lets it go.
 	
@@ -101,9 +99,10 @@ public class Sockets {
 	}
 
 	private static Socket getSocketConnection() {
-		for (int i = 0; i < Skungee.getInstance().getConfig().getInt("maxAttempts", 20); i++) {
+		FileConfiguration configuration = Skungee.getInstance().getConfig();
+		for (int i = 0; i < configuration.getInt("maxAttempts", 20); i++) {
 			try {
-				return new Socket(Skungee.getInstance().getConfig().getString("host", "0.0.0.0"), Skungee.getInstance().getConfig().getInt("port", 1337));
+				return new Socket(configuration.getString("host", "0.0.0.0"), configuration.getInt("port", 1337));
 			} catch (IOException e) {}
 		}
 		return null;
@@ -130,8 +129,9 @@ public class Sockets {
 				checking = true;
 				bungeecord = getSocketConnection();
 				checking = false;
+				FileConfiguration configuration = Skungee.getInstance().getConfig();
 				if (bungeecord == null) {
-					if (Skungee.getInstance().getConfiguration("config").getBoolean("hault", false)) {
+					if (configuration.getBoolean("hault", false)) {
 						return send_i(packet);
 					} else {
 						Skungee.consoleMessage("Could not establish connection to Skungee on the Bungeecord!");
@@ -147,28 +147,30 @@ public class Sockets {
 							unsent.remove(p);
 						}
 					}
-					EncryptionUtil encrypter = new EncryptionUtil(Skungee.getInstance(), true);
-					if (!Skungee.getInstance().getConfig().getBoolean("IgnoreSpamPackets", true)) {
+					EncryptionUtil encryption = new EncryptionUtil(Skungee.getInstance(), true);
+					String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
+					String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
+					if (!configuration.getBoolean("IgnoreSpamPackets", true)) {
 						Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
 					} else if (!(packet.getType() == SkungeePacketType.HEARTBEAT)) {
 						Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
 					}
-					if (Skungee.getInstance().getConfig().getBoolean("security.password.enabled", false)) {
-						byte[] password = encrypter.serialize(Skungee.getInstance().getConfig().getString("security.password.password"));
-						if (Skungee.getInstance().getConfig().getBoolean("security.password.hash", true)) {
-							if (Skungee.getInstance().getConfig().getBoolean("security.password.hashFile", false) && encrypter.isFileHashed()) {
-								password = encrypter.getHashFromFile();
+					if (configuration.getBoolean("security.password.enabled", false)) {
+						byte[] password = encryption.serialize(configuration.getString("security.password.password"));
+						if (configuration.getBoolean("security.password.hash", true)) {
+							if (configuration.getBoolean("security.password.hashFile", false) && encryption.isFileHashed()) {
+								password = encryption.getHashFromFile();
 							} else {
-								password = encrypter.hash();
+								password = encryption.hash();
 							}
 						}
 						if (password != null) packet.setPassword(password);
 					}
 					ObjectOutputStream objectOutputStream = new ObjectOutputStream(bungeecord.getOutputStream());
-					//TODO Add cipher encryption + change config message.
-					if (Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false)) {
-						byte[] serialized = encrypter.serialize(packet);
-						objectOutputStream.writeObject(Base64.getEncoder().encode(serialized));
+					if (configuration.getBoolean("security.encryption.enabled", false)) {
+						byte[] serialized = encryption.serialize(packet);
+						byte[] encrypted = encryption.encrypt(keyString, algorithm, serialized);
+						objectOutputStream.writeObject(encrypted);
 					} else {
 						objectOutputStream.writeObject(packet);
 					}
@@ -176,10 +178,8 @@ public class Sockets {
 					bungeecord.setSoTimeout(10000);
 					ObjectInputStream objectInputStream = new ObjectInputStream(bungeecord.getInputStream());
 					if (packet.isReturnable()) {
-						//TODO Add cipher encryption + change config message.
-						if (Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false)) {
-							byte[] decoded = Base64.getDecoder().decode((byte[]) objectInputStream.readObject());
-							return encrypter.deserialize(decoded);
+						if (configuration.getBoolean("security.encryption.enabled", false)) {
+							return encryption.decrypt(keyString, algorithm, (byte[]) objectInputStream.readObject());
 						} else {
 							return objectInputStream.readObject();
 						}
@@ -206,11 +206,11 @@ public class Sockets {
 		}
 	}
 	
-	//Stops everything with the option to restart.
 	public static void stop(Boolean reconnect) {
 		Bukkit.getScheduler().cancelTask(task);
 		Bukkit.getScheduler().cancelTask(heartbeat);
 		Bukkit.getScheduler().cancelTask(keepAlive);
+		FileConfiguration configuration = Skungee.getInstance().getConfig();
 		if (bungeecord != null) {
 			try {
 				bungeecord.close();
@@ -222,12 +222,12 @@ public class Sockets {
 		if (reconnect) {
 			Skungee.consoleMessage("&6Attempting to reconnect to Skungee...");
 			connect();
-		} else if (Skungee.getInstance().getConfig().getBoolean("reconnect", false)) {
+		} else if (configuration.getBoolean("reconnect", false)) {
 			Skungee.consoleMessage("&6Going into keep alive mode...");
 			keepAlive();
 		} else {
 			Skungee.consoleMessage("&cDisconnected from Skungee!");
-			Skungee.consoleMessage("Could be incorrect Skungee details, there was no socket found or was denied access. For socket at " + Skungee.getInstance().getConfig().getString("host", "0.0.0.0") + ":" + Skungee.getInstance().getConfig().getInt("port", 1337));
+			Skungee.consoleMessage("Could be incorrect Skungee details, there was no socket found or was denied access. For socket at " + configuration.getString("host", "0.0.0.0") + ":" + configuration.getInt("port", 1337));
 		}
 	}
 }

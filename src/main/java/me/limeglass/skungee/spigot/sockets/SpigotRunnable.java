@@ -62,12 +62,11 @@ public class SpigotRunnable implements Runnable {
 				}
 				if (packet.getPassword() != null) {
 					if (configuration.getBoolean("security.password.hash", true)) {
+						byte[] password = encryption.hash();
 						if (configuration.getBoolean("security.password.hashFile", false) && encryption.isFileHashed()) {
-							if (!Arrays.equals(encryption.getHashFromFile(), packet.getPassword())) {
-								incorrectPassword(packet);
-								return;
-							}
-						} else if (!Arrays.equals(encryption.hash(), packet.getPassword())) {
+							password = encryption.getHashFromFile();
+						}
+						if (!Arrays.equals(password, packet.getPassword())) {
 							incorrectPassword(packet);
 							return;
 						}
@@ -98,7 +97,7 @@ public class SpigotRunnable implements Runnable {
 			objectOutputStream.close();
 		} catch (IOException | ClassNotFoundException e) {
 			if (configuration.getBoolean("security.debug"))
-				Skungee.exception(e, "Failed to encrypt packet");
+				Skungee.exception(e, "Could not read incoming packet");
 		}
 		try {
 			socket.close();
