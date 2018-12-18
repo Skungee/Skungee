@@ -29,7 +29,7 @@ public class Sockets {
 	public static Set<InetAddress> blocked = new HashSet<InetAddress>();
 	public static Set<SkungeePacket> unsent = new HashSet<SkungeePacket>();
 	private static Boolean restart = true, checking = false, isConnected = false;
-	public static Long lastSent = System.currentTimeMillis();
+	public static Long last = System.currentTimeMillis();
 	private static int task, heartbeat, keepAlive;
 	public static Socket bungeecord;
 	
@@ -174,7 +174,7 @@ public class Sockets {
 					} else {
 						objectOutputStream.writeObject(packet);
 					}
-					lastSent = System.currentTimeMillis();
+					last = System.currentTimeMillis();
 					bungeecord.setSoTimeout(10000);
 					ObjectInputStream objectInputStream = new ObjectInputStream(bungeecord.getInputStream());
 					if (packet.isReturnable()) {

@@ -268,4 +268,5 @@ public class FlatFileStorage extends SkungeeStorage {
 		}
 		loadingHash = false;
 	}
+
 }

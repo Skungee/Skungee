@@ -32,7 +32,7 @@ public class PacketQueue {
 					while (queue.iterator().hasNext()) {
 						SkungeePacket packet = queue.iterator().next();
 						if (Skungee.getInstance().getConfig().getBoolean("Queue.sync")) {
-							if (System.currentTimeMillis() - Sockets.lastSent > Skungee.getInstance().getConfig().getInt("Queue.delay", 100)) {
+							if (System.currentTimeMillis() - Sockets.last > Skungee.getInstance().getConfig().getInt("Queue.delay", 100)) {
 								Sockets.send_i(packet);
 								queue.remove(packet);
 							}

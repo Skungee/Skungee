@@ -109,23 +109,31 @@ public class SpigotPacketHandler {
 				});
 				@SuppressWarnings("unchecked")
 				Map<String, List<String>> data = (Map<String, List<String>>) packet.getObject();
+				if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.MimicExact", false)) {
+					boolean reload = false;
+					for (File script : scripts) {
+						if (!data.keySet().parallelStream().anyMatch(name -> name.equals(script.getName()))) {
+							reload = true;
+							try {
+								Files.deleteIfExists(script.toPath());
+								if (script.getParentFile().listFiles().length == 0)
+									Files.deleteIfExists(script.getParentFile().toPath());
+							} catch (IOException e) {}
+						}
+					}
+					if (reload)
+						Bukkit.getScheduler().runTask(Skungee.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload scripts"));
+				}
 				for (Entry<String, List<String>> entry : data.entrySet()) {
 					try {
-						if (scripts.stream().anyMatch(file -> file.getName().equals(entry.getKey()))) {
+						if (scripts.parallelStream().anyMatch(file -> file.getName().equals(entry.getKey()))) {
 							Boolean reload = false;
 							File script = File.createTempFile("Skungee", entry.getKey());
 							PrintStream out = new PrintStream(new FileOutputStream(script));
 							out.print(StringUtils.join(entry.getValue(), '\n'));
 							out.close();
-							for (File similar : scripts.stream().filter(file -> file.getName().equals(entry.getKey())).collect(Collectors.toSet())) {
+							for (File similar : scripts.parallelStream().filter(file -> file.getName().equals(entry.getKey())).collect(Collectors.toSet())) {
 								if (!Arrays.equals(Files.readAllBytes(script.toPath()), Files.readAllBytes(similar.toPath()))) {
-									/*try {
-										Method method = ScriptLoader.class.getDeclaredMethod("unloadScript", File.class);
-										method.setAccessible(true);
-										method.invoke(ScriptLoader.class, similar);
-									} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException error) {
-										Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload " + entry.getKey());
-									}*/
 									Files.deleteIfExists(similar.toPath());
 									reload = true;
 								}
@@ -140,7 +148,7 @@ public class SpigotPacketHandler {
 									@Override
 									public void run() {
 										Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload " + entry.getKey());
-										if (Skungee.getInstance().getConfig().getBoolean("GlobalScriptMessages", true)) {
+										if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
 											Skungee.consoleMessage("&6GlobalScripts: reloaded script " + entry.getKey() + " for this server!");
 										}
 									}
@@ -156,7 +164,7 @@ public class SpigotPacketHandler {
 							String name = scriptsFolder + File.separator + script.getName();
 							Config config = new Config(new FileInputStream(script), name, script, true, false, ":");
 							ScriptLoader.loadScripts(config);
-							if (Skungee.getInstance().getConfig().getBoolean("GlobalScriptMessages", true)) {
+							if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
 								Skungee.consoleMessage("&6GlobalScripts: created script " + entry.getKey() + " for this server!");
 							}
 						}

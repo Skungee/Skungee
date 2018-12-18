@@ -123,10 +123,6 @@ GlobalScripts:
     #   UTF-16LE - Sixteen-bit UCS Transformation Format, little-endian byte order
     #   UTF-16 - Sixteen-bit UCS Transformation Format, byte order identified by an optional byte-order mark
     Charset: "default"
-    # Should all the scripts of the Spigot servers mimic the exact scripts on the Bungeecord Skungee.
-    # WARNING: This will override any scripts that don't match the ones in the Bungeecord Skungee scripts folder.
-    # Make sure you don't have any scripts in the scripts folder of Skript on the Spigot servers.
-    MimicExact: false
 
 # Bungeecord events. This also needs to be disabled on the Spigot servers if you're disabling this option.
 Events: true

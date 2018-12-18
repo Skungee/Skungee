@@ -36,9 +36,14 @@ public abstract class SkungeeStorage {
 	
 	public abstract Value[] get(String index);
 	
-	//Return true if initialization was successful.
+	/**
+	 * @returns true if initialization was successful.
+	 */
 	protected abstract boolean initialize();
 	
-	//When a backup is called to be processed based on the configuration time.
+	/**
+	 * When a backup is called to be processed based on the configuration time.
+	 */
 	protected abstract void backup();
+
 }

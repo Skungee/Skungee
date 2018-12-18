@@ -126,8 +126,14 @@ DisableConsoleMessages: false
 # Disables the colour in the console.
 DisableConsoleColour: false
 
-# Sends a message to console stating that a script has been automatically reloaded or created. (This happens when the file on the Bungeecord gets edited/saved)
-GlobalScriptMessages: true
+# Settings for GlobalScripts
+GlobalScripts:
+    # Sends a message to console stating that a script has been automatically reloaded or created. (This happens when the file on the Bungeecord gets edited/saved)
+    Messages: true
+    # Should all the scripts of this server mimic the exact scripts on the Bungeecord Skungee.
+    # WARNING: This will override any scripts that don't match the ones in the Bungeecord Skungee scripts folder.
+    # Make sure you don't have any scripts in the scripts folder of Skript on the Spigot servers.
+    MimicExact: false
 
 # Should Skungee return all players as a UUID to the spigot servers.
 # If you run a cracked offline Bungeecord network, it is best to keep this false.
