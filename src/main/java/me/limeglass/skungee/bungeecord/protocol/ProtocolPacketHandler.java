@@ -23,8 +23,12 @@ public abstract class ProtocolPacketHandler {
 		if (!registered.contains(handler)) registered.add(handler);
 	}
 	
-	public static List<ProtocolPacketHandler> getHandlers(int packetId) {
-		return registered.parallelStream().filter(handler -> handler.getPacketId() == packetId).collect(Collectors.toList());
+	public static List<ProtocolPacketHandler> getHandlers(int packetId, ProtocolPlayer player) {
+		return registered.parallelStream()
+				.filter(handler -> handler.getPacketId() == packetId)
+				.filter(handler -> handler.getMaxProtocol() >= player.getProtocolVersion()
+						&& handler.getMinProtocol() <= player.getProtocolVersion())
+				.collect(Collectors.toList());
 	}
 	
 	public int getPacketId() {

@@ -115,7 +115,8 @@ public class Skungee extends Plugin {
 	private void loadConfiguration() {
 		File config = new File(Skungee.getInstance().getDataFolder(), "config.yml");
 		try (InputStream in = getResourceAsStream("Bungeecord/config.yml")) {
-			if (!config.exists()) Files.copy(in, config.toPath());
+			if (!config.exists())
+				Files.copy(in, config.toPath());
 			Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(config);
 			if (!getDescription().getVersion().equals(configuration.getString("version"))) {
 				new BungeeConfigSaver(instance).execute();
@@ -192,7 +193,7 @@ public class Skungee extends Plugin {
 			infoMessage("If the error doesn't disappear even after disabling all listed plugins, it is probably a Skungee issue.");
 		}
 		infoMessage();
-		infoMessage("Report this on the Skungee discussion page on SkUnity or Spigot. You can also message one of the Skungee developers.");
+		infoMessage("Report this at https://github.com/TheLimeGlass/Skungee/issues. You can also message one of the Skungee developers.");
 		infoMessage();
 		infoMessage("Stack trace:");
 		boolean first = true;

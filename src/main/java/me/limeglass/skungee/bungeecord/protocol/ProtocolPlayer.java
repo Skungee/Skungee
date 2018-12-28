@@ -10,6 +10,7 @@ public class ProtocolPlayer {
 	private final int protocol;
 	private float pitch, yaw;
 	private double x, y, z;
+	private boolean ground;
 	private int dimension;
 	private String server;
 	
@@ -64,6 +65,14 @@ public class ProtocolPlayer {
 	
 	public void setYaw(float yaw) {
 		this.yaw = yaw % 360.0F;
+	}
+	
+	public boolean isOnGround() {
+		return ground;
+	}
+
+	public void setOnGround(boolean ground) {
+		this.ground = ground;
 	}
 	
 	public int getDimension() {

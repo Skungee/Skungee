@@ -67,7 +67,15 @@ dependencies {
 
 processResources {
 	from (sourceSets.main.resources.srcDirs) {
-		include '**/*.yml'
+		include '*.yml'
+	}
+	from ("Bungeecord/") {
+		include '*.yml', '*.lang'
+		into 'Bungeecord/'
+	}
+	from ("lang/") {
+		include '*.lang'
+		into 'lang/'
 	}
 }
 

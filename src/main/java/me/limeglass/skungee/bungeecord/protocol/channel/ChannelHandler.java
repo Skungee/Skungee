@@ -32,7 +32,7 @@ public class ChannelHandler extends ChannelDuplexHandler {
 				//TODO Add support for canceling outgoing packets.
 				int packetId = DefinedPacket.readVarInt(byteBuf);
 				ProtocolPacket protocolPacket = new ProtocolPacket(false, player, byteBuf.resetReaderIndex());
-				ProtocolPacketHandler.getHandlers(packetId).forEach(handler -> handler.handlePacket(protocolPacket));
+				ProtocolPacketHandler.getHandlers(packetId, player).forEach(handler -> handler.handlePacket(protocolPacket));
 			} finally {
 				byteBuf.resetReaderIndex();
 				byteBuf.release();
@@ -51,8 +51,8 @@ public class ChannelHandler extends ChannelDuplexHandler {
 				super.channelRead(context, packet);
 				//TODO Add support for canceling incoming packets.
 				int packetId = DefinedPacket.readVarInt(byteBuf);
-				ProtocolPacket protocolPacket = new ProtocolPacket(true, player, byteBuf.resetReaderIndex());
-				ProtocolPacketHandler.getHandlers(packetId).forEach(handler -> handler.handlePacket(protocolPacket));
+				ProtocolPacket protocolPacket = new ProtocolPacket(true, player, byteBuf.markReaderIndex());
+				ProtocolPacketHandler.getHandlers(packetId, player).forEach(handler -> handler.handlePacket(protocolPacket));
 			} finally {
 				byteBuf.resetReaderIndex();
 				byteBuf.release();

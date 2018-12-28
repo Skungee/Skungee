@@ -130,7 +130,7 @@ public class Skungee extends JavaPlugin {
 			infoMessage("If the error doesn't disappear even after disabling all listed plugins, it is probably a Skungee issue.");
 		}
 		infoMessage();
-		infoMessage("Report this on the Skungee discussion page on SkUnity or Spigot", "You can also message one of the Skungee developers this error.");
+		infoMessage("Report this at https://github.com/TheLimeGlass/Skungee/issues", "You can also message one of the Skungee developers this error.");
 		infoMessage();
 		infoMessage("Stack trace:");
 		boolean first = true;

@@ -108,12 +108,6 @@ public class SkungeePacketHandler {
 					}
 				}
 				break;
-			case GLOBALPLAYERS:
-				Set<SkungeePlayer> allPlayers = new HashSet<SkungeePlayer>();
-				for(ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-					allPlayers.add(new SkungeePlayer(false, player.getUniqueId(), player.getName()));
-				}
-				return allPlayers;
 			case SERVERPLAYERS:
 				if (packet.getObject() != null) {
 					Set<SkungeePlayer> skungeePlayers = new HashSet<SkungeePlayer>();
@@ -187,15 +181,6 @@ public class SkungeePacketHandler {
 					return limits;
 				}
 				break;
-			case EVALUATE:
-				if (packet.getObject() == null || packet.getSetObject() == null) return null;
-				String[] evaluations = (String[]) packet.getObject();
-				String[] evalServers = (String[]) packet.getSetObject();
-				BungeePacket evalPacket = new BungeePacket(false, BungeePacketType.EVALUATE, evaluations);
-				for (String server : evalServers) {
-					BungeeSockets.send(evalPacket, ServerTracker.get(server));
-				}
-				break;
 			case ISSERVERONLINE:
 				if (packet.getObject() != null) {
 					if (packet.getObject() instanceof String) {
@@ -224,8 +209,6 @@ public class SkungeePacketHandler {
 					}
 					return whitelistedPlayers;
 				}
-				break;
-			case NETWORKVARIABLE:
 				break;
 			case PLAYERCHATMODE:
 				if (!players.isEmpty()) {
@@ -513,14 +496,8 @@ public class SkungeePacketHandler {
 					}
 				}
 				break;
-			case ENABLEPLUGINS:
-				ProxyServer.getInstance().getPluginManager().enablePlugins();
-				break;
 			case SERVERINSTANCES:
 				return ServerInstancesSockets.send(new ServerInstancesPacket(true, ServerInstancesPacketType.SERVERINSTANCES));
-			case LOADPLUGINS:
-				ProxyServer.getInstance().getPluginManager().loadPlugins();
-				break;
 			case REDISSERVERS:
 				return RedisBungee.getApi().getAllServers();
 			case REDISSERVERID:

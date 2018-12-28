@@ -17,11 +17,13 @@ public class BungeeReflectionUtil {
 		try {
 			for (Enumeration<JarEntry> jarEntry = jar.entries(); jarEntry.hasMoreElements();) {
 				String name = jarEntry.nextElement().getName().replace("/", ".");
-				String className = name.substring(0, name.length() - 6);
-				className = className.replace('/', '.');
-				for (String packageName : packages) {
-					if (name.startsWith(packageName) && name.endsWith(".class")) {
-						classes.add(Class.forName(className));
+				if (name.length() >= 6) {
+					String className = name.substring(0, name.length() - 6);
+					className = className.replace('/', '.');
+					for (String packageName : packages) {
+						if (name.startsWith(packageName) && name.endsWith(".class")) {
+							classes.add(Class.forName(className));
+						}
 					}
 				}
 			}
