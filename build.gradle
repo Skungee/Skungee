@@ -65,6 +65,12 @@ dependencies {
 	implementation fileTree(dir: 'lib', include: '*.jar')
 }
 
+processResources {
+	from (sourceSets.main.resources.srcDirs) {
+		include '**/*.yml'
+	}
+}
+
 jar {
     configurations.shade.each { dep ->
         from(project.zipTree(dep)){

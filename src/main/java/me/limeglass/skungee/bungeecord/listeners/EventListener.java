@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
@@ -17,10 +18,14 @@ import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.objects.packets.BungeePacketType;
 import me.limeglass.skungee.objects.packets.ServerPingPacket;
 import net.md_5.bungee.api.Favicon;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.ServerPing.PlayerInfo;
 import net.md_5.bungee.api.ServerPing.Protocol;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
@@ -51,6 +56,26 @@ public class EventListener implements Listener {
 				BungeePacket packet = new BungeePacket(false, BungeePacketType.PLAYERDISCONNECT, servers[0].getName(), null, player);
 				BungeeSockets.sendAll(packet);
 			}
+		}
+    }
+	
+	@EventHandler
+    public void onCommand(ChatEvent event) {
+		Optional<ProxiedPlayer> proxied = ProxyServer.getInstance().getPlayers().parallelStream()
+				.filter(p -> p.getAddress().equals(event.getSender().getAddress()))
+				.findAny();
+		Optional<ServerInfo> serverInfo = ProxyServer.getInstance().getServers().values().parallelStream()
+				.filter(s -> s.getAddress().equals(event.getReceiver().getAddress()))
+				.findAny();
+		if (proxied.isPresent() && serverInfo.isPresent()) {
+			ProxiedPlayer p = proxied.get();
+			ServerInfo server = serverInfo.get();
+			SkungeePlayer player = new SkungeePlayer(false, p.getUniqueId(), p.getName());
+			BungeePacket packet = new BungeePacket(true, BungeePacketType.PLAYERCHAT, event.getMessage(), server.getName(), player);
+			if (event.isCommand())
+				packet = new BungeePacket(true, BungeePacketType.PLAYERCOMMAND, event.getMessage(), server.getName(), player);
+			if (BungeeSockets.sendAll(packet).contains(true))
+				event.setCancelled(true);
 		}
     }
 	
@@ -119,4 +144,5 @@ public class EventListener implements Listener {
 			event.setResponse(ping);
 		}
     }
+
 }

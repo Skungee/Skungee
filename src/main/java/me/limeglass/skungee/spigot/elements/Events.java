@@ -13,6 +13,7 @@ import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import me.limeglass.skungee.objects.events.SkungeePingEvent;
+import me.limeglass.skungee.objects.events.SkungeePlayerChatEvent;
 import me.limeglass.skungee.objects.events.SkungeePlayerDisconnect;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.utils.ReflectionUtil;
@@ -22,6 +23,7 @@ public class Events {
 	static {
 		registerEvent(null, SkungeePlayerDisconnect.class, "bungee[[ ]cord] disconnect");
 		registerEvent(null, SkungeePingEvent.class, "bungee[[ ]cord] [server list] ping");
+		registerEvent(null, SkungeePlayerChatEvent.class, "bungee[[ ]cord] chat");
 	}
 	
 	public static void registerEvent(@Nullable Class<? extends SkriptEvent> skriptEvent, Class<? extends Event> event, String... patterns) {

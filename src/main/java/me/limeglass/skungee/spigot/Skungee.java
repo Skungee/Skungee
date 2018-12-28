@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -51,7 +50,7 @@ public class Skungee extends JavaPlugin {
 		instance = this;
 		saveDefaultConfig();
 		File config = new File(getDataFolder(), "config.yml");
-		if (!Objects.equals(getDescription().getVersion(), getConfig().getString("version"))) {
+		if (!getDescription().getVersion().equals(getConfig().getString("version"))) {
 			consoleMessage("&dNew update found! Updating files now...");
 			if (config.exists()) new SpigotConfigSaver(this).execute();
 		}

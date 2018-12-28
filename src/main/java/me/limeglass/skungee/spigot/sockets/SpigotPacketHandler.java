@@ -21,6 +21,8 @@ import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.objects.SkungeeVariable.Value;
 import me.limeglass.skungee.objects.events.SkungeeMessageEvent;
 import me.limeglass.skungee.objects.events.SkungeePingEvent;
+import me.limeglass.skungee.objects.events.SkungeePlayerChatEvent;
+import me.limeglass.skungee.objects.events.SkungeePlayerCommandEvent;
 import me.limeglass.skungee.objects.events.SkungeePlayerDisconnect;
 import me.limeglass.skungee.objects.events.SkungeePlayerSwitchServer;
 import me.limeglass.skungee.objects.packets.BungeePacket;
@@ -34,6 +36,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.config.Config;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.registrations.Classes;
+import ch.njol.skript.util.Version;
 import ch.njol.skript.variables.Variables;
 
 public class SpigotPacketHandler {
@@ -49,19 +52,23 @@ public class SpigotPacketHandler {
 		switch (packet.getType()) {
 			case PINGSERVER:
 				break;
-			case PLAYERCHAT:
-				/*@SuppressWarnings("unchecked")
-				ArrayList<Object> data = (ArrayList<Object>) packet.getObject();
-				String msg = (String) data.get(1);
-				Player reciever = null;
-				if (data.get(2) != null) {
-					reciever = Bukkit.getPlayer((UUID) data.get(2));
+			case PLAYERCOMMAND:
+				if (packet.getObject() != null && packet.getSetObject() != null && packet.getPlayers() != null) {
+					String server = (String)packet.getSetObject();
+					String command = (String)packet.getObject();
+					SkungeePlayerCommandEvent event = new SkungeePlayerCommandEvent(command, server, packet.getPlayers());
+					Bukkit.getPluginManager().callEvent(event);
+					return event.isCancelled();
 				}
-				EvtBungeecordPlayerChat chatEvent = new EvtBungeecordPlayerChat(player, msg, reciever);
-				Bukkit.getPluginManager().callEvent(chatEvent);
-				if (chatEvent.isCancelled()) {
-					return true;
-				}*/
+				break;
+			case PLAYERCHAT:
+				if (packet.getObject() != null && packet.getSetObject() != null && packet.getPlayers() != null) {
+					String server = (String)packet.getSetObject();
+					String message = (String)packet.getObject();
+					SkungeePlayerChatEvent event = new SkungeePlayerChatEvent(message, server, packet.getPlayers());
+					Bukkit.getPluginManager().callEvent(event);
+					return event.isCancelled();
+				}
 				break;
 			case PLAYERDISCONNECT:
 				if (packet.getObject() != null && packet.getPlayers() != null) {
@@ -77,14 +84,6 @@ public class SpigotPacketHandler {
 				//OfflinePlayer playerLogin = Bukkit.getOfflinePlayer((UUID) packet.getObject());
 				//if (playerLogin != null) {
 				//	Bukkit.getPluginManager().callEvent(new EvtBungeecordConnect((UUID) packet.getObject(), playerLogin));
-				//}
-				break;
-			case PLAYERCOMMAND:
-				//@SuppressWarnings("unchecked") ArrayList<Object> dataCommand = (ArrayList<Object>) packet.getSetObject();
-				//OfflinePlayer playerCommand = Bukkit.getOfflinePlayer((UUID) dataCommand.get(0));
-				//if (playerCommand != null) {
-					//username, offlineplayer, command
-					//Bukkit.getPluginManager().callEvent(new EvtBungeecordCommand((String) packet.getObject(), (UUID) dataCommand.get(0), playerCommand, (String) dataCommand.get(1)));
 				//}
 				break;
 			case EVALUATE:
@@ -160,9 +159,11 @@ public class SpigotPacketHandler {
 							PrintStream out = new PrintStream(new FileOutputStream(script));
 							out.print(StringUtils.join(entry.getValue(), '\n'));
 							out.close();
-							//Config config = ScriptLoader.loadStructure(script);
 							String name = scriptsFolder + File.separator + script.getName();
-							Config config = new Config(new FileInputStream(script), name, script, true, false, ":");
+							Config config = new Config(new FileInputStream(script), name, true, false, ":");
+							if (Skript.getVersion().isLargerThan(new Version("2.2-dev31c"))) {
+								config = new Config(new FileInputStream(script), name, script, true, false, ":");
+							}
 							ScriptLoader.loadScripts(config);
 							if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
 								Skungee.consoleMessage("&6GlobalScripts: created script " + entry.getKey() + " for this server!");
@@ -222,4 +223,5 @@ public class SpigotPacketHandler {
 		}
 		return files;
 	}
+
 }

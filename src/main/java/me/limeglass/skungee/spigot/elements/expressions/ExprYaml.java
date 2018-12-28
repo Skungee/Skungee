@@ -53,13 +53,6 @@ public class ExprYaml extends SkungeeExpression<Object> {
 		if (value == null) return null;
 		return value;
 	}
-
-	@Override
-	public void change(Event event, Object[] delta, ChangeMode mode) {
-		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
-		if (changer == null || delta == null || areNull(event)) return;
-		Sockets.send(new SkungeeYamlPacket(SkungeePacketType.YAML, expressions.getSingle(event, String.class, 0), expressions.getSingle(event, String.class, 1), delta,  state, changer));
-	}
 	
 	@Override
 	public Class<?>[] acceptChange(final ChangeMode mode) {
@@ -73,4 +66,12 @@ public class ExprYaml extends SkungeeExpression<Object> {
 		}
 		return null;
 	}
+
+	@Override
+	public void change(Event event, Object[] delta, ChangeMode mode) {
+		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
+		if (changer == null || delta == null || areNull(event)) return;
+		Sockets.send(new SkungeeYamlPacket(SkungeePacketType.YAML, expressions.getSingle(event, String.class, 0), expressions.getSingle(event, String.class, 1), delta,  state, changer));
+	}
+
 }

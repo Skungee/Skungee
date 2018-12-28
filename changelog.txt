@@ -1,8 +1,7 @@
+Version: 1.0.8a
+
 Added:
-- Added the ability to loop network variables.
+- 
 
 Fixed:
-- Forgot to change version tag to 1.0.7 last update. Now 1.0.7a, Whoops.
-- Network variables that wern't set caused errors on the Bungeecord.
-- Updated the lang file to be up to date with latest version.
-- Network variables not having changers.
+- Fixed a bug where GlobalScripts wouldn't load in Skript versions under 2.2-dev31c.
