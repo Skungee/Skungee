@@ -92,7 +92,7 @@ public class SpigotRunnable implements Runnable {
 				if (packetData != null) {
 					SkungeeReturningEvent returning = new SkungeeReturningEvent(packet, packetData);
 					Bukkit.getPluginManager().callEvent(returning);
-					if (event.isCancelled())
+					if (returning.isCancelled())
 						return;
 					packetData = returning.getObject();
 					if (configuration.getBoolean("security.encryption.enabled", false)) {

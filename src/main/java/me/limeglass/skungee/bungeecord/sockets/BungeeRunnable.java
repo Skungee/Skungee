@@ -22,6 +22,8 @@ import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
 import me.limeglass.skungee.bungeecord.handlers.SkungeePacketHandler;
+import me.limeglass.skungee.objects.events.BungeeReceivedEvent;
+import me.limeglass.skungee.objects.events.BungeeReturningEvent;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 
 public class BungeeRunnable implements Runnable {
@@ -65,6 +67,10 @@ public class BungeeRunnable implements Runnable {
 						Skungee.exception(e, "Could not decrypt packet " + UniversalSkungee.getPacketDebug(packet));
 					return;
 				}
+				BungeeReceivedEvent event = new BungeeReceivedEvent(packet, address);
+				ProxyServer.getInstance().getPluginManager().callEvent(event);
+				if (event.isCancelled())
+					return;
 				if (packet.getPassword() != null) {
 					if (configuration.getBoolean("security.password.hash", true)) {
 						byte[] password = encryption.hash();
@@ -97,10 +103,13 @@ public class BungeeRunnable implements Runnable {
 							packetData = externalHandler.get().callPacket(packet, address);
 						}
 					} else {
-						packetData = SkungeePacketHandler.handlePacket(packet, socket.getInetAddress());
+						packetData = SkungeePacketHandler.handlePacket(packet, address);
 					}
 				}
-				if (packetData != null) {
+				if (packetData != null && packet.isReturnable()) {
+					BungeeReturningEvent returning = new BungeeReturningEvent(packet, packetData, address);
+					ProxyServer.getInstance().getPluginManager().callEvent(returning);
+					packetData = returning.getObject();
 					if (configuration.getBoolean("security.encryption.enabled", false)) {
 						byte[] serialized = encryption.serialize(packetData);
 						byte[] encrypted = encryption.encrypt(keyString, algorithm, serialized);

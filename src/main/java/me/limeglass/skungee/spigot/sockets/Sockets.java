@@ -27,10 +27,10 @@ import me.limeglass.skungee.spigot.Skungee;
 
 public class Sockets {
 
-	public static Map<InetAddress, Integer> attempts = new HashMap<InetAddress, Integer>();
-	public static Set<InetAddress> blocked = new HashSet<InetAddress>();
-	public static Set<SkungeePacket> unsent = new HashSet<SkungeePacket>();
-	private static Boolean restart = true, checking = false, isConnected = false;
+	public static Map<InetAddress, Integer> attempts = new HashMap<>();
+	public static Set<InetAddress> blocked = new HashSet<>();
+	public static Set<SkungeePacket> unsent = new HashSet<>();
+	private static boolean restart = true, checking, isConnected;
 	public static Long last = System.currentTimeMillis();
 	private static int task, heartbeat, keepAlive;
 	public static Socket bungeecord;
@@ -152,15 +152,15 @@ public class Sockets {
 					EncryptionUtil encryption = new EncryptionUtil(Skungee.getInstance(), true);
 					String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
 					String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
+					SkungeeSendingEvent event = new SkungeeSendingEvent(packet);
+					Bukkit.getPluginManager().callEvent(event);
+					if (event.isCancelled())
+						return null;
 					if (!configuration.getBoolean("IgnoreSpamPackets", true)) {
 						Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
 					} else if (!(packet.getType() == SkungeePacketType.HEARTBEAT)) {
 						Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
 					}
-					SkungeeSendingEvent event = new SkungeeSendingEvent(packet);
-					Bukkit.getPluginManager().callEvent(event);
-					if (event.isCancelled())
-						return null;
 					if (configuration.getBoolean("security.password.enabled", false)) {
 						byte[] password = encryption.serialize(configuration.getString("security.password.password"));
 						if (configuration.getBoolean("security.password.hash", true)) {

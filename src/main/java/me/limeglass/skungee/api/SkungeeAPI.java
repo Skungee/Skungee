@@ -1,10 +1,13 @@
 package me.limeglass.skungee.api;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import com.google.common.base.Optional;
 
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.sockets.BungeeSockets;
@@ -68,7 +71,7 @@ public class SkungeeAPI {
 	 */
 	public static Object sendPacket(SkungeePacket packet) throws IllegalAccessException {
 		if (isBungeecord())
-			throw new IllegalAccessException("A SkungeePacket may only be send on a Spigot implementation, try BungeePacket.");
+			throw new IllegalAccessException("A SkungeePacket may only be sent on a Spigot implementation, try BungeePacket.");
 		return Sockets.send(packet);
 	}
 	
@@ -84,8 +87,32 @@ public class SkungeeAPI {
 	 */
 	public static Object sendPacket(BungeePacket packet, ConnectedServer... servers) throws IllegalAccessException {
 		if (!isBungeecord())
-			throw new IllegalAccessException("A BungeePacket may only be send on a Spigot implementation, try SkungeePacket.");
+			throw new IllegalAccessException("A BungeePacket may only be sent on a Bungeecord implementation, try SkungeePacket.");
 		return BungeeSockets.send(packet, servers);
+	}
+	
+	/**
+	 * Will grab a ConnectedServer instance if the server is indeed connected and found.
+	 * The optional is because the input string may not be a found server.
+	 * 
+	 * @param server The input to search for.
+	 * @return The ConnectedServers of which were found by the string input.
+	 */
+	public static Optional<ConnectedServer[]> getConnectedServers(String server) {
+		return Optional.of(ServerTracker.get(server));
+	}
+	
+	/**
+	 * Sends the defined packet to all connected servers.
+	 * 
+	 * @param packet The packet to be sent to all servers.
+	 * @return All returned values from each server in a list.
+	 * @throws IllegalAccessException If you attempt to use the packet on the wrong server implementation. Only Bungeecord.
+	 */
+	public static List<Object> sendPacketToAll(BungeePacket packet) throws IllegalAccessException {
+		if (!isBungeecord())
+			throw new IllegalAccessException("A BungeePacket may only be sent on a Bungeecord implementation, try SkungeePacket.");
+		return BungeeSockets.sendAll(packet);
 	}
 	
 	/**
@@ -395,6 +422,15 @@ public class SkungeeAPI {
 		 */
 		public void send(ConnectedServer... servers) throws IllegalAccessException {
 			SkungeeAPI.sendPacket(build(), servers);
+		}
+		
+		/**
+		 * Send the BungeePacket to all ConnectedServers
+		 * 
+		 * @throws IllegalAccessException If you attempt to use the packet on the wrong server implementation. Only Bungeecord.
+		 */
+		public void sendToAll() throws IllegalAccessException {
+			SkungeeAPI.sendPacketToAll(build());
 		}
 		
 		/**

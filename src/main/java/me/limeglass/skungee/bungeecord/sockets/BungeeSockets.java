@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import me.limeglass.skungee.objects.ConnectedServer;
+import me.limeglass.skungee.objects.events.BungeeReturnedEvent;
+import me.limeglass.skungee.objects.events.BungeeSendingEvent;
 import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.objects.packets.BungeePacketType;
 import net.md_5.bungee.api.ProxyServer;
@@ -54,6 +56,10 @@ public class BungeeSockets {
 			EncryptionUtil encryption = Skungee.getEncrypter();
 			String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
 			String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
+			BungeeSendingEvent event = new BungeeSendingEvent(packet, server);
+			ProxyServer.getInstance().getPluginManager().callEvent(event);
+			if (event.isCancelled())
+				return null;
 			if (!configuration.getBoolean("IgnoreSpamPackets", true)) {
 				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
 			} else if (!(packet.getType() == BungeePacketType.GLOBALSCRIPTS)) {
@@ -82,11 +88,15 @@ public class BungeeSockets {
 				}
 				ObjectInputStream objectInputStream = new ObjectInputStream(spigot.getInputStream());
 				if (packet.isReturnable()) {
+					Object value = null;
 					if (configuration.getBoolean("security.encryption.enabled", false)) {
-						return encryption.decrypt(keyString, algorithm, (byte[]) objectInputStream.readObject());
+						value = encryption.decrypt(keyString, algorithm, (byte[]) objectInputStream.readObject());
 					} else {
-						return objectInputStream.readObject();
+						value = objectInputStream.readObject();
 					}
+					BungeeReturnedEvent returning = new BungeeReturnedEvent(packet, value, server);
+					ProxyServer.getInstance().getPluginManager().callEvent(returning);
+					return returning.getReturnedObject();
 				}
 				objectOutputStream.close();
 				objectInputStream.close();
