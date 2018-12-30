@@ -99,92 +99,96 @@ public class SpigotPacketHandler {
 				}
 				break;
 			case GLOBALSCRIPTS:
-				File scriptsFolder = new File(Skript.getInstance().getDataFolder().getAbsolutePath() + File.separator + Skript.SCRIPTSFOLDER);
-				Set<File> scripts = getFiles(scriptsFolder, new FilenameFilter() {
-					@Override
-					public boolean accept(File dir, String name) {
-						return name.toLowerCase().endsWith(".sk") && !name.startsWith("-");
-					}
-				});
-				@SuppressWarnings("unchecked")
-				Map<String, List<String>> data = (Map<String, List<String>>) packet.getObject();
-				if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.MimicExact", false)) {
-					boolean reload = false;
-					for (File script : scripts) {
-						if (!data.keySet().parallelStream().anyMatch(name -> name.equals(script.getName()))) {
-							reload = true;
-							try {
-								Files.deleteIfExists(script.toPath());
-								if (script.getParentFile().listFiles().length == 0)
-									Files.deleteIfExists(script.getParentFile().toPath());
-							} catch (IOException e) {}
+				if (Skungee.isSkriptPresent()) {
+					File scriptsFolder = new File(Skript.getInstance().getDataFolder().getAbsolutePath() + File.separator + Skript.SCRIPTSFOLDER);
+					Set<File> scripts = getFiles(scriptsFolder, new FilenameFilter() {
+						@Override
+						public boolean accept(File dir, String name) {
+							return name.toLowerCase().endsWith(".sk") && !name.startsWith("-");
 						}
+					});
+					@SuppressWarnings("unchecked")
+					Map<String, List<String>> data = (Map<String, List<String>>) packet.getObject();
+					if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.MimicExact", false)) {
+						boolean reload = false;
+						for (File script : scripts) {
+							if (!data.keySet().parallelStream().anyMatch(name -> name.equals(script.getName()))) {
+								reload = true;
+								try {
+									Files.deleteIfExists(script.toPath());
+									if (script.getParentFile().listFiles().length == 0)
+										Files.deleteIfExists(script.getParentFile().toPath());
+								} catch (IOException e) {}
+							}
+						}
+						if (reload)
+							Bukkit.getScheduler().runTask(Skungee.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload scripts"));
 					}
-					if (reload)
-						Bukkit.getScheduler().runTask(Skungee.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload scripts"));
-				}
-				for (Entry<String, List<String>> entry : data.entrySet()) {
-					try {
-						if (scripts.parallelStream().anyMatch(file -> file.getName().equals(entry.getKey()))) {
-							Boolean reload = false;
-							File script = File.createTempFile("Skungee", entry.getKey());
-							PrintStream out = new PrintStream(new FileOutputStream(script));
-							out.print(StringUtils.join(entry.getValue(), '\n'));
-							out.close();
-							for (File similar : scripts.parallelStream().filter(file -> file.getName().equals(entry.getKey())).collect(Collectors.toSet())) {
-								if (!Arrays.equals(Files.readAllBytes(script.toPath()), Files.readAllBytes(similar.toPath()))) {
-									Files.deleteIfExists(similar.toPath());
-									reload = true;
+					for (Entry<String, List<String>> entry : data.entrySet()) {
+						try {
+							if (scripts.parallelStream().anyMatch(file -> file.getName().equals(entry.getKey()))) {
+								Boolean reload = false;
+								File script = File.createTempFile("Skungee", entry.getKey());
+								PrintStream out = new PrintStream(new FileOutputStream(script));
+								out.print(StringUtils.join(entry.getValue(), '\n'));
+								out.close();
+								for (File similar : scripts.parallelStream().filter(file -> file.getName().equals(entry.getKey())).collect(Collectors.toSet())) {
+									if (!Arrays.equals(Files.readAllBytes(script.toPath()), Files.readAllBytes(similar.toPath()))) {
+										Files.deleteIfExists(similar.toPath());
+										reload = true;
+									}
+								}
+								if (reload) {
+									File newScript = new File(scriptsFolder + File.separator + entry.getKey());
+									com.google.common.io.Files.move(script, newScript);
+									//String name = scriptsFolder + File.separator + newScript.getName();
+									//Config config = new Config(new FileInputStream(newScript), name, newScript, true, false, ":");
+									//ScriptLoader.loadScripts(config);
+									Bukkit.getScheduler().runTask(Skungee.getInstance(), new Runnable() {
+										@Override
+										public void run() {
+											Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload " + entry.getKey());
+											if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
+												Skungee.consoleMessage("&6GlobalScripts: reloaded script " + entry.getKey() + " for this server!");
+											}
+										}
+									});
+								}
+								script.delete();
+							} else {
+								File script = new File(scriptsFolder + File.separator + entry.getKey());
+								PrintStream out = new PrintStream(new FileOutputStream(script));
+								out.print(StringUtils.join(entry.getValue(), '\n'));
+								out.close();
+								String name = scriptsFolder + File.separator + script.getName();
+								Config config = new Config(new FileInputStream(script), name, true, false, ":");
+								if (Skript.getVersion().isLargerThan(new Version("2.2-dev31c"))) {
+									config = new Config(new FileInputStream(script), name, script, true, false, ":");
+								}
+								ScriptLoader.loadScripts(config);
+								if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
+									Skungee.consoleMessage("&6GlobalScripts: created script " + entry.getKey() + " for this server!");
 								}
 							}
-							if (reload) {
-								File newScript = new File(scriptsFolder + File.separator + entry.getKey());
-								com.google.common.io.Files.move(script, newScript);
-								//String name = scriptsFolder + File.separator + newScript.getName();
-								//Config config = new Config(new FileInputStream(newScript), name, newScript, true, false, ":");
-								//ScriptLoader.loadScripts(config);
-								Bukkit.getScheduler().runTask(Skungee.getInstance(), new Runnable() {
-									@Override
-									public void run() {
-										Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload " + entry.getKey());
-										if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
-											Skungee.consoleMessage("&6GlobalScripts: reloaded script " + entry.getKey() + " for this server!");
-										}
-									}
-								});
-							}
-							script.delete();
-						} else {
-							File script = new File(scriptsFolder + File.separator + entry.getKey());
-							PrintStream out = new PrintStream(new FileOutputStream(script));
-							out.print(StringUtils.join(entry.getValue(), '\n'));
-							out.close();
-							String name = scriptsFolder + File.separator + script.getName();
-							Config config = new Config(new FileInputStream(script), name, true, false, ":");
-							if (Skript.getVersion().isLargerThan(new Version("2.2-dev31c"))) {
-								config = new Config(new FileInputStream(script), name, script, true, false, ":");
-							}
-							ScriptLoader.loadScripts(config);
-							if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
-								Skungee.consoleMessage("&6GlobalScripts: created script " + entry.getKey() + " for this server!");
-							}
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
 				}
 				break;
 			case UPDATEVARIABLES:
-				Object objectName = packet.getObject();
-				Object objectValues = packet.getSetObject();
-				if (objectName == null || objectValues == null) return null;
-				String name = (String) objectName;
-				Value[] values = (Value[]) objectValues;
-				Object[] objects = new Object[values.length];
-				for (int i = 0; i < values.length; i++) {
-					objects[i] = Classes.deserialize(values[i].type, values[i].data);
+				if (Skungee.isSkriptPresent()) {
+					Object objectName = packet.getObject();
+					Object objectValues = packet.getSetObject();
+					if (objectName == null || objectValues == null) return null;
+					String name = (String) objectName;
+					Value[] values = (Value[]) objectValues;
+					Object[] objects = new Object[values.length];
+					for (int i = 0; i < values.length; i++) {
+						objects[i] = Classes.deserialize(values[i].type, values[i].data);
+					}
+					Variables.setVariable(name, objects, null, false);
 				}
-				Variables.setVariable(name, objects, null, false);
 				break;
 			case SHUTDOWN:
 				Bukkit.shutdown();
@@ -202,6 +206,8 @@ public class SpigotPacketHandler {
 						Bukkit.getScheduler().runTask(Skungee.getInstance(), () -> Bukkit.getPluginManager().callEvent(new SkungeeMessageEvent(channel, (String[])packet.getObject())));
 					}
 				}
+				break;
+			default:
 				break;
 		}
 		return null;

@@ -2,7 +2,7 @@
 
 # The version is to help determine which version this configuration is.
 # Please do not modify this value, it may result in the configuration resetting!
-version: "1.0.9"
+version: "1.0.9a"
 
 # This is the main port for the Skungee network system. Skungee will setup this port on this Bungeecord machine.
 # Make sure the port is "port forward/open" or that you have access to this port to be running, if not change this to an available port.

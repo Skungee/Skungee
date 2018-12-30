@@ -42,11 +42,16 @@ public class Skungee extends JavaPlugin {
 	private static String nameplate = "[Skungee] ";
 	private EncryptionUtil encryption;
 	private static Skungee instance;
+	private static boolean skript;
 	private SkriptAddon addon;
 	private Metrics metrics;
 	
 	public void onEnable(){
-		addon = Skript.registerAddon(this).setLanguageFileDirectory("lang");
+		Plugin plugin = Bukkit.getPluginManager().getPlugin("Skript");
+		if (plugin != null && plugin.isEnabled()) {
+			skript = true;
+			addon = Skript.registerAddon(this).setLanguageFileDirectory("lang");
+		}
 		instance = this;
 		saveDefaultConfig();
 		File config = new File(getDataFolder(), "config.yml");
@@ -159,6 +164,10 @@ public class Skungee extends JavaPlugin {
 	
 	public static Skungee getInstance() {
 		return instance;
+	}
+	
+	public static boolean isSkriptPresent() {
+		return skript;
 	}
 	
 	public EncryptionUtil getEncrypter() {

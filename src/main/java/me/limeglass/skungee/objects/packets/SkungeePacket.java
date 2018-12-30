@@ -8,7 +8,7 @@ import me.limeglass.skungee.objects.SkungeePlayer;
 public class SkungeePacket implements Serializable {
 
 	private static final long serialVersionUID = -7377209366283539512L;
-	private final Boolean returnable;
+	private final boolean returnable;
 	private SkriptChangeMode changeMode;
 	private SkungeePlayer[] players;
 	private Object settable, object;
@@ -18,68 +18,80 @@ public class SkungeePacket implements Serializable {
 	//The name or the type must be set or else the packet will become a dummy packet on Bungeecord. (Also needs the handler)
 	private String name;
 	
-	public SkungeePacket(Boolean returnable) {
+	public SkungeePacket(boolean returnable) {
 		this.returnable = returnable;
 	}
 	
-	public SkungeePacket(Boolean returnable, String name) {
+	public SkungeePacket(boolean returnable, String name) {
 		this.returnable = returnable;
 		this.name = name;
 	}
 	
-	public SkungeePacket(Boolean returnable, SkungeePacketType type) {
+	public SkungeePacket(boolean returnable, SkungeePacketType type) {
 		this.returnable = returnable;
 		this.type = type;
 	}
 	
-	public SkungeePacket(Boolean returnable, String name, Object object) {
+	public SkungeePacket(boolean returnable, String name, Object object) {
 		this.returnable = returnable;
 		this.object = object;
 		this.name = name;
 	}
 	
-	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object) {
+	public SkungeePacket(boolean returnable, String name, SkungeePlayer... players) {
+		this.returnable = returnable;
+		this.players = players;
+		this.name = name;
+	}
+	
+	public SkungeePacket(boolean returnable, SkungeePacketType type, Object object) {
 		this.returnable = returnable;
 		this.object = object;
 		this.type = type;
 	}
 	
-	public SkungeePacket(Boolean returnable, String name, Object object, Object settable) {
+	public SkungeePacket(boolean returnable, String name, Object object, Object settable) {
 		this.returnable = returnable;
 		this.settable = settable;
 		this.object = object;
 		this.name = name;
 	}
 	
-	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object, Object settable) {
+	public SkungeePacket(boolean returnable, SkungeePacketType type, SkungeePlayer... players) {
+		this.returnable = returnable;
+		this.players = players;
+		this.type = type;
+	}
+	
+	public SkungeePacket(boolean returnable, SkungeePacketType type, Object object, Object settable) {
 		this.returnable = returnable;
 		this.settable = settable;
 		this.object = object;
 		this.type = type;
 	}
 	
-	public SkungeePacket(Boolean returnable, String name, Object object, SkungeePlayer... players) {
+	public SkungeePacket(boolean returnable, String name, Object object, SkungeePlayer... players) {
 		this.returnable = returnable;
 		this.players = players;
 		this.object = object;
 		this.name = name;
 	}
 	
-	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object, SkungeePlayer... players) {
+	public SkungeePacket(boolean returnable, SkungeePacketType type, Object object, SkungeePlayer... players) {
 		this.returnable = returnable;
 		this.players = players;
 		this.object = object;
 		this.type = type;
 	}
 	
-	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object, SkriptChangeMode changeMode) {
+	public SkungeePacket(boolean returnable, SkungeePacketType type, Object object, SkriptChangeMode changeMode) {
 		this.returnable = returnable;
 		this.changeMode = changeMode;
 		this.object = object;
 		this.type = type;
 	}
 	
-	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object, Object settable, SkungeePlayer... players) {
+	public SkungeePacket(boolean returnable, SkungeePacketType type, Object object, Object settable, SkungeePlayer... players) {
 		this.returnable = returnable;
 		this.settable = settable;
 		this.players = players;
@@ -87,7 +99,7 @@ public class SkungeePacket implements Serializable {
 		this.type = type;
 	}
 	
-	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object, Object settable, SkriptChangeMode changeMode) {
+	public SkungeePacket(boolean returnable, SkungeePacketType type, Object object, Object settable, SkriptChangeMode changeMode) {
 		this.returnable = returnable;
 		this.changeMode = changeMode;
 		this.settable = settable;
@@ -95,7 +107,7 @@ public class SkungeePacket implements Serializable {
 		this.type = type;
 	}
 	
-	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object, SkriptChangeMode changeMode, SkungeePlayer... players) {
+	public SkungeePacket(boolean returnable, SkungeePacketType type, Object object, SkriptChangeMode changeMode, SkungeePlayer... players) {
 		this.returnable = returnable;
 		this.changeMode = changeMode;
 		this.players = players;
@@ -103,7 +115,7 @@ public class SkungeePacket implements Serializable {
 		this.type = type;
 	}
 	
-	public SkungeePacket(Boolean returnable, SkungeePacketType type, Object object, Object settable, SkriptChangeMode changeMode, SkungeePlayer... players) {
+	public SkungeePacket(boolean returnable, SkungeePacketType type, Object object, Object settable, SkriptChangeMode changeMode, SkungeePlayer... players) {
 		this.returnable = returnable;
 		this.changeMode = changeMode;
 		this.settable = settable;
@@ -112,7 +124,7 @@ public class SkungeePacket implements Serializable {
 		this.type = type;
 	}
 
-	public Boolean isReturnable() {
+	public boolean isReturnable() {
 		return returnable;
 	}
 	

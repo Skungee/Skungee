@@ -7,39 +7,64 @@ import me.limeglass.skungee.objects.SkungeePlayer;
 public class BungeePacket implements Serializable {
 
 	private static final long serialVersionUID = -7377209366283539512L;
-	private final BungeePacketType type;
-	private final Boolean returnable;
+	private final boolean returnable;
 	private SkungeePlayer[] players;
 	private Object settable, object;
+	private BungeePacketType type;
 	private byte[] password;
+	private String name;
 
-	public BungeePacket(Boolean returnable, BungeePacketType type, Object object) {
+	public BungeePacket(boolean returnable, String name) {
+		this.returnable = returnable;
+		this.name = name;
+	}
+	
+	public BungeePacket(boolean returnable, String name, Object object) {
+		this.returnable = returnable;
+		this.object = object;
+		this.name = name;
+	}
+	
+	public BungeePacket(boolean returnable, BungeePacketType type, Object object) {
 		this.returnable = returnable;
 		this.object = object;
 		this.type = type;
 	}
 	
-	public BungeePacket(Boolean returnable, BungeePacketType type, SkungeePlayer... players) {
+	public BungeePacket(boolean returnable, String name, SkungeePlayer... players) {
+		this.returnable = returnable;
+		this.players = players;
+		this.name = name;
+	}
+	
+	public BungeePacket(boolean returnable, BungeePacketType type, SkungeePlayer... players) {
 		this.returnable = returnable;
 		this.players = players;
 		this.type = type;
 	}
 	
-	public BungeePacket(Boolean returnable, BungeePacketType type, Object object, Object settable) {
+	public BungeePacket(boolean returnable, String name, Object object, SkungeePlayer... players) {
+		this.returnable = returnable;
+		this.players = players;
+		this.object = object;
+		this.name = name;
+	}
+	
+	public BungeePacket(boolean returnable, BungeePacketType type, Object object, Object settable) {
 		this.returnable = returnable;
 		this.settable = settable;
 		this.object = object;
 		this.type = type;
 	}
 	
-	public BungeePacket(Boolean returnable, BungeePacketType type, Object object, SkungeePlayer... players) {
+	public BungeePacket(boolean returnable, BungeePacketType type, Object object, SkungeePlayer... players) {
 		this.returnable = returnable;
 		this.players = players;
 		this.object = object;
 		this.type = type;
 	}
 	
-	public BungeePacket(Boolean returnable, BungeePacketType type, Object object, Object settable, SkungeePlayer... players) {
+	public BungeePacket(boolean returnable, BungeePacketType type, Object object, Object settable, SkungeePlayer... players) {
 		this.returnable = returnable;
 		this.settable = settable;
 		this.players = players;
@@ -47,7 +72,7 @@ public class BungeePacket implements Serializable {
 		this.type = type;
 	}
 
-	public final Boolean isReturnable() {
+	public final boolean isReturnable() {
 		return returnable;
 	}
 	
@@ -61,6 +86,10 @@ public class BungeePacket implements Serializable {
 	
 	public final Object getObject() {
 		return object;
+	}
+	
+	public final String getName() {
+		return name;
 	}
 	
 	public final BungeePacketType getType() {

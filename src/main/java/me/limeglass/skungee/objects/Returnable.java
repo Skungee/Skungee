@@ -14,12 +14,12 @@ public interface Returnable {
 	SkungeeReturnable returnable = Utils.getEnum(SkungeeReturnable.class, Skungee.getInstance().getConfig().getString("SkungeeReturn", "STRING"));
 	
 	@SuppressWarnings("deprecation")
-	public default Object[] convert(SkungeePlayer... players) {
+	public default Object[] convert(SkungeeReturnable type, SkungeePlayer... players) {
 		Set<Object> converted = new HashSet<Object>();
 		for (SkungeePlayer player : players) {
 			if (player == null)
 				continue;
-			switch (returnable) {
+			switch (type) {
 				case OFFLINEPLAYER:
 					OfflinePlayer offline = Bukkit.getOfflinePlayer(player.getUUID());
 					if (Skungee.getInstance().getConfig().getBoolean("SkungeeReturnUUID", false) && offline != null) {
@@ -50,6 +50,10 @@ public interface Returnable {
 	
 	public default Object[] convert(Set<SkungeePlayer> players) {
 		return convert(players.toArray(new SkungeePlayer[players.size()]));
+	}
+	
+	public default Object[] convert(SkungeePlayer... players) {
+		return convert(returnable, players);
 	}
 	
 	public static Class<?> getReturnType() {
