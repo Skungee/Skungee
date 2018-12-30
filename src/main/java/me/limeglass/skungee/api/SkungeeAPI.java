@@ -191,6 +191,20 @@ public class SkungeeAPI {
 		}
 		
 		/**
+		 * Adds players to the SkungeePacket.
+		 * <p>
+		 * This uses a custom implementation of a player called SkungeePlayer which was designed to store players over the protocol and allow for serialization.
+		 * There are methods in the SkungeeAPI class to grab players from your desired input.
+		 * 
+		 * @param players
+		 * @return The PacketBuilder for chaining.
+		 */
+		public SkungeePacketBuilder withPlayers(Player... players) {
+			this.players = SkungeeAPI.getPlayersFrom(players);
+			return this;
+		}
+		
+		/**
 		 * Set the packet type for the SkungeePacket.
 		 * 
 		 * @param type The type of the SkungeePacket
@@ -241,6 +255,15 @@ public class SkungeeAPI {
 		public SkungeePacketBuilder withName(String name) {
 			this.name = name;
 			return this;
+		}
+		
+		/**
+		 * Directly send this SkungeePacket to Bungeecord without needing to build.
+		 * 
+		 * @throws IllegalAccessException If you attempt to use this method on the wrong server implementation. Only Spigot.
+		 */
+		public void send() throws IllegalAccessException {
+			SkungeeAPI.sendPacket(build());
 		}
 		
 		/**
@@ -299,6 +322,20 @@ public class SkungeeAPI {
 		}
 		
 		/**
+		 * Adds players to the SkungeePacket.
+		 * <p>
+		 * This uses a custom implementation of a player called SkungeePlayer which was designed to store players over the protocol and allow for serialization.
+		 * There are methods in the SkungeeAPI class to grab players from your desired input.
+		 * 
+		 * @param players
+		 * @return The PacketBuilder for chaining.
+		 */
+		public BungeePacketBuilder withPlayers(ProxiedPlayer... players) {
+			this.players = SkungeeAPI.getPlayersFrom(players);
+			return this;
+		}
+		
+		/**
 		 * Set the packet type for the BungeePacket.
 		 * 
 		 * @param type The type of the BungeePacket
@@ -349,6 +386,15 @@ public class SkungeeAPI {
 		public BungeePacketBuilder withName(String name) {
 			this.name = name;
 			return this;
+		}
+		
+		/**
+		 * Directly send this BungeePacket to the ConnectedServers without needing to build.
+		 * 
+		 * @throws IllegalAccessException If you attempt to use this method on the wrong server implementation. Only Bungeecord.
+		 */
+		public void send(ConnectedServer... servers) throws IllegalAccessException {
+			SkungeeAPI.sendPacket(build(), servers);
 		}
 		
 		/**

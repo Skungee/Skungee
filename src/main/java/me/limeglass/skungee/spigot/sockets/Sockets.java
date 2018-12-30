@@ -19,6 +19,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.objects.SkungeePlayer;
+import me.limeglass.skungee.objects.events.SkungeeReturnedEvent;
+import me.limeglass.skungee.objects.events.SkungeeSendingEvent;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.Skungee;
@@ -155,6 +157,10 @@ public class Sockets {
 					} else if (!(packet.getType() == SkungeePacketType.HEARTBEAT)) {
 						Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
 					}
+					SkungeeSendingEvent event = new SkungeeSendingEvent(packet);
+					Bukkit.getPluginManager().callEvent(event);
+					if (event.isCancelled())
+						return null;
 					if (configuration.getBoolean("security.password.enabled", false)) {
 						byte[] password = encryption.serialize(configuration.getString("security.password.password"));
 						if (configuration.getBoolean("security.password.hash", true)) {
@@ -178,11 +184,15 @@ public class Sockets {
 					bungeecord.setSoTimeout(10000);
 					ObjectInputStream objectInputStream = new ObjectInputStream(bungeecord.getInputStream());
 					if (packet.isReturnable()) {
+						Object value = null;
 						if (configuration.getBoolean("security.encryption.enabled", false)) {
-							return encryption.decrypt(keyString, algorithm, (byte[]) objectInputStream.readObject());
+							value = encryption.decrypt(keyString, algorithm, (byte[]) objectInputStream.readObject());
 						} else {
-							return objectInputStream.readObject();
+							value = objectInputStream.readObject();
 						}
+						SkungeeReturnedEvent returned = new SkungeeReturnedEvent(packet, value);
+						Bukkit.getPluginManager().callEvent(returned);
+						return returned.getReturnedObject();
 					}
 					objectOutputStream.close();
 					objectInputStream.close();

@@ -18,6 +18,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
+import me.limeglass.skungee.objects.events.SkungeeReceivedEvent;
+import me.limeglass.skungee.objects.events.SkungeeReturningEvent;
 import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.spigot.Skungee;
 
@@ -60,6 +62,10 @@ public class SpigotRunnable implements Runnable {
 					attempt(address, null);
 					return;
 				}
+				SkungeeReceivedEvent event = new SkungeeReceivedEvent(packet);
+				Bukkit.getPluginManager().callEvent(event);
+				if (event.isCancelled())
+					return;
 				if (packet.getPassword() != null) {
 					if (configuration.getBoolean("security.password.hash", true)) {
 						byte[] password = encryption.hash();
@@ -84,6 +90,11 @@ public class SpigotRunnable implements Runnable {
 				if (Sockets.attempts.containsKey(address)) Sockets.attempts.remove(address);
 				Object packetData = SpigotPacketHandler.handlePacket(packet, address);
 				if (packetData != null) {
+					SkungeeReturningEvent returning = new SkungeeReturningEvent(packet, packetData);
+					Bukkit.getPluginManager().callEvent(returning);
+					if (event.isCancelled())
+						return;
+					packetData = returning.getObject();
 					if (configuration.getBoolean("security.encryption.enabled", false)) {
 						byte[] serialized = encryption.serialize(packetData);
 						byte[] encrypted = encryption.encrypt(keyString, algorithm, serialized);
