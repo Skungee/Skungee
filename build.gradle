@@ -1,49 +1,51 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java-library'
 apply plugin: 'eclipse'
 
 jar.archiveName = project.name + '.jar'
 
 configurations {
-    shade
-    compile.extendsFrom shade
+	shade
+	compile.extendsFrom shade
 }
 
 repositories {
-    mavenCentral()
-    jcenter()
-    
-    //Spigot
-    maven {
-        url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    
-    //BungeeTabListPlus
-    maven {
-        url 'http://nexus.codecrafter47.de/content/repositories/public/'
-    }
-    
-    //Skript
-    maven {
-        url "https://raw.githubusercontent.com/bensku/mvn-repo/master"
-    }
-    
-    //Bungeecord
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-    
-    //Redis-Bungee
-    maven {
-        url "http://repo.md-5.net/content/repositories/snapshots/"
-    }
+	mavenCentral()
+	jcenter()
+	
+	//Spigot
+	maven {
+		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+	}
+	
+	//BungeeTabListPlus
+	maven {
+		url 'http://nexus.codecrafter47.de/content/repositories/public/'
+	}
+	
+	//Bungeecord
+	maven {
+		url "https://oss.sonatype.org/content/repositories/snapshots"
+	}
+	
+	//Redis-Bungee
+	maven {
+		url "http://repo.md-5.net/content/repositories/snapshots/"
+	}
+	
+	//Jitpack
+	maven {
+		url 'https://jitpack.io'
+	}
+	
 }
 
 dependencies {
-    
-    //BungeeTabListPlusAPI
+	
+	//BungeeTabListPlusAPI
 	implementation (group: 'codecrafter47.bungeetablistplus', name: 'bungeetablistplus-api-bungee', version: '2.8.4')
-    
-    //Redis-Bungee
+	
+	//Redis-Bungee
 	implementation (group: 'com.imaginarycode.minecraft', name: 'RedisBungee', version: '0.3.8-SNAPSHOT')
 	
 	//Nullable annotation
@@ -58,14 +60,17 @@ dependencies {
 	implementation (group: 'net.md-5', name: 'bungeecord-api', version: '1.13-SNAPSHOT')
 	
 	//Skript
-    implementation (group: 'ch.njol', name: 'skript', version: '2.2-dev35b') {
-        transitive = false
+	implementation (group: 'com.github.SkriptLang', name: 'Skript', version: '2.3.6') {
+		transitive = false
 	}
 	
-	implementation fileTree(dir: 'lib', include: '*.jar')
+	//H2 Database
+	//shade (group: 'com.h2database', name: 'h2', version: '1.4.197')
+
 }
 
 processResources {
+	filter ReplaceTokens, tokens: ["version": project.property("version")]
 	from (sourceSets.main.resources.srcDirs) {
 		include '*.yml'
 	}
@@ -80,9 +85,9 @@ processResources {
 }
 
 jar {
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)){
-            exclude 'META-INF', 'META-INF/**'
-        }
-    }
+	configurations.shade.each { dep ->
+		from(project.zipTree(dep)) {
+			exclude 'META-INF', 'META-INF/**'
+		}
+	}
 }

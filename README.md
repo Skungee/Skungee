@@ -5,7 +5,7 @@
 ![Commit](https://img.shields.io/github/last-commit/TheLimeGlass/Skungee.svg)
 ![Size](https://img.shields.io/github/repo-size/TheLimeGlass/Skungee.svg)
 
-The #1 Skript addon for Bungeecord.
+Spigot Socket API and Bungeecord Skript Addon.
 
 ## Building
 Open a command prompt
@@ -15,9 +15,9 @@ The following will clone Skungee to your current directory location. To change t
 Then type the clone command
 `git clone https://github.com/TheLimeGlass/Skungee.git`
 
-Now to build Skungee you simply need to run the `gradle` command. You can find the compiled JAR file in `./build/libs` of the gradle folder when complete.
+Now to build Skungee you simply need to run the `gradle build` command. You can find the compiled JAR file in `./build/libs` of the gradle folder when complete.
 
-__Note:__ If you do not have [Gradle] installed then use ./gradlew for Unix systems or Git Bash and gradlew.bat for Windows systems in place of any gradle command.
+__Note:__ If you do not have [Gradle] installed then use ./gradlew for Unix systems or Git Bash and windows systems have executable gradlew.bat.
 
 ## Contributing
 There are no defined guidelines (yet), pull requests and contributions are welcome.
