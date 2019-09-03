@@ -17,6 +17,7 @@ public class SkungeeReturnedEvent extends Event {
 	private Object object;
 	
 	public SkungeeReturnedEvent(SkungeePacket packet, Object object) {
+		super(true);
 		this.packet = packet;
 	}
 	

@@ -1,8 +1,8 @@
-# Skungee (Bungeecord) - The #1 Skript addon for Bungeecord.
+# Skungee (Bungeecord) - The Skript addon for Bungeecord.
 
 # The version is to help determine which version this configuration is.
 # Please do not modify this value, it may result in the configuration resetting!
-version: "1.0.9a"
+version: "@version@"
 
 # This is the main port for the Skungee network system. Skungee will setup this port on this Bungeecord machine.
 # Make sure the port is "port forward/open" or that you have access to this port to be running, if not change this to an available port.
@@ -13,6 +13,10 @@ version: "1.0.9a"
 
 # Make sure all the port options of the Skungee's on the connected Spigot servers are matching this.
 port: 1337
+
+# You can select which address to bind to, if you're on a shared host (i.e McProHosting) you should set this value to your Bungeecord IP address.
+# This will allow Skungee to know which IP to attach to.
+bind-to-address: "localhost"
 
 # Prints additional information in the console. The developers of Skungee may ask you to enable this when reporting an error.
 debug: false

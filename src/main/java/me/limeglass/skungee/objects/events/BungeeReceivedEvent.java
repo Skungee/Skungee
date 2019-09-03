@@ -16,31 +16,31 @@ public class BungeeReceivedEvent extends Event implements Cancellable {
 	private final SkungeePacket packet;
 	private final InetAddress address;
 	private boolean cancelled;
-	
+
 	public BungeeReceivedEvent(SkungeePacket packet, InetAddress address) {
 		this.address = address;
 		this.packet = packet;
 	}
-	
+
 	public SkungeePacket getPacket() {
 		return packet;
 	}
-	
+
 	/**
 	 * @return The address the received SkungeePacket came from.
 	 */
 	public InetAddress getAddress() {
 		return address;
 	}
-	
+
 	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}
-	
+
 	@Override
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
 	}
-	
+
 }

@@ -3,7 +3,10 @@ package me.limeglass.skungee.bungeecord;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.SocketAddress;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -133,8 +136,12 @@ public class Skungee extends Plugin {
 	
 	private void connect () {
 		try {
-			serverSocket = new ServerSocket(getConfig().getInt("port", 1337), 69);
-			consoleMessage("connection established on port " + getConfig().getInt("port", 1337));
+			int port = getConfig().getInt("port", 1337);
+			serverSocket = new ServerSocket(port);
+			String address = getConfig().getString("bind-to-address", "localhost");
+			if (!address.equalsIgnoreCase("localhost"))
+				serverSocket.bind(new InetSocketAddress(address.trim(), port));
+			consoleMessage("connection established on address " + serverSocket.getInetAddress().getHostAddress() + " on port " + getConfig().getInt("port", 1337));
 			ProxyServer.getInstance().getScheduler().runAsync(getInstance(), new Runnable() {
 				@Override
 				public void run() {

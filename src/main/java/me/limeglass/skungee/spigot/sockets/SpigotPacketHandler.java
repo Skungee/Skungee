@@ -89,12 +89,14 @@ public class SpigotPacketHandler {
 			case EVALUATE:
 				if (packet.getObject() != null) {
 					for (String effect : (String[]) packet.getObject()) {
-						if (Effect.parse(effect, null) == null) {
-							Skungee.infoMessage("There was an error executing effect: " + effect);
-							Skungee.infoMessage("Possibly not an effect for this server? Make sure you have any addons that could run this effect and that it looks realistic.");
-						} else {
-							Effect.parse(effect, null).run(null);
-						}
+						Bukkit.getScheduler().runTask(Skungee.getInstance(), () -> {
+							if (Effect.parse(effect, null) == null) {
+								Skungee.infoMessage("There was an error executing effect: " + effect);
+								Skungee.infoMessage("Possibly not an effect for this server? Make sure you have any addons that could run this effect and that it looks realistic.");
+							} else {
+								Effect.parse(effect, null).run(null);
+							}
+						});
 					}
 				}
 				break;

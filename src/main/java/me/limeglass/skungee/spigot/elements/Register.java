@@ -18,7 +18,7 @@ import me.limeglass.skungee.spigot.utils.annotations.*;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class Register {
-	
+
 	static {
 		if (Skungee.isSkriptPresent()) {
 			run : for (Class clazz : ReflectionUtil.getClasses(Skungee.getInstance(), Skungee.getInstance().getPackageName())) {
@@ -88,32 +88,17 @@ public class Register {
 			}
 		}
 	}
-	
+
 	public static void metrics(Metrics metrics) {
-		metrics.addCustomChart(new Metrics.SimplePie("skript_version") {
-			@Override
-			public String getValue() {
-				return Skript.getVersion().toString();
-			}
-		});
-		metrics.addCustomChart(new Metrics.SimplePie("use_encryption") {
-			@Override
-			public String getValue() {
-				return Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false) + "";
-			}
-		});
-		metrics.addCustomChart(new Metrics.SimplePie("use_breaches") {
-			@Override
-			public String getValue() {
-				return Skungee.getInstance().getConfig().getBoolean("security.breaches.enabled", false) + "";
-			}
-		});
-		metrics.addCustomChart(new Metrics.SimplePie("use_password") {
-			@Override
-			public String getValue() {
-				return Skungee.getInstance().getConfig().getBoolean("security.password.enabled", false) + "";
-			}
-		});
+		metrics.addCustomChart(new Metrics.SimplePie("skript_version", () -> 
+				Skript.getVersion().toString()));
+		metrics.addCustomChart(new Metrics.SimplePie("use_encryption", () -> 
+				Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false) + ""));
+		metrics.addCustomChart(new Metrics.SimplePie("use_breaches", () -> 
+				Skungee.getInstance().getConfig().getBoolean("security.breaches.enabled", false) + ""));
+		metrics.addCustomChart(new Metrics.SimplePie("use_password", () -> 
+				Skungee.getInstance().getConfig().getBoolean("security.password.enabled", false) + ""));
 		Skungee.debugMessage("Metrics registered!");
 	}
+
 }

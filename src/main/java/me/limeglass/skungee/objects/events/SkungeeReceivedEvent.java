@@ -18,6 +18,7 @@ public class SkungeeReceivedEvent extends Event implements Cancellable {
 	private boolean cancelled;
 	
 	public SkungeeReceivedEvent(BungeePacket packet) {
+		super(true);
 		this.packet = packet;
 	}
 	
