@@ -25,4 +25,4 @@ Check out the tutorial here https://github.com/Skungee/Skungee/wiki/Using-the-Sk
 
 ## Contributing
 The only guideline we have is to follow Google's Java coding style https://google.github.io/styleguide/javaguide.html
-There are no defined guidelines (yet), pull requests and contributions are welcome.
+Pull requests and contributions are welcome.
