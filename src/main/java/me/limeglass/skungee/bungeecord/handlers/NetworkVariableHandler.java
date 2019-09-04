@@ -14,14 +14,15 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class NetworkVariableHandler extends SkungeeBungeeHandler {
 
-	static {
-		registerHandler(new NetworkVariableHandler(), SkungeePacketType.NETWORKVARIABLE);
+	public NetworkVariableHandler() {
+		super(SkungeePacketType.NETWORKVARIABLE);
 	}
 
 	@Override
 	public Value[] handlePacket(SkungeePacket packet, InetAddress address) {
 		Object object = packet.getObject();
-		if (object == null) return null;
+		if (object == null)
+			return null;
 		if (object instanceof SkungeeVariable) {
 			SkungeeVariable variable = (SkungeeVariable) object;
 			String variableString = variable.getVariableString();

@@ -6,39 +6,38 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Map.Entry;
 
-import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.bungeecord.sockets.ServerTracker;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class HeartbeatHandler extends SkungeeBungeeHandler {
 
-	static {
-		registerHandler(new HeartbeatHandler(), SkungeePacketType.HEARTBEAT);
+	public HeartbeatHandler() {
+		super(SkungeePacketType.HEARTBEAT);
 	}
 
 	@Override
 	public Object handlePacket(SkungeePacket packet, InetAddress address) {
-		if (packet.getObject() == null) return null;
+		if (packet.getObject() == null)
+			return null;
 		int port = (int) packet.getObject();
-		for (Entry<String, ServerInfo> server : servers.entrySet()) {
-			InetSocketAddress inetaddress = new InetSocketAddress(address, port);
+		InetSocketAddress inetaddress = new InetSocketAddress(address, port);
+		for (Entry<String, ServerInfo> server : ProxyServer.getInstance().getServers().entrySet()) {
+			if (!server.getValue().getAddress().equals(inetaddress))
+				continue;
 			try {
-				if (server.getValue().getAddress().equals(inetaddress) || Inet4Address.getLocalHost().getHostAddress().equals(address.getHostAddress())) {
-					return ServerTracker.update(server.getKey());
-				}
-			} catch (UnknownHostException error) {
-				Skungee.exception(error, "Unknown host: " + inetaddress);
+				if (!Inet4Address.getLocalHost().equals(address))
+					continue;
+			} catch (UnknownHostException e) {
+				Skungee.exception(e, "Could not find localhost");
 			}
+			return ServerTracker.update(server.getKey());
 		}
 		return null;
 	}
 
-	@Override
-	public String toString(SkungeePacket packet) {
-		return Skungee.getConfig().getBoolean("IgnoreSpamPackets", true) ? null : UniversalSkungee.getPacketDebug(packet);
-	}
 }

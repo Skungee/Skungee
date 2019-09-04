@@ -10,16 +10,17 @@ import net.md_5.bungee.api.plugin.Event;
  *
  */
 public class BungeeReturnedEvent extends Event {
-	
+
 	private final ConnectedServer server;
 	private final BungeePacket packet;
 	private Object object;
-	
+
 	public BungeeReturnedEvent(BungeePacket packet, Object object, ConnectedServer server) {
 		this.server = server;
 		this.packet = packet;
+		this.object = object;
 	}
-	
+
 	/**
 	 * The server that the BungeePacket is being sent too.
 	 * 
@@ -28,16 +29,16 @@ public class BungeeReturnedEvent extends Event {
 	public ConnectedServer getConnectedServer() {
 		return server;
 	}
-	
+
 	public BungeePacket getPacket() {
 		return packet;
 	}
-	
-	public Object getReturnedObject() {
+
+	public Object getObject() {
 		return object;
 	}
-	
-	public void setReturnedObject(Object object) {
+
+	public void setObject(Object object) {
 		this.object = object;
 	}
 

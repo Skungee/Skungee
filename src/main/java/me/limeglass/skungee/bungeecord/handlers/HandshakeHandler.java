@@ -1,6 +1,7 @@
 package me.limeglass.skungee.bungeecord.handlers;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -15,47 +16,57 @@ import me.limeglass.skungee.objects.ConnectedServer;
 import me.limeglass.skungee.objects.SkungeePlayer;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class HandshakeHandler extends SkungeeBungeeHandler {
 
-	static {
-		registerHandler(new HandshakeHandler(), SkungeePacketType.HANDSHAKE);
+	public HandshakeHandler() {
+		super(SkungeePacketType.HANDSHAKE);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object handlePacket(SkungeePacket packet, InetAddress address) {
-		if (packet.getObject() == null) return null;
+		if (packet.getObject() == null)
+			return null;
 		ArrayList<Object> data = (ArrayList<Object>) packet.getObject();
-		Boolean usingReciever = (Boolean) data.get(0);
-		Integer recieverPort = (Integer) data.get(1);
-		Integer port = (Integer) data.get(2);
+		boolean usingReciever = (boolean) data.get(0);
+		int recieverPort = (int) data.get(1);
+		int port = (int) data.get(2);
 		Set<SkungeePlayer> whitelisted = (Set<SkungeePlayer>) data.get(3);
-		Integer heartbeat = (Integer) data.get(4);
+		int heartbeat = (int) data.get(4);
 		String motd = (String) data.get(5);
-		Integer max = (Integer) data.get(6);
+		int max = (int) data.get(6);
 		try {
-			for (Entry<String, ServerInfo> server : servers.entrySet()) {
-				String serverAddress = server.getValue().getAddress().getAddress().getHostAddress();
-				for (Enumeration<NetworkInterface> entry = NetworkInterface.getNetworkInterfaces(); entry.hasMoreElements();) {
-					for (Enumeration<InetAddress> addresses = entry.nextElement().getInetAddresses(); addresses.hasMoreElements();) {
-						if (addresses.nextElement().getHostAddress().equals(serverAddress) && port == server.getValue().getAddress().getPort()) {
-							ConnectedServer connect = new ConnectedServer(usingReciever, recieverPort, port, address, heartbeat, server.getKey(), motd, max, whitelisted);
-							if (!ServerTracker.contains(connect)) {
-								ServerTracker.add(connect);
-								ServerTracker.update(server.getKey());
-								return "CONNECTED";
-							}
-						}
-					}
-				}
-				if (serverAddress.equals(address.getHostAddress()) && port == server.getValue().getAddress().getPort()) {
-					ConnectedServer connect = new ConnectedServer(usingReciever, recieverPort, port, address, heartbeat, server.getKey(), motd, max, whitelisted);
-					if (!ServerTracker.contains(connect)) {
+			for (Entry<String, ServerInfo> server : ProxyServer.getInstance().getServers().entrySet()) {
+				InetSocketAddress serverAddress = server.getValue().getAddress();
+				// Check the packet provided address first.
+				if (serverAddress.getAddress().equals(address) && port == serverAddress.getPort()) {
+					if (!ServerTracker.contains(address, port)) {
+						ConnectedServer connect = new ConnectedServer(usingReciever, recieverPort, port, address, heartbeat, server.getKey(), motd, max, whitelisted);
 						ServerTracker.add(connect);
 						ServerTracker.update(server.getKey());
 						return "CONNECTED";
+					} else {
+						ServerTracker.update(server.getKey());
+						return "ALREADY";
+					}
+				}
+				// Check all system network interfaces.
+				for (Enumeration<NetworkInterface> entry = NetworkInterface.getNetworkInterfaces(); entry.hasMoreElements();) {
+					for (Enumeration<InetAddress> addresses = entry.nextElement().getInetAddresses(); addresses.hasMoreElements();) {
+						if (addresses.nextElement().equals(serverAddress.getAddress()) && port == serverAddress.getPort()) {
+							if (!ServerTracker.contains(address, port)) {
+								ConnectedServer connect = new ConnectedServer(usingReciever, recieverPort, port, address, heartbeat, server.getKey(), motd, max, whitelisted);
+								ServerTracker.add(connect);
+								ServerTracker.update(server.getKey());
+								return "CONNECTED";
+							} else {
+								ServerTracker.update(server.getKey());
+								return "ALREADY";
+							}
+						}
 					}
 				}
 			}
@@ -64,5 +75,5 @@ public class HandshakeHandler extends SkungeeBungeeHandler {
 		}
 		return null;
 	}
-	
+
 }

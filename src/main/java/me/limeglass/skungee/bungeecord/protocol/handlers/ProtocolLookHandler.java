@@ -30,7 +30,7 @@ public class ProtocolLookHandler extends ProtocolPacketHandler {
 		//1.8 last known protocol version - 1.8 snapshots
 		registerProtocolHandler(new ProtocolLookHandler(), "PacketPlayInLook-1.8", 5, 47, 66);
 	}
-	
+
 	@Override
 	public boolean handlePacket(ProtocolPacket packet) {
 		ProtocolPlayer player = packet.getPlayer();
@@ -45,5 +45,5 @@ public class ProtocolLookHandler extends ProtocolPacketHandler {
 		}
 		return true;
 	}
-	
+
 }

@@ -9,14 +9,15 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class PlayerAddressHandler extends SkungeePlayerHandler {
 
-	static {
-		registerHandler(new PlayerAddressHandler(), SkungeePacketType.PLAYERIP);
+	public PlayerAddressHandler() {
+		super(SkungeePacketType.PLAYERIP);
 	}
 
 	@Override
 	public Object handlePacket(SkungeePacket packet, InetAddress address) {
-		if (packet.getObject() == null) return null;
+		if (packet.getObject() == null)
+			return null;
 		return players.parallelStream().map(player -> player.getAddress().getHostName()).collect(Collectors.toSet());
 	}
-	
+
 }

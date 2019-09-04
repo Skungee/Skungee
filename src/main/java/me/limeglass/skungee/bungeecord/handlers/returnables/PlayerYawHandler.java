@@ -10,8 +10,8 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class PlayerYawHandler extends SkungeePlayerHandler {
 
-	static {
-		registerHandler(new PlayerYawHandler(), SkungeePacketType.PLAYERYAW);
+	public PlayerYawHandler() {
+		super(SkungeePacketType.PLAYERYAW);
 	}
 
 	@Override
@@ -22,5 +22,5 @@ public class PlayerYawHandler extends SkungeePlayerHandler {
 				.map(optional -> optional.get().getYaw())
 				.collect(Collectors.toSet());
 	}
-	
+
 }

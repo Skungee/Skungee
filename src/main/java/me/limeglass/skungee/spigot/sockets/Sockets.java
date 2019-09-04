@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -87,14 +88,20 @@ public class Sockets {
 				} else {
 					for (int i = 0; i < 10; i++) {
 						String state = (String) send(new SkungeePacket(true, SkungeePacketType.HANDSHAKE, data));
-						if (state != null && state.equals("CONNECTED")) {
+						if (state != null && (state.equalsIgnoreCase("CONNECTED") || state.equalsIgnoreCase("ALREADY"))) {
 							isConnected = true;
 							Skungee.consoleMessage("Successfully connected to the Bungeecord Skungee.");
 							break;
 						}
 						Skungee.debugMessage("Ping packet had no response, configurion for the connection to Bungeecord Skungee may not be valid or blocked. Attempting to try again... " + (i + 1) + "/10");
+						try {
+							Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+						} catch (InterruptedException e) {}
 					}
-					startHeartbeat();
+					if (isConnected)
+						startHeartbeat();
+					else
+						keepAlive();
 				}
 			}
 		});
@@ -111,7 +118,8 @@ public class Sockets {
 	}
 
 	public static Object send(SkungeePacket packet) {
-		if (packet.isReturnable()) return (isConnected) ? send_i(packet) : (packet.getType() == SkungeePacketType.HANDSHAKE) ? send_i(packet) : null;
+		if (packet.isReturnable())
+			return (isConnected) ? send_i(packet) : (packet.getType() == SkungeePacketType.HANDSHAKE) ? send_i(packet) : null;
 		if (Skungee.getInstance().getConfig().getBoolean("Queue.enabled", false)) {
 			PacketQueue.queue(packet);
 		} else {
@@ -170,7 +178,8 @@ public class Sockets {
 								password = encryption.hash();
 							}
 						}
-						if (password != null) packet.setPassword(password);
+						if (password != null)
+							packet.setPassword(password);
 					}
 					ObjectOutputStream objectOutputStream = new ObjectOutputStream(bungeecord.getOutputStream());
 					if (configuration.getBoolean("security.encryption.enabled", false)) {
@@ -192,7 +201,10 @@ public class Sockets {
 						}
 						SkungeeReturnedEvent returned = new SkungeeReturnedEvent(packet, value);
 						Bukkit.getPluginManager().callEvent(returned);
-						return returned.getReturnedObject();
+						objectOutputStream.close();
+						objectInputStream.close();
+						bungeecord.close();
+						return returned.getObject();
 					}
 					objectOutputStream.close();
 					objectInputStream.close();

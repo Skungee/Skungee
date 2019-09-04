@@ -21,9 +21,11 @@ bind-to-address: "localhost"
 # Prints additional information in the console. The developers of Skungee may ask you to enable this when reporting an error.
 debug: false
 
-# Ignores the packets that spam such as GLOBALSCRIPTS and HEARTBEAT in the debug.
-# Developers of Skungee may notify you to disable this option when reporting an error.
-IgnoreSpamPackets: true
+# Define packets to ignore in the debug.
+# Developers of Skungee may notify you to add or remove packets from this list when reporting an error.
+debug-ignored-packets:
+    - "HEARTBEAT"
+    - "GLOBALSCRIPTS"
 
 # All security options to protect your Skungee on Bungeecord and Spigot from possible external sources.
 # Everything in this section must match the same values as the Skungee config.yml on the Spigot servers.

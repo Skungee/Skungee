@@ -10,8 +10,8 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class PlayerPitchHandler extends SkungeePlayerHandler {
 
-	static {
-		registerHandler(new PlayerPitchHandler(), SkungeePacketType.PLAYERPITCH);
+	public PlayerPitchHandler() {
+		super(SkungeePacketType.PLAYERPITCH);
 	}
 
 	@Override
@@ -22,5 +22,5 @@ public class PlayerPitchHandler extends SkungeePlayerHandler {
 				.map(optional -> optional.get().getPitch())
 				.collect(Collectors.toSet());
 	}
-	
+
 }

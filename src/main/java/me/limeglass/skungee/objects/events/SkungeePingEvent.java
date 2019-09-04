@@ -11,6 +11,7 @@ public class SkungeePingEvent extends Event {
 	private final ServerPingPacket packet;
 	
 	public SkungeePingEvent(ServerPingPacket packet) {
+		super(true);
 		this.packet = packet;
 	}
 	

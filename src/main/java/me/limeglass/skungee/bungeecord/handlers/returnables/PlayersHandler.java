@@ -11,8 +11,8 @@ import net.md_5.bungee.api.ProxyServer;
 
 public class PlayersHandler extends SkungeeBungeeHandler {
 
-	static {
-		registerHandler(new PlayersHandler(), SkungeePacketType.GLOBALPLAYERS);
+	public PlayersHandler() {
+		super(SkungeePacketType.GLOBALPLAYERS);
 	}
 	
 	@Override

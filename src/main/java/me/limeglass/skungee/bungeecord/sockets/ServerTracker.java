@@ -183,8 +183,8 @@ public class ServerTracker {
 		return servers;
 	}
 	
-	public static Boolean contains(ConnectedServer server) {
-		return servers.contains(server);
+	public static Boolean contains(InetAddress address, int port) {
+		return servers.stream().anyMatch(server -> server.getAddress().equals(address) && server.getPort() == port);
 	}
 	
 	public static Boolean isResponding(ConnectedServer server) {

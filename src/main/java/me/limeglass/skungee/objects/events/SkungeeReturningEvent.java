@@ -21,6 +21,7 @@ public class SkungeeReturningEvent extends Event implements Cancellable {
 	public SkungeeReturningEvent(BungeePacket packet, Object object) {
 		super(true);
 		this.packet = packet;
+		this.object = object;
 	}
 	
 	public BungeePacket getPacket() {

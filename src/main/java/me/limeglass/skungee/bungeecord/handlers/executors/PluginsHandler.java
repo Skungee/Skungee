@@ -8,8 +8,8 @@ import net.md_5.bungee.api.ProxyServer;
 
 public class PluginsHandler extends SkungeeExecutor {
 
-	static {
-		registerHandler(new PluginsHandler(), SkungeePacketType.ENABLEPLUGINS, SkungeePacketType.LOADPLUGINS);
+	public PluginsHandler() {
+		super(SkungeePacketType.ENABLEPLUGINS, SkungeePacketType.LOADPLUGINS);
 	}
 
 	@Override

@@ -21,9 +21,9 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
 public class YamlHandler extends SkungeeBungeeHandler {
-	
-	static {
-		registerHandler(new YamlHandler(), SkungeePacketType.YAML);
+
+	public YamlHandler() {
+		super(SkungeePacketType.YAML);
 	}
 	
 	private Object[] get(Configuration configuration, String node, State state) {
@@ -136,14 +136,4 @@ public class YamlHandler extends SkungeeBungeeHandler {
 		}
 	}
 
-	@Override
-	public String toString(SkungeePacket packet) {
-		SkungeeYamlPacket yamlPacket = (SkungeeYamlPacket) packet;
-		String output = UniversalSkungee.getPacketDebug(packet);
-		if (yamlPacket.getNode() != null) output = output + " with node: " + yamlPacket.getNode() + " ";
-		if (yamlPacket.getPath() != null) output = output + " with path: " + yamlPacket.getPath() + " ";
-		if (yamlPacket.getDelta() != null) output = output + " with delta: " + Arrays.toString(yamlPacket.getDelta());
-		return null;
-	}
-	
 }

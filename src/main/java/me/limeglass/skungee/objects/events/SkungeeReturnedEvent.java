@@ -11,25 +11,26 @@ import me.limeglass.skungee.objects.packets.SkungeePacket;
  *
  */
 public class SkungeeReturnedEvent extends Event {
-	
+
 	private static final HandlerList handlers = new HandlerList();
 	private final SkungeePacket packet;
 	private Object object;
-	
+
 	public SkungeeReturnedEvent(SkungeePacket packet, Object object) {
 		super(true);
 		this.packet = packet;
+		this.object = object;
 	}
-	
+
 	public SkungeePacket getPacket() {
 		return packet;
 	}
-	
-	public Object getReturnedObject() {
+
+	public Object getObject() {
 		return object;
 	}
-	
-	public void setReturnedObject(Object object) {
+
+	public void setObject(Object object) {
 		this.object = object;
 	}
 

@@ -5,24 +5,23 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import codecrafter47.bungeetablistplus.api.bungee.CustomTablist;
-import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class TablistTextHandler extends SkungeeBungeeHandler {
 
-	//BungeeTabListPlus
-	
-	static {
-		registerHandler(new TablistTextHandler(), SkungeePacketType.BTLP_TABLISTTEXT);
+	public TablistTextHandler() {
+		super(SkungeePacketType.BTLP_TABLISTTEXT);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object handlePacket(SkungeePacket packet, InetAddress address) {
-		if (packet.getObject() == null || packet.getSetObject() == null) return null;
+		if (packet.getObject() == null || packet.getSetObject() == null)
+			return null;
 		CustomTablist[] tablists = (CustomTablist[]) packet.getObject();
 		List<Integer> slots = (ArrayList<Integer>) packet.getSetObject();
 		if (tablists.length <= 0 || slots.isEmpty()) return null;
@@ -33,8 +32,4 @@ public class TablistTextHandler extends SkungeeBungeeHandler {
 		return text;
 	}
 
-	@Override
-	public String toString(SkungeePacket packet) {
-		return UniversalSkungee.getPacketDebug(packet);
-	}
 }

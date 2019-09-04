@@ -3,22 +3,20 @@ package me.limeglass.skungee.bungeecord.bungeetablistplus;
 import java.net.InetAddress;
 
 import codecrafter47.bungeetablistplus.api.bungee.CustomTablist;
-import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeePlayerHandler;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class PlayerTablistHandler extends SkungeePlayerHandler {
-	
-	//BungeeTabListPlus
-	
-	static {
-		registerHandler(new PlayerTablistHandler(), SkungeePacketType.BTLP_PLAYERTABLIST);
+
+	public PlayerTablistHandler() {
+		super(SkungeePacketType.BTLP_PLAYERTABLIST);
 	}
 
 	@Override
 	public Object handlePacket(SkungeePacket packet, InetAddress address) {
-		if (packet.getChangeMode() == null)	return BungeeTabListPlusManager.getTablist(players);
+		if (packet.getChangeMode() == null)
+			return BungeeTabListPlusManager.getTablist(players);
 		Object object = packet.getObject();
 		switch (packet.getChangeMode()) {
 			case SET:
@@ -40,8 +38,4 @@ public class PlayerTablistHandler extends SkungeePlayerHandler {
 		return null;
 	}
 
-	@Override
-	public String toString(SkungeePacket packet) {
-		return UniversalSkungee.getPacketDebug(packet);
-	}
 }

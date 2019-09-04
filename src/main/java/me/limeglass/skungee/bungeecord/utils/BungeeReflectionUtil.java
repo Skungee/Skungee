@@ -6,14 +6,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.stream.Collectors;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class BungeeReflectionUtil {
-	
+
 	public static Set<Class<?>> getClasses(JarFile jar, String... packages) {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
+		Set<Class<?>> classes = new HashSet<>();
 		try {
 			for (Enumeration<JarEntry> jarEntry = jar.entries(); jarEntry.hasMoreElements();) {
 				String name = jarEntry.nextElement().getName().replace("/", ".");
@@ -21,9 +20,9 @@ public class BungeeReflectionUtil {
 					String className = name.substring(0, name.length() - 6);
 					className = className.replace('/', '.');
 					for (String packageName : packages) {
-						if (name.startsWith(packageName) && name.endsWith(".class")) {
-							classes.add(Class.forName(className));
-						}
+						if (!name.startsWith(packageName) || !name.endsWith(".class"))
+							continue;
+						classes.add(Class.forName(className));
 					}
 				}
 			}
@@ -33,7 +32,7 @@ public class BungeeReflectionUtil {
 		}
 		return classes;
 	}
-	
+
 	public static Set<Class<?>> getClasses(Plugin instance, String... packages) {
 		try {
 			JarFile jar = new JarFile(instance.getFile());
@@ -43,12 +42,5 @@ public class BungeeReflectionUtil {
 		}
 		return null;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T> Set<Class<? extends T>> getSubTypesOf(Plugin instance, Class<T> of, String... packages) {
-		return getClasses(instance, packages).parallelStream()
-			.filter(clazz -> clazz.isAssignableFrom(of))
-			.map(clazz -> (Class<? extends T>)clazz)
-			.collect(Collectors.toSet());
-	}
+
 }

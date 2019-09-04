@@ -42,24 +42,24 @@ repositories {
 
 dependencies {
 
-	//BungeeTabListPlusAPI
+	// BungeeTabListPlusAPI
 	implementation (group: 'codecrafter47.bungeetablistplus', name: 'bungeetablistplus-api-bungee', version: '2.8.11')
 
-	//Redis-Bungee
+	// Redis-Bungee
 	implementation (group: 'com.imaginarycode.minecraft', name: 'RedisBungee', version: '0.3.8-SNAPSHOT')
 
-	//Nullable annotation
+	// Nullable annotation
 	implementation (group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '2.2.300')
 
-	//Spigot/Bukkit
+	// Spigot
 	implementation (group: 'org.spigotmc', name: 'spigot-api', version: '1.14.4-R0.1-SNAPSHOT')
 
-	//Bungeecord
+	// Bungeecord
 	implementation (group: 'net.md-5', name: 'bungeecord-protocol', version: '1.14-SNAPSHOT')
 	implementation (group: 'net.md-5', name: 'bungeecord-proxy', version: '1.14-SNAPSHOT')
 	implementation (group: 'net.md-5', name: 'bungeecord-api', version: '1.14-SNAPSHOT')
 
-	//Skript
+	// Skript
 	implementation (group: 'com.github.SkriptLang', name: 'Skript', version: '2.4-beta6') {
 		transitive = false
 	}
@@ -67,7 +67,7 @@ dependencies {
 	// JSON.org
 	shade (group: 'org.json', name: 'json', version: '20190722')
 
-	//H2 Database
+	// H2 Database
 	//shade (group: 'com.h2database', name: 'h2', version: '1.4.197')
 
 }

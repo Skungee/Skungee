@@ -21,6 +21,8 @@ import com.google.common.reflect.Reflection;
 import me.limeglass.skungee.BungeeConfigSaver;
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
+import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
+import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandlerManager;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
 import me.limeglass.skungee.bungeecord.protocol.channel.ChannelListener;
 import me.limeglass.skungee.bungeecord.serverinstances.Premium;
@@ -49,7 +51,7 @@ public class Skungee extends Plugin {
 	private static Skungee instance;
 	private File SCRIPTS_FOLDER;
 	
-	public void onEnable(){
+	public void onEnable() {
 		instance = this;
 		if (!getDataFolder().exists()) getDataFolder().mkdir();
 		UniversalSkungee.setBungeecord(true);
@@ -60,8 +62,17 @@ public class Skungee extends Plugin {
 		encryption = new EncryptionUtil(this, false);
 		encryption.hashFile();
 		//load handlers
-		Set<Class<?>> classes = BungeeReflectionUtil.getClasses(Skungee.getInstance(), "me.limeglass.skungee.bungeecord.handlers", "me.limeglass.skungee.bungeecord.protocol.handlers");
-		initializeHandlers(classes.toArray(new Class[classes.size()]));
+		BungeeReflectionUtil.getClasses(this, "me.limeglass.skungee.bungeecord.handlers", "me.limeglass.skungee.bungeecord.protocol.handlers").forEach(clazz -> {
+			try {
+				if (clazz.equals(SkungeeHandler.class))
+					return;
+				Object object = clazz.newInstance();
+				if (!(object instanceof SkungeeHandler))
+					return;
+				SkungeeHandler handler = (SkungeeHandler) object;
+				SkungeeHandlerManager.registerHandler(handler);
+			} catch (InstantiationException | IllegalAccessException e) {}
+		});
 		metrics = new BungecordMetrics(this);
 		metrics();
 		if (getConfig().getBoolean("Events", false)) getProxy().getPluginManager().registerListener(this, new EventListener());
@@ -73,11 +84,6 @@ public class Skungee extends Plugin {
 	
 	public void onDisable() {
 		ServerInstancesSockets.shutdown();
-	}
-	
-	@SafeVarargs
-	public static void initializeHandlers(Class<?>... classes) {
-		Reflection.initialize(classes);
 	}
 	
 	private void metrics() {

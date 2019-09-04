@@ -14,7 +14,7 @@ public class ProtocolPositionHandler extends ProtocolPacketHandler {
 		//1.13-pre7 - latest
 		//registerProtocolHandler(new ProtocolPositionHandler(), "PacketPlayInPositionLook-1.13", 17, 389, protocol);
 	}
-	
+
 	@Override
 	public boolean handlePacket(ProtocolPacket packet) {
 		ProtocolPlayer player = packet.getPlayer();
@@ -32,5 +32,5 @@ public class ProtocolPositionHandler extends ProtocolPacketHandler {
 		proxy.broadcast(new TextComponent(Skungee.cc(message)));
 		return true;
 	}
-	
+
 }

@@ -9,14 +9,15 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class PlayerViewDistanceHandler extends SkungeePlayerHandler {
 
-	static {
-		registerHandler(new PlayerViewDistanceHandler(), SkungeePacketType.PLAYERVIEWDISTANCE);
+	public PlayerViewDistanceHandler() {
+		super(SkungeePacketType.PLAYERVIEWDISTANCE);
 	}
 
 	@Override
 	public Object handlePacket(SkungeePacket packet, InetAddress address) {
-		if (packet.getObject() == null) return null;
+		if (packet.getObject() == null)
+			return null;
 		return players.parallelStream().map(player -> player.getViewDistance()).collect(Collectors.toSet());
 	}
-	
+
 }

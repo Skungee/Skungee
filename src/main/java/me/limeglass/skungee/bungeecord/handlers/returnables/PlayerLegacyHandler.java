@@ -7,14 +7,14 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class PlayerLegacyHandler extends SkungeePlayerHandler {
 
-	static {
-		registerHandler(new PlayerLegacyHandler(), SkungeePacketType.PLAYERLEGACY);
+	public PlayerLegacyHandler() {
+		super(SkungeePacketType.PLAYERLEGACY);
 	}
 
 	@Override
 	public Object handlePacket(SkungeePacket packet, InetAddress address) {
-		//Should only contain one player.
+		// Only one player gets past in this, fix it.
 		return players.parallelStream().anyMatch(player -> player.getPendingConnection().isLegacy());
 	}
-	
+
 }

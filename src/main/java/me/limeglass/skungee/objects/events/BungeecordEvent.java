@@ -9,6 +9,7 @@ public class BungeecordEvent extends Event {
 	private String server;
 
 	public BungeecordEvent(String server) {
+		super(true);
 		this.server = server;
 	}
 	

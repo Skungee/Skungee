@@ -13,17 +13,25 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public abstract class SkungeePlayerHandler extends SkungeeHandler {
+public abstract class SkungeePlayerExecutor extends SkungeeHandler {
 
 	protected final Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
 	protected Set<ProxiedPlayer> players = new HashSet<ProxiedPlayer>();
 
-	public SkungeePlayerHandler(String name) {
+	public SkungeePlayerExecutor(String name) {
 		super(name);
 	}
 
-	public SkungeePlayerHandler(SkungeePacketType... types) {
+	public SkungeePlayerExecutor(SkungeePacketType... types) {
 		super(types);
+	}
+
+	public abstract void executePacket(SkungeePacket packet, InetAddress address);
+
+	@Override
+	public Object handlePacket(SkungeePacket packet, InetAddress address) {
+		executePacket(packet, address);
+		return null;
 	}
 
 	@Override

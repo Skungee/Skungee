@@ -8,8 +8,8 @@ import net.md_5.bungee.api.ProxyServer;
 
 public class StopHandler extends SkungeeExecutor {
 
-	static {
-		registerHandler(new StopHandler(), SkungeePacketType.PROXYSTOP);
+	public StopHandler() {
+		super(SkungeePacketType.PROXYSTOP);
 	}
 
 	@Override

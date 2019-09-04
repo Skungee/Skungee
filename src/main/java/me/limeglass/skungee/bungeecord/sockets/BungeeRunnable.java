@@ -21,10 +21,12 @@ import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
+import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandlerManager;
 import me.limeglass.skungee.bungeecord.handlers.SkungeePacketHandler;
 import me.limeglass.skungee.objects.events.BungeeReceivedEvent;
 import me.limeglass.skungee.objects.events.BungeeReturningEvent;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class BungeeRunnable implements Runnable {
 
@@ -92,30 +94,39 @@ public class BungeeRunnable implements Runnable {
 					incorrectPassword(packet);
 					return;
 				}
-				Optional<SkungeeHandler> handler = SkungeeHandler.getHandler(packet.getType());
-				Object packetData = null;
-				if (handler.isPresent()) {
-					packetData = handler.get().callPacket(packet, address);
-				} else {
-					if (packet.getName() != null) {
-						Optional<SkungeeHandler> externalHandler = SkungeeHandler.getHandler(packet.getName());
-						if (externalHandler.isPresent()) {
-							packetData = externalHandler.get().callPacket(packet, address);
-						}
-					} else {
-						packetData = SkungeePacketHandler.handlePacket(packet, address);
+				boolean debug = true;
+				for (String ignore : configuration.getStringList("debug-ignored-packets")) {
+					String name = packet.getName();
+					if (name != null && name.equalsIgnoreCase(ignore)) {
+						debug = false;
+						break;
 					}
+					try {
+						SkungeePacketType type = SkungeePacketType.valueOf(ignore);
+						if (type != null && packet.getType() == type) {
+							debug = false;
+							break;
+						}
+					} catch (Exception e) {}
 				}
+				if (debug)
+					Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
+				Optional<SkungeeHandler> handler = SkungeeHandlerManager.getHandler(packet);
+				Object packetData = null;
+				if (handler.isPresent() && handler.get().onPacketCall(packet, address))
+					packetData = handler.get().handlePacket(packet, address);
 				if (packetData != null && packet.isReturnable()) {
 					BungeeReturningEvent returning = new BungeeReturningEvent(packet, packetData, address);
 					ProxyServer.getInstance().getPluginManager().callEvent(returning);
-					packetData = returning.getObject();
-					if (configuration.getBoolean("security.encryption.enabled", false)) {
-						byte[] serialized = encryption.serialize(packetData);
-						byte[] encrypted = encryption.encrypt(keyString, algorithm, serialized);
-						objectOutputStream.writeObject(encrypted);
-					} else {
-						objectOutputStream.writeObject(packetData);
+					if (!returning.isCancelled()) {
+						packetData = returning.getObject();
+						if (configuration.getBoolean("security.encryption.enabled", false)) {
+							byte[] serialized = encryption.serialize(packetData);
+							byte[] encrypted = encryption.encrypt(keyString, algorithm, serialized);
+							objectOutputStream.writeObject(encrypted);
+						} else {
+							objectOutputStream.writeObject(packetData);
+						}
 					}
 				}
 			}

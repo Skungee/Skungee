@@ -96,7 +96,10 @@ public class BungeeSockets {
 					}
 					BungeeReturnedEvent returning = new BungeeReturnedEvent(packet, value, server);
 					ProxyServer.getInstance().getPluginManager().callEvent(returning);
-					return returning.getReturnedObject();
+					objectOutputStream.close();
+					objectInputStream.close();
+					spigot.close();
+					return returning.getObject();
 				}
 				objectOutputStream.close();
 				objectInputStream.close();

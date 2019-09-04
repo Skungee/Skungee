@@ -11,16 +11,17 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class SkungeeMessageHandler extends SkungeeExecutor {
 
-	static {
-		registerHandler(new SkungeeMessageHandler(), SkungeePacketType.SKUNGEEMESSAGES);
+	public SkungeeMessageHandler() {
+		super(SkungeePacketType.SKUNGEEMESSAGES);
 	}
 
 	@Override
 	public void executePacket(SkungeePacket packet, InetAddress address) {
-		if (packet.eitherObjectsAreNull()) return;
+		if (packet.eitherObjectsAreNull())
+			return;
 		String[] messages = (String[]) packet.getObject();
 		String[] channels = (String[]) packet.getSetObject();
 		BungeeSockets.sendAll(new BungeePacket(false, BungeePacketType.SKUNGEEMESSAGES, messages, channels));
 	}
-	
+
 }

@@ -1,16 +1,20 @@
 package me.limeglass.skungee.bungeecord.handlercontroller;
 
 import java.net.InetAddress;
-import java.util.Map;
 
 import me.limeglass.skungee.objects.packets.SkungeePacket;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public abstract class SkungeeBungeeHandler extends SkungeeHandler {
+
+	public SkungeeBungeeHandler(String name) {
+		super(name);
+	}
 	
-	protected Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
-	
+	public SkungeeBungeeHandler(SkungeePacketType... types) {
+		super(types);
+	}
+
 	@Override
 	public boolean onPacketCall(SkungeePacket packet, InetAddress address) {
 		return true;

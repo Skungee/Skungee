@@ -39,7 +39,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
 public class SkungeePacketHandler {
-	
+
 	@SuppressWarnings("deprecation")
 	public static Object handlePacket(SkungeePacket packet, InetAddress address) {
 		Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));

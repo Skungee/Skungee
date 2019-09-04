@@ -9,14 +9,15 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
 public class PlayerPingHandler extends SkungeePlayerHandler {
 
-	static {
-		registerHandler(new PlayerPingHandler(), SkungeePacketType.PLAYERPING);
+	public PlayerPingHandler() {
+		super(SkungeePacketType.PLAYERPING);
 	}
 
 	@Override
 	public Object handlePacket(SkungeePacket packet, InetAddress address) {
-		if (packet.getObject() == null) return null;
+		if (packet.getObject() == null)
+			return null;
 		return players.parallelStream().map(player -> player.getPing()).collect(Collectors.toSet());
 	}
-	
+
 }

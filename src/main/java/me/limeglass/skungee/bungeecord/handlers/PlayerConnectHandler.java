@@ -11,8 +11,8 @@ import net.md_5.bungee.api.event.ServerConnectEvent.Reason;
 
 public class PlayerConnectHandler extends SkungeePlayerHandler {
 
-	static {
-		registerHandler(new PlayerConnectHandler(), SkungeePacketType.CONNECTPLAYER);
+	public PlayerConnectHandler() {
+		super(SkungeePacketType.CONNECTPLAYER);
 	}
 
 	@Override
