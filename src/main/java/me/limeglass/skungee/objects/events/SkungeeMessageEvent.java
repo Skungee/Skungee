@@ -10,6 +10,7 @@ public class SkungeeMessageEvent extends Event {
 	private final String channel;
 	
 	public SkungeeMessageEvent(String channel, String[] messages) {
+		super(true);
 		this.channel = channel;
 		this.messages = messages;
 	}
