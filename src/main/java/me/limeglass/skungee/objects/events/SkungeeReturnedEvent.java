@@ -30,10 +30,6 @@ public class SkungeeReturnedEvent extends Event {
 		return object;
 	}
 
-	public void setObject(Object object) {
-		this.object = object;
-	}
-
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;

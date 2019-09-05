@@ -118,6 +118,10 @@ public class Sockets {
 	}
 
 	public static Object send(SkungeePacket packet) {
+		Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), () -> {
+			SkungeeSendingEvent event = new SkungeeSendingEvent(packet);
+			Bukkit.getPluginManager().callEvent(event);
+		});
 		if (packet.isReturnable())
 			return (isConnected) ? send_i(packet) : (packet.getType() == SkungeePacketType.HANDSHAKE) ? send_i(packet) : null;
 		if (Skungee.getInstance().getConfig().getBoolean("Queue.enabled", false)) {
@@ -132,7 +136,7 @@ public class Sockets {
 		}
 		return null;
 	}
-	
+
 	public static Object send_i(SkungeePacket packet) {
 		try {
 			if (!checking) {
@@ -160,10 +164,6 @@ public class Sockets {
 					EncryptionUtil encryption = new EncryptionUtil(Skungee.getInstance(), true);
 					String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
 					String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
-					SkungeeSendingEvent event = new SkungeeSendingEvent(packet);
-					Bukkit.getPluginManager().callEvent(event);
-					if (event.isCancelled())
-						return null;
 					if (!configuration.getBoolean("IgnoreSpamPackets", true)) {
 						Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
 					} else if (!(packet.getType() == SkungeePacketType.HEARTBEAT)) {
@@ -200,11 +200,11 @@ public class Sockets {
 							value = objectInputStream.readObject();
 						}
 						SkungeeReturnedEvent returned = new SkungeeReturnedEvent(packet, value);
-						Bukkit.getPluginManager().callEvent(returned);
+						Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), () -> Bukkit.getPluginManager().callEvent(returned));
 						objectOutputStream.close();
 						objectInputStream.close();
 						bungeecord.close();
-						return returned.getObject();
+						return value;
 					}
 					objectOutputStream.close();
 					objectInputStream.close();
@@ -214,7 +214,7 @@ public class Sockets {
 		} catch (ClassNotFoundException | IOException e) {}
 		return null;
 	}
-	
+
 	public static void onPluginDisabling() {
 		Bukkit.getScheduler().cancelTask(task);
 		Bukkit.getScheduler().cancelTask(heartbeat);
@@ -227,7 +227,7 @@ public class Sockets {
 			}
 		}
 	}
-	
+
 	public static void stop(Boolean reconnect) {
 		Bukkit.getScheduler().cancelTask(task);
 		Bukkit.getScheduler().cancelTask(heartbeat);
@@ -252,4 +252,5 @@ public class Sockets {
 			Skungee.consoleMessage("Could be incorrect Skungee details, there was no socket found or was denied access. For socket at " + configuration.getString("host", "0.0.0.0") + ":" + configuration.getInt("port", 1337));
 		}
 	}
+
 }

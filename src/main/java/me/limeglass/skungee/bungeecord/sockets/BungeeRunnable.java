@@ -15,8 +15,6 @@ import java.util.logging.SimpleFormatter;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.config.Configuration;
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
 import me.limeglass.skungee.bungeecord.Skungee;
@@ -27,6 +25,8 @@ import me.limeglass.skungee.objects.events.BungeeReceivedEvent;
 import me.limeglass.skungee.objects.events.BungeeReturningEvent;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.config.Configuration;
 
 public class BungeeRunnable implements Runnable {
 
@@ -112,13 +112,14 @@ public class BungeeRunnable implements Runnable {
 				if (debug)
 					Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
 				Optional<SkungeeHandler> handler = SkungeeHandlerManager.getHandler(packet);
-				Object packetData = null;
+				Object packetData = SkungeePacketHandler.handlePacket(packet, address);
 				if (handler.isPresent() && handler.get().onPacketCall(packet, address))
 					packetData = handler.get().handlePacket(packet, address);
 				if (packetData != null && packet.isReturnable()) {
 					BungeeReturningEvent returning = new BungeeReturningEvent(packet, packetData, address);
 					ProxyServer.getInstance().getPluginManager().callEvent(returning);
 					if (!returning.isCancelled()) {
+						Skungee.debugMessage("Returning: " + packetData.toString());
 						packetData = returning.getObject();
 						if (configuration.getBoolean("security.encryption.enabled", false)) {
 							byte[] serialized = encryption.serialize(packetData);
