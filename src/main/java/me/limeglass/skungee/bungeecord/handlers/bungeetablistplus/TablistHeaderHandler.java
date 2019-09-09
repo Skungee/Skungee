@@ -1,4 +1,4 @@
-package me.limeglass.skungee.bungeecord.bungeetablistplus;
+package me.limeglass.skungee.bungeecord.handlers.bungeetablistplus;
 
 import java.net.InetAddress;
 import java.util.HashSet;
@@ -9,10 +9,10 @@ import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeBungeeHandler;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 
-public class TablistColoumnsHandler extends SkungeeBungeeHandler {
+public class TablistHeaderHandler extends SkungeeBungeeHandler {
 
-	public TablistColoumnsHandler() {
-		super(SkungeePacketType.BTLP_TABLISTCOLUMNS);
+	public TablistHeaderHandler() {
+		super(SkungeePacketType.BTLP_TABLISTHEADER);
 	}
 
 	@Override
@@ -20,11 +20,11 @@ public class TablistColoumnsHandler extends SkungeeBungeeHandler {
 		if (packet.getObject() == null)
 			return null;
 		CustomTablist[] tablists = (CustomTablist[]) packet.getObject();
-		Set<Number> columns = new HashSet<Number>();
+		Set<String> headers = new HashSet<String>();
 		for (CustomTablist tablist : tablists) {
-			columns.add(tablist.getColumns());
+			headers.add(tablist.getHeader());
 		}
-		return columns;
+		return headers;
 	}
 
 }

@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import me.limeglass.skungee.EncryptionUtil;
+import me.limeglass.skungee.UniversalSkungee;
+import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.objects.ConnectedServer;
 import me.limeglass.skungee.objects.events.BungeeReturnedEvent;
 import me.limeglass.skungee.objects.events.BungeeSendingEvent;
@@ -21,12 +24,9 @@ import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.objects.packets.BungeePacketType;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.config.Configuration;
-import me.limeglass.skungee.EncryptionUtil;
-import me.limeglass.skungee.UniversalSkungee;
-import me.limeglass.skungee.bungeecord.Skungee;
 
 public class BungeeSockets {
-	
+
 	public static Map<InetAddress, Integer> attempts = new HashMap<>();
 	public static Set<InetAddress> blocked = new HashSet<>();
 	private static boolean checking;
@@ -50,7 +50,8 @@ public class BungeeSockets {
 		if (ServerTracker.isResponding(server) && server.hasReciever() && !checking) {
 			checking = true;
 			spigot = getSocketConnection(server);
-			if (spigot == null) return null;
+			if (spigot == null)
+				return null;
 			checking = false;
 			Configuration configuration = Skungee.getConfig();
 			EncryptionUtil encryption = Skungee.getEncrypter();
@@ -62,7 +63,7 @@ public class BungeeSockets {
 				return null;
 			if (!configuration.getBoolean("IgnoreSpamPackets", true)) {
 				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
-			} else if (!(packet.getType() == BungeePacketType.GLOBALSCRIPTS)) {
+			} else if (packet.getType() != BungeePacketType.GLOBALSCRIPTS) {
 				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet) + " to server: " + server.getName());
 			}
 			if (configuration.getBoolean("security.password.enabled", false)) {
@@ -74,7 +75,8 @@ public class BungeeSockets {
 						password = encryption.hash();
 					}
 				}
-				if (password != null) packet.setPassword(password);
+				if (password != null)
+					packet.setPassword(password);
 			}
 			try {
 				spigot.setSoTimeout(10000);
@@ -113,7 +115,7 @@ public class BungeeSockets {
 		}
 		return null;
 	}
-	
+
 	public static List<Object> send(BungeePacket packet, ConnectedServer... servers) {
 		if (packet.isReturnable()) {
 			List<Object> values = new ArrayList<Object>();
@@ -128,12 +130,12 @@ public class BungeeSockets {
 				StringBuilder builder = new StringBuilder();
 				boolean found = false;
 				for (ConnectedServer server : servers) {
-					if (server != null) {
-						builder.append(server.getName() + "-" + server.getAddress() + ":" + server.getPort());
-						if (packet != null) {
-							found = true;
-							send(server, packet);
-						}
+					if (server == null)
+						continue;
+					builder.append(server.getName() + "-" + server.getAddress() + ":" + server.getPort());
+					if (packet != null) {
+						found = true;
+						send(server, packet);
 					}
 				}
 				if (!found) Skungee.debugMessage("Could not find servers by the names: " + builder.toString());
@@ -141,9 +143,10 @@ public class BungeeSockets {
 		});
 		return null;
 	}
-	
+
 	public static List<Object> sendAll(BungeePacket packet) {
-		if (packet.isReturnable()) return ServerTracker.getAll().parallelStream().filter(server -> server.hasReciever()).map(server -> send(server, packet)).collect(Collectors.toList());
+		if (packet.isReturnable())
+			return ServerTracker.getAll().parallelStream().filter(server -> server.hasReciever()).map(server -> send(server, packet)).collect(Collectors.toList());
 		ProxyServer.getInstance().getScheduler().runAsync(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -158,7 +161,7 @@ public class BungeeSockets {
 		});
 		return null;
 	}
-	
+
 	public static Object[] get(BungeePacket packet, ConnectedServer... servers) {
 		Object[] returns = new Object[servers.length];
 		for (int i = 0; i < servers.length; i++) {

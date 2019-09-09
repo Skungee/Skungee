@@ -1,9 +1,9 @@
 # Skungee
-[![Release](https://img.shields.io/github/release/TheLimeGlass/Skungee.svg)](https://github.com/TheLimeGlass/Skungee/releases)
+[![Release](https://img.shields.io/github/release/Skungee/Skungee.svg)](https://github.com/Skungee/Skungee/releases)
 [![Discord](https://img.shields.io/discord/138464183946575874.svg?label=skript-chat%20discord)](https://discord.gg/7rk74Pg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://opensource.org/licenses/Apache-2.0)
-![Commit](https://img.shields.io/github/last-commit/TheLimeGlass/Skungee.svg)
-![Size](https://img.shields.io/github/repo-size/TheLimeGlass/Skungee.svg)
+![Commit](https://img.shields.io/github/last-commit/Skungee/Skungee.svg)
+![Size](https://img.shields.io/github/repo-size/Skungee/Skungee.svg)
 
 Spigot Socket API and Bungeecord Skript Addon.
 

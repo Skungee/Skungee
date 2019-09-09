@@ -40,7 +40,7 @@ public class ProtocolLookHandler extends ProtocolPacketHandler {
 			player.setPitch(buf.readFloat());
 		//Catching prevents the connecting player from crashing.
 		} catch (Exception e) {
-			if (Skungee.getConfiguration("config").getBoolean("debug", false))
+			if (Skungee.getConfig().getBoolean("debug", false))
 				Skungee.exception(e, "Error reading the PacketPlayInLook of packet " + packet.getType());
 		}
 		return true;

@@ -17,11 +17,16 @@ import org.bukkit.event.Event;
 public class EffExecuteBungeeCommand extends SkungeeEffect {
 
 	//TODO if someone reports this as not working in the future, there is an argument option for the dispatchCommand(), see if they're using a plugin's command and possibly fix it that way, you should know how to fix it from this message.
-	
+
 	@Override
 	protected void execute(Event event) {
 		long delay = 0;
-		if (!isNull(event, Timespan.class) && expressions.getSingle(event, Timespan.class).getTicks_i() > 0) delay = expressions.getSingle(event, Timespan.class).getMilliSeconds();
+		if (!isNull(event, Timespan.class)) {
+			Timespan timespan = expressions.getSingle(event, Timespan.class);
+			if (timespan.getTicks_i() > 0)
+				delay = timespan.getMilliSeconds();
+		}
 		Sockets.send(new SkungeePacket(false, SkungeePacketType.BUNGEECOMMAND, expressions.getAll(event, String.class), delay));
 	}
+
 }

@@ -20,17 +20,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import io.netty.channel.Channel;
 
 public class ReflectionUtil {
-	
+
 	public static String getVersion() {
 		return Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
 	}
-	
+
 	public static Class<?> getNMSClass(String classString) throws ClassNotFoundException {
 		String name = "net.minecraft.server." + getVersion() + classString;
 		Class<?> nmsClass = Class.forName(name);
 		return nmsClass;
 	}
-	
+
 	public static Class<?> getOBCClass(String classString) {
 		String name = "org.bukkit.craftbukkit." + getVersion() + classString;
 		@SuppressWarnings("rawtypes")
@@ -44,7 +44,7 @@ public class ReflectionUtil {
 		}
 		return obcClass;
 	}
-	
+
 	public static Channel getChannel(Player player) throws SecurityException, NoSuchMethodException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Object connection = getConnection(player);
 		Field connectionField = connection.getClass().getField("networkManager");
@@ -74,7 +74,7 @@ public class ReflectionUtil {
 		}
 		return classes;
 	}
-	
+
 	public static Set<Class<?>> getClasses(JavaPlugin instance, String... packages) {
 		try {
 			Method method = JavaPlugin.class.getDeclaredMethod("getFile");
@@ -87,13 +87,13 @@ public class ReflectionUtil {
 		}
 		return null;
 	}
-	
+
 	public static Object getConnection(Player player) throws SecurityException, NoSuchMethodException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Object nmsPlayer = getHandle(player);
 		Field connectionField = nmsPlayer.getClass().getField("playerConnection");
 		return connectionField.get(nmsPlayer);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T> Set<Class<? extends T>> getSubTypesOf(JavaPlugin instance, Class<T> of, String... packages) {
 		return getClasses(instance, packages).parallelStream()
@@ -101,7 +101,7 @@ public class ReflectionUtil {
 			.map(clazz -> (Class<? extends T>)clazz)
 			.collect(Collectors.toSet());
 	}
-	
+
 	public static <T> boolean setField(Class<T> from, Object obj, String field, Object newValue){
 		try {
 			Field f = from.getDeclaredField(field);
@@ -121,7 +121,7 @@ public class ReflectionUtil {
 		} catch (Exception e){}
 		return null;	
 	}
-	
+
 	public static Object getHandle(Object obj) {
 		if (obj != null) {
 			try {
@@ -134,7 +134,7 @@ public class ReflectionUtil {
 		}
 		return null;
 	}
-	
+
 	public static void sendPacket(Object object, Player... players) throws NoSuchMethodException {
 		try {
 			for (Player player: players) {
@@ -145,7 +145,7 @@ public class ReflectionUtil {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static Object getNMSBlock(Block block) {
 		try {
 			Method method = ReflectionUtil.getOBCClass("util.CraftMagicNumbers").getDeclaredMethod("getBlock", Block.class);
@@ -156,4 +156,5 @@ public class ReflectionUtil {
 		}
 		return null;
 	}
+
 }

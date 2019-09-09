@@ -82,25 +82,28 @@ public abstract class SkungeeExpression<T> extends SimpleExpression<T> implement
 	@Override
 	public Class<?>[] acceptChange(final ChangeMode mode) {
 		Class<?>[] returnable = (getClass().isAnnotationPresent(Multiple.class)) ? CollectionUtils.array(Utils.getArrayClass(expressionClass)) : CollectionUtils.array(expressionClass);
-		if (getClass().isAnnotationPresent(Settable.class)) returnable = getClass().getAnnotation(Settable.class).value();
-		if (getClass().isAnnotationPresent(AllChangers.class)) return returnable;
-		if (!getClass().isAnnotationPresent(Changers.class)) return null;
+		if (getClass().isAnnotationPresent(Settable.class))
+			returnable = getClass().getAnnotation(Settable.class).value();
+		if (getClass().isAnnotationPresent(AllChangers.class))
+			return returnable;
+		if (!getClass().isAnnotationPresent(Changers.class))
+			return null;
 		return (Arrays.asList(getClass().getAnnotation(Changers.class).value()).contains(mode)) ? returnable : null;
 	}
-	
-	public Boolean isNull(Event event, @SuppressWarnings("unchecked") Class<T>... types) {
+
+	public boolean isNull(Event event, @SuppressWarnings("unchecked") Class<T>... types) {
 		return isNull(event, expressions, types);
 	}
-	
-	public Boolean isNull(Event event, int index) {
+
+	public boolean isNull(Event event, int index) {
 		return isNull(event, expressions, index);
 	}
 
-	public Boolean areNull(Event event) {
+	public boolean areNull(Event event) {
 		return areNull(event, expressions);
 	}
-	
-	private Boolean contains() {
+
+	private boolean contains() {
 		for (Class<? extends Event> event : getClass().getAnnotation(Events.class).value()) {
 			if (Arrays.asList(ScriptLoader.getCurrentEvents()).contains(event)) {
 				return true;
@@ -108,4 +111,5 @@ public abstract class SkungeeExpression<T> extends SimpleExpression<T> implement
 		}
 		return false;
 	}
+
 }

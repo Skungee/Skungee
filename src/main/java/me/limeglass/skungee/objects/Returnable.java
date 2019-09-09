@@ -10,9 +10,9 @@ import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.utils.Utils;
 
 public interface Returnable {
-	
+
 	SkungeeReturnable returnable = Utils.getEnum(SkungeeReturnable.class, Skungee.getInstance().getConfig().getString("SkungeeReturn", "STRING"));
-	
+
 	@SuppressWarnings("deprecation")
 	public default Object[] convert(SkungeeReturnable type, SkungeePlayer... players) {
 		Set<Object> converted = new HashSet<Object>();

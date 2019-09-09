@@ -1,4 +1,4 @@
-package me.limeglass.skungee.bungeecord.bungeetablistplus;
+package me.limeglass.skungee.bungeecord.handlers.bungeetablistplus;
 
 import java.net.InetAddress;
 import java.util.ArrayList;

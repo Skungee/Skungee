@@ -21,9 +21,11 @@ public class ExprBungeeServerMOTD extends SkungeePropertyExpression<String, Stri
 	
 	@Override
 	protected String[] get(Event event, String[] servers) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
 		@SuppressWarnings("unchecked")
 		Set<String> motds = (Set<String>) Sockets.send(new SkungeePacket(true, SkungeePacketType.SERVERMOTD, servers));
 		return (motds != null) ? motds.toArray(new String[motds.size()]) : null;
 	}
+
 }

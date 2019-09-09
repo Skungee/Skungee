@@ -33,10 +33,10 @@ import me.limeglass.skungee.spigot.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 
 public class Skungee extends JavaPlugin {
-	
+
 	//Spigot
-	
-	private static Map<String, FileConfiguration> files = new HashMap<String, FileConfiguration>();
+
+	private static Map<String, FileConfiguration> files = new HashMap<>();
 	private String packageName = "me.limeglass.skungee.spigot";
 	private static String prefix = "&8[&cSkungee&8] &e";
 	private static String nameplate = "[Skungee] ";
@@ -45,8 +45,8 @@ public class Skungee extends JavaPlugin {
 	private static boolean skript;
 	private SkriptAddon addon;
 	private Metrics metrics;
-	
-	public void onEnable(){
+
+	public void onEnable() {
 		Plugin plugin = Bukkit.getPluginManager().getPlugin("Skript");
 		if (plugin != null && plugin.isEnabled()) {
 			skript = true;
@@ -75,9 +75,9 @@ public class Skungee extends JavaPlugin {
 		}
 		encryption = new EncryptionUtil(this, true);
 		encryption.hashFile();
-		if (getConfig().getBoolean("Queue.enabled", true)) {
+		if (getConfig().getBoolean("Queue.enabled", true))
 			PacketQueue.start();
-		}
+
 		metrics = new Metrics(this);
 		Register.metrics(metrics);
 		if (getConfig().getBoolean("Reciever.enabled", false)) {
@@ -85,9 +85,10 @@ public class Skungee extends JavaPlugin {
 		} else {
 			Sockets.connect();
 		}
-		if (!getConfig().getBoolean("DisableRegisteredInfo", false)) Bukkit.getLogger().info(nameplate + "has been enabled!");
+		if (!getConfig().getBoolean("DisableRegisteredInfo", false))
+			Bukkit.getLogger().info(nameplate + "has been enabled!");
 	}
-	
+
 	public void onDisable() {
 		Sockets.send(new SkungeePacket(true, SkungeePacketType.DISCONNECT, Bukkit.getPort()));
 		PacketQueue.stop();
@@ -216,26 +217,26 @@ public class Skungee extends JavaPlugin {
 	
 	public static void infoMessage(@Nullable String... messages) {
 		if (messages != null && messages.length > 0) {
-			for (String text : messages) Bukkit.getLogger().info(getNameplate() + text);
+			for (String text : messages)
+				Bukkit.getLogger().info(getNameplate() + text);
 		} else {
 			Bukkit.getLogger().info("");
 		}
 	}
 
 	public static void consoleMessage(@Nullable String... messages) {
-		if (instance.getConfig().getBoolean("DisableConsoleMessages", false)) return;
+		if (instance.getConfig().getBoolean("DisableConsoleMessages", false))
+			return;
 		if (messages != null && messages.length > 0) {
 			for (String text : messages) {
-				if (instance.getConfig().getBoolean("DisableConsoleColour", false)) infoMessage(ChatColor.stripColor(Utils.cc(text)));
-				else Bukkit.getConsoleSender().sendMessage(Utils.cc(prefix + text));
+				if (instance.getConfig().getBoolean("DisableConsoleColour", false))
+					infoMessage(ChatColor.stripColor(Utils.cc(text)));
+				else
+					Bukkit.getConsoleSender().sendMessage(Utils.cc(prefix + text));
 			}
 		} else {
 			Bukkit.getLogger().info("");
 		}
 	}
+
 }
-/*
-
-
-
-*/

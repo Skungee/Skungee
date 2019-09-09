@@ -9,21 +9,23 @@ import java.util.Arrays;
 import java.util.Base64;
 
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.config.Configuration;
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.objects.packets.ServerInstancesPacket;
 
 public class ServerInstancesSockets {
 
-	private static Boolean checking = false;
+	private static boolean checking;
 	public static Socket bootstrap;
 	private static int port;
-	
+
 	public static void setInstancesPort(int port) {
 		ServerInstancesSockets.port = port;
 	}
-	
+
 	public static void shutdown() {
-		if (bootstrap == null) return;
+		if (bootstrap == null)
+			return;
 		try {
 			bootstrap.close();
 		} catch (IOException e) {}
@@ -40,7 +42,8 @@ public class ServerInstancesSockets {
 	}
 
 	public static Object sendPacket(ServerInstancesPacket packet) {
-		if (port <= 0) Skungee.consoleMessage("The recieving system for ServerInstances has not been setup yet, ", "make sure that you have ServerInstances installed or configured properly.");
+		if (port <= 0)
+			Skungee.consoleMessage("The recieving system for ServerInstances has not been setup yet, ", "make sure that you have ServerInstances installed or configured properly.");
 		try {
 			if (bootstrap == null || !bootstrap.isConnected() || bootstrap.isClosed()) {
 				if (checking) {
@@ -59,25 +62,28 @@ public class ServerInstancesSockets {
 				//Initialize a new bootstrap instance.
 				checking = true;
 				bootstrap = getBootstap();
-				if (bootstrap == null) return null;
+				if (bootstrap == null)
+					return null;
 				bootstrap.setSoTimeout(10000);
 				checking = false;
 			}
 			Skungee.debugMessage("Sending " + getPacketDebug(packet) + " to the ServerInstances Bootstrap.");
+			Configuration configuration = Skungee.getConfig();
 			//Security setup
-			if (Skungee.getConfig().getBoolean("security.password.enabled", false)) {
-				byte[] password = Skungee.getEncrypter().serialize(Skungee.getConfig().getString("security.password.password"));
-				if (Skungee.getConfig().getBoolean("security.password.hash", true)) {
-					if (Skungee.getConfig().getBoolean("security.password.hashFile", false) && Skungee.getEncrypter().isFileHashed()) {
+			if (configuration.getBoolean("security.password.enabled", false)) {
+				byte[] password = Skungee.getEncrypter().serialize(configuration.getString("security.password.password"));
+				if (configuration.getBoolean("security.password.hash", true)) {
+					if (configuration.getBoolean("security.password.hashFile", false) && Skungee.getEncrypter().isFileHashed()) {
 						password = Skungee.getEncrypter().getHashFromFile();
 					} else {
 						password = Skungee.getEncrypter().hash();
 					}
 				}
-				if (password != null) packet.setPassword(password);
+				if (password != null)
+					packet.setPassword(password);
 			}
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(bootstrap.getOutputStream());
-			if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {
+			if (configuration.getBoolean("security.encryption.enabled", false)) {
 				byte[] serialized = Skungee.getEncrypter().serialize(packet);
 				objectOutputStream.writeObject(Base64.getEncoder().encode(serialized));
 			} else {
@@ -86,7 +92,7 @@ public class ServerInstancesSockets {
 			//NOTE: There is a bug where if a ServerInstances server stays in the config.yml of Bungeecord this can error, strange stuff.
 			ObjectInputStream objectInputStream = new ObjectInputStream(bootstrap.getInputStream());
 			if (packet.isReturnable()) {
-				if (Skungee.getConfig().getBoolean("security.encryption.enabled", false)) {
+				if (configuration.getBoolean("security.encryption.enabled", false)) {
 					byte[] decoded = Base64.getDecoder().decode((byte[]) objectInputStream.readObject());
 					return Skungee.getEncrypter().deserialize(decoded);
 				} else {
@@ -100,9 +106,9 @@ public class ServerInstancesSockets {
 		}
 		return null;
 	}
-	
+
 	private static String getPacketDebug(ServerInstancesPacket packet) {
-		String debug = "packet: " + packet.getType();
+		String debug = "Packet: " + packet.getType();
 		if (packet.getObject() != null) {
 			if (packet.getObject().getClass().isArray()) {
 				debug = debug + " with data: " + Arrays.toString((Object[])packet.getObject());
@@ -119,9 +125,10 @@ public class ServerInstancesSockets {
 		}
 		return debug;
 	}
-	
-	public static Object send(final ServerInstancesPacket packet) {
-		if (packet == null) return null;
+
+	public static Object send(ServerInstancesPacket packet) {
+		if (packet == null)
+			return null;
 		if (packet.isReturnable()) {
 			return sendPacket(packet);
 		}
@@ -133,4 +140,5 @@ public class ServerInstancesSockets {
 		});
 		return null;
 	}
+
 }

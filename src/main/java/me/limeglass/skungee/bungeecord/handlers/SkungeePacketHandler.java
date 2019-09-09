@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import me.limeglass.skungee.UniversalSkungee;
+import com.imaginarycode.minecraft.redisbungee.RedisBungee;
+
 import me.limeglass.skungee.bungeecord.Skungee;
 import me.limeglass.skungee.bungeecord.sockets.BungeeSockets;
 import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
@@ -25,24 +26,16 @@ import me.limeglass.skungee.objects.packets.ServerInstancesPacket;
 import me.limeglass.skungee.objects.packets.ServerInstancesPacketType;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.spigot.utils.Utils;
-
-import java.util.concurrent.TimeUnit;
-
-import com.imaginarycode.minecraft.redisbungee.RedisBungee;
-
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.plugin.PluginManager;
 
 public class SkungeePacketHandler {
 
 	@SuppressWarnings("deprecation")
 	public static Object handlePacket(SkungeePacket packet, InetAddress address) {
-		Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
 		List<ProxiedPlayer> players = new ArrayList<ProxiedPlayer>();
 		if (packet.getPlayers() != null) {
 			for (SkungeePlayer player : packet.getPlayers()) {
@@ -85,29 +78,6 @@ public class SkungeePacketHandler {
 					}
 				}
 				break;
-			case BUNGEECOMMAND:
-				if (packet.getObject() != null) {
-					if ((long) packet.getSetObject() > (long) 0) {
-						int multiplier = 1;
-						for (String command : (String[]) packet.getObject()) {
-							if (command.startsWith("/")) command = command.substring(1);
-							final String intoRunnable = command;
-							ProxyServer.getInstance().getScheduler().schedule(Skungee.getInstance(), new Runnable() {
-								@Override
-								public void run() {
-									ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), intoRunnable);
-								}
-							}, (long) packet.getSetObject() * multiplier, TimeUnit.MILLISECONDS);
-							multiplier++;
-						}
-					} else {
-						for (String command : (String[]) packet.getObject()) {
-							if (command.startsWith("/")) command = command.substring(1);
-							ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), command);
-						}
-					}
-				}
-				break;
 			case SERVERPLAYERS:
 				if (packet.getObject() != null) {
 					Set<SkungeePlayer> skungeePlayers = new HashSet<SkungeePlayer>();
@@ -133,18 +103,6 @@ public class SkungeePacketHandler {
 					return addresses;
 				}
 				break;
-			case SERVERMOTD:
-				if (packet.getObject() != null) {
-					Set<String> motds = new HashSet<String>();
-					for (String server : (String[]) packet.getObject()) {
-						ServerInfo serverMotd = ProxyServer.getInstance().getServerInfo(server);
-						if (serverMotd != null) {
-							motds.add(serverMotd.getMotd());
-						}
-					}
-					return motds;
-				}
-				break;
 			case PLAYERDISPLAYNAME:
 				if (!players.isEmpty()) {
 					Set<String> names = new HashSet<String>();
@@ -168,19 +126,6 @@ public class SkungeePacketHandler {
 					return names;
 				}
 				break;
-			case MAXPLAYERS:
-				if (packet.getObject() != null) {
-					Set<Number> limits = new HashSet<Number>();
-					for (String server : (String[]) packet.getObject()) {
-						for (ConnectedServer serverMax : ServerTracker.get(server)) {
-							if (serverMax != null && ServerTracker.isResponding(serverMax)) {
-								limits.add(serverMax.getMaxPlayers());
-							}
-						}
-					}
-					return limits;
-				}
-				break;
 			case ISSERVERONLINE:
 				if (packet.getObject() != null) {
 					if (packet.getObject() instanceof String) {
@@ -197,19 +142,6 @@ public class SkungeePacketHandler {
 					}
 				}
 				return false;
-			case WHITELISTED:
-				if (packet.getObject() != null) {
-					Set<SkungeePlayer> whitelistedPlayers = new HashSet<SkungeePlayer>();
-					for (String server : (String[]) packet.getObject()) {
-						for (ConnectedServer serverWhitelisted : ServerTracker.get(server)) {
-							if (serverWhitelisted != null && ServerTracker.isResponding(serverWhitelisted)) {
-								whitelistedPlayers.addAll(serverWhitelisted.getWhitelistedPlayers());
-							}
-						}
-					}
-					return whitelistedPlayers;
-				}
-				break;
 			case PLAYERCHATMODE:
 				if (!players.isEmpty()) {
 					Set<ChatMode> modes = new HashSet<ChatMode>();
@@ -357,12 +289,6 @@ public class SkungeePacketHandler {
 					ServerInstancesSockets.send(new ServerInstancesPacket(false, ServerInstancesPacketType.CREATESERVER, packet.getObject(), packet.getSetObject()));
 				}
 				break;
-			case SKUNGEEMESSAGES:
-				if (packet.getObject() == null || packet.getSetObject() == null) return null;
-				String[] messages = (String[]) packet.getObject();
-				String[] channels = (String[]) packet.getSetObject();
-				BungeeSockets.sendAll(new BungeePacket(false, BungeePacketType.SKUNGEEMESSAGES, messages, channels));
-				break;
 			case TABHEADERFOOTER:
 				if (!players.isEmpty() && packet.getObject() != null) {
 					BaseComponent component = new TextComponent();
@@ -465,24 +391,6 @@ public class SkungeePacketHandler {
 						groups.addAll(player.getGroups());
 					}
 					return groups;
-				}
-				break;
-			case UNREGISTERCOMMANDS:
-				if (packet.getObject() != null) {
-					for (String name : (String[])packet.getObject()) {
-						PluginManager manager = ProxyServer.getInstance().getPluginManager();
-						Plugin plugin = manager.getPlugin(name);
-						if (plugin != null && !name.equalsIgnoreCase("skungee")) manager.unregisterCommands(plugin);
-					}
-				}
-				break;
-			case UNREGISTERLISTENERS:
-				if (packet.getObject() != null) {
-					for (String name : (String[])packet.getObject()) {
-						PluginManager manager = ProxyServer.getInstance().getPluginManager();
-						Plugin plugin = manager.getPlugin(name);
-						if (plugin != null && !name.equalsIgnoreCase("skungee")) manager.unregisterListeners(plugin);
-					}
 				}
 				break;
 			case SHUTDOWNSERVER:

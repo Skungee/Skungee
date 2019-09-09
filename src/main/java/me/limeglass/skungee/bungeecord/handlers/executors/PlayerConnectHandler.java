@@ -1,4 +1,4 @@
-package me.limeglass.skungee.bungeecord.handlers;
+package me.limeglass.skungee.bungeecord.handlers.executors;
 
 import java.net.InetAddress;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeePlayerHandler;

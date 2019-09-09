@@ -34,11 +34,16 @@ public class SkungeeBungeeTitle extends SkungeeTitle {
 	
 	private Title getTitle() {
 		Title title = Skungee.getInstance().getProxy().createTitle();
-		if (this.title != null) title.title(new TextComponent(this.title));
-		if (this.subtitle != null) title.subTitle(new TextComponent(this.subtitle));
-		if (this.fadeIn >= 0) title.fadeIn(this.fadeIn);
-		if (this.stay >= 0) title.stay(this.stay);
-		if (this.fadeOut >= 0) title.fadeOut(this.fadeOut);
+		if (this.title != null)
+			title.title(new TextComponent(this.title));
+		if (this.subtitle != null)
+			title.subTitle(new TextComponent(this.subtitle));
+		if (this.fadeIn >= 0)
+			title.fadeIn(this.fadeIn);
+		if (this.stay >= 0)
+			title.stay(this.stay);
+		if (this.fadeOut >= 0)
+			title.fadeOut(this.fadeOut);
 		return title;
 	}
 	
@@ -47,4 +52,5 @@ public class SkungeeBungeeTitle extends SkungeeTitle {
 			getTitle().send(ProxyServer.getInstance().getPlayer(player.getUniqueId()));
 		}
 	}
+
 }

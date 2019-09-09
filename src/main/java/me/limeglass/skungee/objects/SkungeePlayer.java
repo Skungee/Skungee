@@ -25,16 +25,17 @@ public class SkungeePlayer implements Serializable {
 	public Boolean isBukkitPlayer() {
 		return isBukkitPlayer;
 	}
+
+	public String getName() {
+		return name;
+	}
 	
 	public UUID getUUID() {
 		return uuid;
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
 	public String toString() {
 		return (uuid != null) ? name + ":" + uuid : name;
 	}
+
 }

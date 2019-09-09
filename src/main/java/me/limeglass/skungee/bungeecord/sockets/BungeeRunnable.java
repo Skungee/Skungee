@@ -143,7 +143,7 @@ public class BungeeRunnable implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void incorrectPassword(SkungeePacket packet) {
 		attempt(address, packet);
 		Skungee.consoleMessage("&cA SkungeePacket with an incorrect password has just been recieved and blocked!");
@@ -151,9 +151,10 @@ public class BungeeRunnable implements Runnable {
 		Skungee.consoleMessage("&cThe packet type was: " + packet.getType());
 		//insert more data maybe
 	}
-	
+
 	private void attempt(InetAddress address, @Nullable SkungeePacket packet) {
-		if (Skungee.getConfig().getBoolean("security.breaches.enabled", false)) {
+		Configuration configuration = Skungee.getConfig();
+		if (configuration.getBoolean("security.breaches.enabled", false)) {
 			int attempts = 0;
 			if (BungeeSockets.attempts.containsKey(address)) {
 				attempts = BungeeSockets.attempts.get(address);
@@ -162,21 +163,21 @@ public class BungeeRunnable implements Runnable {
 			attempts++;
 			Skungee.consoleMessage(attempts + "");
 			BungeeSockets.attempts.put(address, attempts);
-			if (attempts >= Skungee.getConfig().getInt("security.breaches.attempts", 30)) {
-				if (Skungee.getConfig().getBoolean("security.breaches.log", false)) {
+			if (attempts >= configuration.getInt("security.breaches.attempts", 30)) {
+				if (configuration.getBoolean("security.breaches.log", false)) {
 					log("", "&cA BungeePacket with an incorrect password has just been recieved and blocked!", "&cThe packet came from: " + socket.getInetAddress());
 					if (packet != null) log("&cThe packet type was: " + packet.getType());
 				}
-				if (Skungee.getConfig().getBoolean("security.breaches.shutdown", false)) {
+				if (configuration.getBoolean("security.breaches.shutdown", false)) {
 					ProxyServer.getInstance().stop();
 				}
-				if (Skungee.getConfig().getBoolean("security.breaches.blockAddress", false)) {
+				if (configuration.getBoolean("security.breaches.blockAddress", false)) {
 					if (!BungeeSockets.blocked.contains(address)) BungeeSockets.blocked.add(address);
 				}
 			}
 		}
 	}
-	
+
 	private void log(String... strings) {
 		File breaches = new File(Skungee.getInstance().getDataFolder(), "breaches.log");
 		try {
@@ -192,4 +193,5 @@ public class BungeeRunnable implements Runnable {
 			Skungee.exception(e, "Error logging a breach.");
 		}
 	}
+
 }
