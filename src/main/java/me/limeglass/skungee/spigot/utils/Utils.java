@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,6 +35,21 @@ public class Utils {
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException error) {
 			return false;
 		}
+	}
+
+	/**
+	 * Checks if the given String matches any of the other strings.
+	 * 
+	 * @param check The String to check against.
+	 * @param options The matching options, that may be checked.
+	 * @return boolean if the String matches any of the String options.
+	 */
+	public static boolean matchesIgnoreCase(String check, String... options) {
+		for (String option : options) {
+			if (check.equalsIgnoreCase(option))
+				return true;
+		}
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -126,8 +142,61 @@ public class Utils {
 			}
 			port++;
 		}
-		if (lastException != null) Skungee.exception(lastException, "Couldn't find a port between " + start + " and " + port);
+		if (lastException != null)
+			Skungee.exception(lastException, "Couldn't find a port between " + start + " and " + port);
 		return -1;
+	}
+
+	public static int findPort(InetAddress address, int start, int max) {
+		int port = start;
+		Throwable lastException = null;
+		while (port < max) {
+			ServerSocket socket = null;
+			try {
+				socket = new ServerSocket(port, 50, address);
+				socket.setReuseAddress(true);
+				return port;
+			} catch (IOException e) {
+				lastException = e;
+			} finally {
+				if (socket != null) {
+					try {
+						socket.close();
+					} catch (IOException e) {}
+				}
+			}
+			port++;
+		}
+		if (lastException != null)
+			Skungee.exception(lastException, "Couldn't find a port between " + start + " and " + port);
+		return -1;
+	}
+
+	public static Set<Integer> getClosedPorts(InetAddress address, int start, int max) {
+		Set<Integer> ports = new HashSet<>();
+		int port = start;
+		Throwable lastException = null;
+		while (port < max) {
+			ServerSocket socket = null;
+			try {
+				socket = new ServerSocket(port, 50, address);
+				socket.setReuseAddress(true);
+				continue;
+			} catch (IOException e) {
+				lastException = e;
+			} finally {
+				if (socket != null) {
+					try {
+						socket.close();
+					} catch (IOException e) {}
+				}
+			}
+			ports.add(port);
+			port++;
+		}
+		if (lastException != null)
+			Skungee.exception(lastException, "Couldn't find a port between " + start + " and " + port);
+		return ports;
 	}
 
 }

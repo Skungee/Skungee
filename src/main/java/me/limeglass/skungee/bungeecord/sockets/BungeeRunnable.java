@@ -45,7 +45,8 @@ public class BungeeRunnable implements Runnable {
 			List<String> addresses = configuration.getStringList("security.breaches.blacklisted");
 			if (!configuration.getBoolean("security.breaches.blacklist-is-whitelist", false)) {
 				if (BungeeSockets.blocked.contains(address) || addresses.contains(address.getHostName())) return;
-			} else if (!addresses.contains(address.getHostName())) return;
+			} else if (!addresses.contains(address.getHostName()))
+				return;
 		}
 		try {
 			String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
@@ -66,7 +67,7 @@ public class BungeeRunnable implements Runnable {
 					Skungee.consoleMessage("", "Some security settings didn't match for the incoming packet.", "Make sure all your security options on the Spigot servers match the same as in the Bungeecord Skungee config.yml", "The packet could not be read, thus being cancelled.");
 					attempt(address, null);
 					if (configuration.getBoolean("security.debug"))
-						Skungee.exception(e, "Could not decrypt packet " + UniversalSkungee.getPacketDebug(packet));
+						Skungee.exception(e, "Could not decrypt packet " + packet != null ? UniversalSkungee.getPacketDebug(packet) : "");
 					return;
 				}
 				BungeeReceivedEvent event = new BungeeReceivedEvent(packet, address);

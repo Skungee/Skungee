@@ -1,0 +1,7 @@
+Skungee:
+    version: @version@
+
+Bungeecord:
+    version: $version
+    java: $java
+    os: $os

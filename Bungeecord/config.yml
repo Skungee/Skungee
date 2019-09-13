@@ -98,6 +98,14 @@ DisableConsoleMessages: false
 # Disables the colour in the console.
 DisableConsoleColour: false
 
+# Change the allowed buffer size of the server sockets accepting all the packets.
+# NOTE: This number must be a byte cap size. Aka divisable by 8. (512, 1024, etc)
+# If you have lots of allocated ram, and lots of Skungee servers, you may want to increase this.
+# This is in bytes. A kilobyte is 1,024 bytes, your server is usally measured in mega or giga bytes.
+# Anything below 16k is usally fairly accepted, above is a bit overkill. The default in Java is 8,192
+# Since people use Skungee on hosters (not recommended), the default is increased to 10k.
+buffer-size: 10240
+
 Recievers:
     # How many times should Skungee try to connect to a server's reciever?
     allowedTrys: 10

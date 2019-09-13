@@ -3,7 +3,7 @@ package me.limeglass.skungee.bungeecord;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.util.Arrays;
@@ -18,6 +18,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import me.limeglass.skungee.BungeeConfigSaver;
 import me.limeglass.skungee.EncryptionUtil;
 import me.limeglass.skungee.UniversalSkungee;
+import me.limeglass.skungee.bungeecord.commands.SkungeePasteCommand;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandlerManager;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
@@ -27,6 +28,7 @@ import me.limeglass.skungee.bungeecord.sockets.BungeeRunnable;
 import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
 import me.limeglass.skungee.bungeecord.utils.BungeeReflectionUtil;
 import me.limeglass.skungee.bungeecord.variables.VariableManager;
+import me.limeglass.skungee.spigot.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -46,6 +48,7 @@ public class Skungee extends Plugin {
 	private ServerSocket serverSocket;
 	private static Skungee instance;
 	private File SCRIPTS_FOLDER;
+	private SkungeeBin haste;
 
 	public void onEnable() {
 		instance = this;
@@ -71,6 +74,7 @@ public class Skungee extends Plugin {
 				SkungeeHandlerManager.registerHandler(handler);
 			} catch (InstantiationException | IllegalAccessException e) {}
 		});
+		this.haste = new SkungeeBin(instance);
 		metrics = new BungecordMetrics(this);
 		metrics.addCustomChart(new BungecordMetrics.MultiLineChart("variables_and_scripts") {
 			@Override
@@ -110,6 +114,7 @@ public class Skungee extends Plugin {
 			getProxy().getPluginManager().registerListener(this, new ChannelListener());
 		VariableManager.setup();
 		connect();
+		getProxy().getPluginManager().registerCommand(this, new SkungeePasteCommand());
 		if (!getConfig().getBoolean("DisableRegisteredInfo", false))
 			consoleMessage("Skungee has been enabled!");
 	}
@@ -138,13 +143,15 @@ public class Skungee extends Plugin {
 	}
 
 	private void connect () {
+		int port = getConfig().getInt("port", 1337);
 		try {
-			int port = getConfig().getInt("port", 1337);
-			serverSocket = new ServerSocket(port);
 			String address = getConfig().getString("bind-to-address", "localhost");
-			if (!address.equalsIgnoreCase("localhost"))
-				serverSocket.bind(new InetSocketAddress(address.trim(), port));
-			consoleMessage("connection established on address " + serverSocket.getInetAddress().getHostAddress() + " on port " + getConfig().getInt("port", 1337));
+			if (Utils.matchesIgnoreCase(address, "localhost", "0.0.0.0", "127.0.0.1"))
+				serverSocket = new ServerSocket(port);
+			else
+				serverSocket = new ServerSocket(port, 50, InetAddress.getByName(address.trim()));
+			serverSocket.setReceiveBufferSize(getConfig().getInt("buffer-size", 10240));
+			consoleMessage("connection established on address " + serverSocket.getInetAddress().getHostAddress() + " on port " + port);
 			ProxyServer.getInstance().getScheduler().runAsync(getInstance(), new Runnable() {
 				@Override
 				public void run() {
@@ -158,8 +165,13 @@ public class Skungee extends Plugin {
 				}
 			});
 		} catch (IOException e) {
-			Skungee.exception(e, "ServerSocket couldn't be created on port: " + getConfig().getInt("port", 1337));
+			Skungee.exception(e, "ServerSocket couldn't be created on port: " + port);
 		}
+	}
+
+	public String postSkungeeHaste() {
+		String content = haste.createHaste();
+		return haste.postHaste(content);
 	}
 
 	//TODO Move this to UniversalSkungee soon
