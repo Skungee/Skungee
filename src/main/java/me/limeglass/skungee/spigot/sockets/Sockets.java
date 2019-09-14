@@ -35,26 +35,25 @@ public class Sockets {
 	public static Long last = System.currentTimeMillis();
 	private static int task, heartbeat, keepAlive;
 	public static Socket bungeecord;
-	
+
 	//TODO create a system to cache failed packets, It already does but it gives up after a few times and lets it go.
-	
+
 	public static boolean isConnected() {
 		return isConnected;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private static void startHeartbeat() {
 		task = Bukkit.getScheduler().scheduleAsyncRepeatingTask(Skungee.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				Boolean answer = (Boolean) send(new SkungeePacket(true, SkungeePacketType.HEARTBEAT, Bukkit.getPort()));
-				if (answer != null && answer) {
+				boolean answer = (boolean) send(new SkungeePacket(true, SkungeePacketType.HEARTBEAT, Bukkit.getPort()));
+				if (answer)
 					stop(true);
-				}
 			}
 		}, 1, Skungee.getInstance().getConfig().getInt("heartbeat", 30));
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private static void keepAlive() {
 		restart = true;
@@ -71,7 +70,7 @@ public class Sockets {
 			}
 		}, 1, Skungee.getInstance().getConfig().getInt("keepAlive", 10) * 20);
 	}
-	
+
 	public static void connect() {
 		Set<SkungeePlayer> whitelisted = new HashSet<SkungeePlayer>();
 		for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {

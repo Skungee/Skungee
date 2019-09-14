@@ -34,7 +34,7 @@ import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.protocol.ProtocolConstants;
 
 public class EventListener implements Listener {
-	
+
 	@EventHandler
     public void onServerSwitch(ServerSwitchEvent event) {
 		if (event.getPlayer() != null) {
@@ -45,7 +45,7 @@ public class EventListener implements Listener {
 			}
 		}
     }
-	
+
 	@EventHandler
     public void onDisconnect(PlayerDisconnectEvent event) {
 		if (event.getPlayer() != null) {
@@ -58,7 +58,7 @@ public class EventListener implements Listener {
 			}
 		}
     }
-	
+
 	@EventHandler
     public void onCommand(ChatEvent event) {
 		Optional<ProxiedPlayer> proxied = ProxyServer.getInstance().getPlayers().parallelStream()
@@ -78,7 +78,7 @@ public class EventListener implements Listener {
 				event.setCancelled(true);
 		}
     }
-	
+
 	@EventHandler
     public void onPing(ProxyPingEvent event) {
 		if (event.getResponse() != null && !Skungee.getConfig().getBoolean("DisablePingEvent", false)) {

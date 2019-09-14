@@ -3,6 +3,7 @@ package me.limeglass.skungee.bungeecord.sockets;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -70,6 +72,24 @@ public class ServerTracker {
 		notRespondingServers.clear();
 	}
 
+	public static boolean update(InetSocketAddress address) {
+		Optional<ConnectedServer> connected = servers.stream()
+				.filter(server -> server.getAddress().equals(address.getAddress()))
+				.filter(server -> server.getPort() == address.getPort())
+				.findFirst();
+		if (!connected.isPresent())
+			return true;
+		ConnectedServer server = connected.get();
+		tracker.put(server, System.currentTimeMillis());
+		if (notRespondingServers.contains(server)) {
+			notRespondingServers.remove(server);
+			Skungee.debugMessage(server.getName() + " started responding again!");
+		}
+		globalScripts(server);
+		return false;
+	}
+
+	@Deprecated
 	public static boolean update(String string) {
 		if (get(string) == null)
 			return true;

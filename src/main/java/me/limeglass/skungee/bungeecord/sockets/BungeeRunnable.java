@@ -116,6 +116,8 @@ public class BungeeRunnable implements Runnable {
 				Object packetData = SkungeePacketHandler.handlePacket(packet, address);
 				if (handler.isPresent() && handler.get().onPacketCall(packet, address))
 					packetData = handler.get().handlePacket(packet, address);
+				if (packetData == null)
+					Skungee.debugMessage("Packet returned null " + UniversalSkungee.getPacketDebug(packet));
 				if (packetData != null && packet.isReturnable()) {
 					BungeeReturningEvent returning = new BungeeReturningEvent(packet, packetData, address);
 					ProxyServer.getInstance().getPluginManager().callEvent(returning);

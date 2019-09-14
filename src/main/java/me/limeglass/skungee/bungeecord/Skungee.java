@@ -22,6 +22,7 @@ import me.limeglass.skungee.bungeecord.commands.SkungeePasteCommand;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandler;
 import me.limeglass.skungee.bungeecord.handlercontroller.SkungeeHandlerManager;
 import me.limeglass.skungee.bungeecord.listeners.EventListener;
+import me.limeglass.skungee.bungeecord.managers.PlayerTimeManager;
 import me.limeglass.skungee.bungeecord.protocol.channel.ChannelListener;
 import me.limeglass.skungee.bungeecord.serverinstances.Premium;
 import me.limeglass.skungee.bungeecord.sockets.BungeeRunnable;
@@ -41,8 +42,8 @@ import net.md_5.bungee.config.YamlConfiguration;
  * Bungeecord
  */
 public class Skungee extends Plugin {
-
 	private static Map<String, Configuration> files = new HashMap<>();
+	private PlayerTimeManager playerTimeManager;
 	private static EncryptionUtil encryption;
 	private static BungecordMetrics metrics;
 	private ServerSocket serverSocket;
@@ -60,6 +61,7 @@ public class Skungee extends Plugin {
 			SCRIPTS_FOLDER.mkdir();
 		loadConfiguration();
 		Premium.check();
+		playerTimeManager = new PlayerTimeManager(this);
 		encryption = new EncryptionUtil(this, false);
 		encryption.hashFile();
 		//load handlers
@@ -172,6 +174,10 @@ public class Skungee extends Plugin {
 	public String postSkungeeHaste() {
 		String content = haste.createHaste();
 		return haste.postHaste(content);
+	}
+
+	public PlayerTimeManager getPlayerTimeManager() {
+		return playerTimeManager;
 	}
 
 	//TODO Move this to UniversalSkungee soon

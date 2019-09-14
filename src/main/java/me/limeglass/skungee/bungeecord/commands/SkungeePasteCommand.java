@@ -3,6 +3,7 @@ package me.limeglass.skungee.bungeecord.commands;
 import me.limeglass.skungee.bungeecord.Skungee;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -24,8 +25,10 @@ public class SkungeePasteCommand extends Command {
 			return;
 		}
 		if (args[0].equalsIgnoreCase("paste")) {
-			TextComponent component = new TextComponent(ChatColor.YELLOW + "Paste: " + Skungee.getInstance().postSkungeeHaste());
-			sender.sendMessage(component);
+			ProxyServer.getInstance().getScheduler().runAsync(Skungee.getInstance(), () -> {
+				TextComponent component = new TextComponent(ChatColor.YELLOW + "Paste: " + Skungee.getInstance().postSkungeeHaste());
+				sender.sendMessage(component);
+			});
 		}
 	}
 

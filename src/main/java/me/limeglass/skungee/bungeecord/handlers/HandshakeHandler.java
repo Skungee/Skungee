@@ -46,10 +46,10 @@ public class HandshakeHandler extends SkungeeBungeeHandler {
 					if (!ServerTracker.contains(address, port)) {
 						ConnectedServer connect = new ConnectedServer(usingReciever, recieverPort, port, address, heartbeat, server.getKey(), motd, max, whitelisted);
 						ServerTracker.add(connect);
-						ServerTracker.update(server.getKey());
+						ServerTracker.update(serverAddress);
 						return "CONNECTED";
 					} else {
-						ServerTracker.update(server.getKey());
+						ServerTracker.update(serverAddress);
 						return "ALREADY";
 					}
 				}
@@ -60,10 +60,10 @@ public class HandshakeHandler extends SkungeeBungeeHandler {
 							if (!ServerTracker.contains(address, port)) {
 								ConnectedServer connect = new ConnectedServer(usingReciever, recieverPort, port, address, heartbeat, server.getKey(), motd, max, whitelisted);
 								ServerTracker.add(connect);
-								ServerTracker.update(server.getKey());
+								ServerTracker.update(serverAddress);
 								return "CONNECTED";
 							} else {
-								ServerTracker.update(server.getKey());
+								ServerTracker.update(serverAddress);
 								return "ALREADY";
 							}
 						}
