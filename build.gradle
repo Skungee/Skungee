@@ -68,7 +68,7 @@ dependencies {
 	shade (group: 'org.json', name: 'json', version: '20190722')
 
 	// H2 Database
-	shade (group: 'com.h2database', name: 'h2', version: '1.4.197')
+	shade (group: 'com.h2database', name: 'h2', version: '1.4.199')
 
 }
 
