@@ -9,7 +9,6 @@ import ch.njol.skript.lang.TriggerItem;
 import ch.njol.skript.util.Timespan;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -28,7 +27,7 @@ public class EffWaitUntil extends SkungeeEffect {
 	}
 	
 	private void check(Event event, long timeout) {
-		if (timeout == 0 || Sockets.isConnected()) {
+		if (timeout == 0 || sockets.isConnected()) {
 			walk(getNext(), event);
 			return;
 		}
@@ -37,4 +36,5 @@ public class EffWaitUntil extends SkungeeEffect {
 	
 	@Override
 	protected void execute(Event event) {}
+
 }

@@ -8,7 +8,6 @@ import ch.njol.skript.doc.Name;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
@@ -21,9 +20,11 @@ public class ExprBungeePlayerYaw extends SkungeePropertyExpression<Object, Numbe
 
 	@Override
 	protected Number[] get(Event event, Object[] skungeePlayers) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
 		@SuppressWarnings("unchecked")
-		Set<Number> yaws = (Set<Number>) Sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERYAW, null, null, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<Number> yaws = (Set<Number>) sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERYAW, null, null, Utils.toSkungeePlayers(skungeePlayers)));
 		return (yaws != null) ? yaws.toArray(new Number[yaws.size()]) : null;
 	}
+
 }

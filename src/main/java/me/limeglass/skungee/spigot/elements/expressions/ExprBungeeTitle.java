@@ -21,7 +21,8 @@ public class ExprBungeeTitle extends SkungeeExpression<SkungeeTitle> {
 	
 	@Override
 	protected SkungeeTitle[] get(Event event) {
-		if (isNull(event, 0) || isNull(event, 2)) return null;
+		if (isNull(event, 0) || isNull(event, 2))
+			return null;
 		String string = Utils.cc(expressions.getSingle(event, String.class, 0));
 		Timespan stay = expressions.getSingle(event, Timespan.class, 0);
 		SkungeeTitle title = new SkungeeTitle(string, (int)stay.getTicks_i());
@@ -30,4 +31,5 @@ public class ExprBungeeTitle extends SkungeeExpression<SkungeeTitle> {
 		if (!isNull(event, 4)) title.setFadeOut((int)((Timespan) expressions.get(4).getSingle(event)).getTicks_i());
 		return (title != null) ? new SkungeeTitle[]{title} : null;
 	}
+
 }

@@ -9,7 +9,6 @@ import ch.njol.skript.doc.Name;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
@@ -21,9 +20,11 @@ public class ExprBungeeServerPlayerLimit extends SkungeePropertyExpression<Strin
 
 	@Override
 	protected Number[] get(Event event, String[] servers) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
 		@SuppressWarnings("unchecked")
-		Set<Number> limits = (Set<Number>) Sockets.send(new SkungeePacket(true, SkungeePacketType.MAXPLAYERS, servers));
+		Set<Number> limits = (Set<Number>) sockets.send(new SkungeePacket(true, SkungeePacketType.MAXPLAYERS, servers));
 		return (limits != null) ? limits.toArray(new Number[limits.size()]) : null;
 	}
+
 }

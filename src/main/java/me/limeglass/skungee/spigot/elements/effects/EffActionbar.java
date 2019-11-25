@@ -1,16 +1,15 @@
 package me.limeglass.skungee.spigot.elements.effects;
 
+import org.bukkit.event.Event;
+
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import me.limeglass.skungee.objects.SkungeePlayer;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
-
-import org.bukkit.event.Event;
 
 @Name("Bungeecord Actionbar")
 @Description("Send a actionbar message to anyone on the Bungeecord network.")
@@ -19,8 +18,11 @@ public class EffActionbar extends SkungeeEffect {
 
 	@Override
 	protected void execute(Event event) {
-		if (areNull(event)) return;
+		if (areNull(event))
+			return;
 		SkungeePlayer[] players = Utils.toSkungeePlayers(expressions.get(1).getAll(event));
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.ACTIONBAR, (String) expressions.get(0).getSingle(event), players));
+		SkungeePacket packet = new SkungeePacket(false, SkungeePacketType.ACTIONBAR, (String) expressions.get(0).getSingle(event), players);
+		sockets.send(packet);
 	}
+
 }

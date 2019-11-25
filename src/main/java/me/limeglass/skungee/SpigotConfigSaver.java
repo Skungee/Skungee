@@ -14,18 +14,20 @@ import me.limeglass.skungee.spigot.Skungee;
 public class SpigotConfigSaver {
 
 	//TODO Make a saver that saves the contents into a new configuration.
-	
+
 	private final File folder, config, oldconfig;
 	private FileConfiguration configuration;
-	
+
 	public SpigotConfigSaver(Skungee instance) {
 		this.folder = new File(instance.getDataFolder(), "old-configs/");
 		this.config = new File(instance.getDataFolder(), "config.yml");
 		load();
 		this.oldconfig = new File(folder, configuration.getString("version", "old") + "-config.yml");
-		if (!folder.exists()) folder.mkdir();
+		if (!folder.exists())
+			folder.mkdir();
+		instance.saveConfig();
 	}
-	
+
 	private void load() {
 		configuration = new YamlConfiguration();
 		try {
@@ -34,7 +36,7 @@ public class SpigotConfigSaver {
 			Skungee.exception(exception, "Failed to load the configuration.");
 		}
 	}
-	
+
 	public void execute() {
 		try {
 			Files.move(config, oldconfig);
@@ -42,5 +44,5 @@ public class SpigotConfigSaver {
 			Skungee.exception(exception, "Failed to save the old configuration.");
 		}
 	}
-	
+
 }

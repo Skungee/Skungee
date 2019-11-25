@@ -8,7 +8,6 @@ import ch.njol.skript.lang.ExpressionType;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 import me.limeglass.skungee.spigot.utils.annotations.Single;
@@ -19,10 +18,11 @@ import me.limeglass.skungee.spigot.utils.annotations.Single;
 @ExpressionProperty(ExpressionType.SIMPLE)
 @Single
 public class ExprRedisBungeeID extends SkungeeExpression<String> {
-	
+
 	@Override
 	protected String[] get(Event event) {
-		String ID = (String) Sockets.send(new SkungeePacket(true, SkungeePacketType.REDISSERVERID));
+		String ID = (String) sockets.send(new SkungeePacket(true, SkungeePacketType.REDISSERVERID));
 		return (ID != null) ? new String[]{ID} : null;
 	}
+
 }

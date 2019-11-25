@@ -1,15 +1,14 @@
 package me.limeglass.skungee.spigot.elements.effects;
 
+import org.bukkit.event.Event;
+
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.util.Timespan;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
-
-import org.bukkit.event.Event;
 
 @Name("Proxy console command")
 @Description("Execute a console command on the proxy. Commands such as /end, /greload, /alert etc. Can also execute a plugin command if it's supported in console.")
@@ -26,7 +25,7 @@ public class EffExecuteBungeeCommand extends SkungeeEffect {
 			if (timespan.getTicks_i() > 0)
 				delay = timespan.getMilliSeconds();
 		}
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.BUNGEECOMMAND, expressions.getAll(event, String.class), delay));
+		sockets.send(new SkungeePacket(false, SkungeePacketType.BUNGEECOMMAND, expressions.getAll(event, String.class), delay));
 	}
 
 }

@@ -18,19 +18,19 @@ import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.objects.packets.BungeePacketType;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
-import me.limeglass.skungee.spigot.sockets.Sockets;
+import me.limeglass.skungee.spigot.Skungee;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class SkungeeAPI {
-	
+
 	/**
 	 * @return If the current Skungee implementation is from Spigot or Bungeecord.
 	 */
 	public static boolean isBungeecord() {
 		return UniversalSkungee.isBungeecord();
 	}
-	
+
 	/**
 	 * Grab SkungeePlayers from Bungeecord's ProxiedPlayer object.
 	 * 
@@ -45,7 +45,7 @@ public class SkungeeAPI {
 		}
 		return skungees;
 	}
-	
+
 	/**
 	 * Grab SkungeePlayers from Spigot's Player object.
 	 * 
@@ -60,7 +60,7 @@ public class SkungeeAPI {
 		}
 		return skungees;
 	}
-	
+
 	/**
 	 * Sends the defined packet to the Bungeecord.
 	 * Prebuilt SkungeePacketType's return different values, you can view the syntaxes in the elements package to find which.
@@ -72,9 +72,9 @@ public class SkungeeAPI {
 	public static Object sendPacket(SkungeePacket packet) throws IllegalAccessException {
 		if (isBungeecord())
 			throw new IllegalAccessException("A SkungeePacket may only be sent on a Spigot implementation, try BungeePacket.");
-		return Sockets.send(packet);
+		return Skungee.getInstance().getSockets().send(packet);
 	}
-	
+
 	/**
 	 * Sends the defined packet to the Spigot server.
 	 * Prebuilt SkungeePacketType's return different values, you can view the syntaxes in the elements package to find which.
@@ -90,7 +90,7 @@ public class SkungeeAPI {
 			throw new IllegalAccessException("A BungeePacket may only be sent on a Bungeecord implementation, try SkungeePacket.");
 		return BungeeSockets.send(packet, servers);
 	}
-	
+
 	/**
 	 * Will grab a ConnectedServer instance if the server is indeed connected and found.
 	 * The optional is because the input string may not be a found server.
@@ -101,7 +101,7 @@ public class SkungeeAPI {
 	public static Optional<ConnectedServer[]> getConnectedServers(String server) {
 		return Optional.of(ServerTracker.get(server));
 	}
-	
+
 	/**
 	 * Sends the defined packet to all connected servers.
 	 * 
@@ -114,7 +114,7 @@ public class SkungeeAPI {
 			throw new IllegalAccessException("A BungeePacket may only be sent on a Bungeecord implementation, try SkungeePacket.");
 		return BungeeSockets.sendAll(packet);
 	}
-	
+
 	/**
 	 * Grab ONLINE SkungeePlayers from a string, input determined from platform this is called from.
 	 * 
@@ -133,7 +133,7 @@ public class SkungeeAPI {
 			.filter(player -> player != null)
 			.toArray(SkungeePlayer[]::new);
 	}
-	
+
 	/**
 	 * Grabs all the connected servers on from the Skungee Bungeecord side.
 	 * 
@@ -146,7 +146,7 @@ public class SkungeeAPI {
 		Set<ConnectedServer> servers = ServerTracker.getAll();
 		return servers.toArray(new ConnectedServer[servers.size()]);
 	}
-	
+
 	private interface PacketBuilder {
 		
 		/**

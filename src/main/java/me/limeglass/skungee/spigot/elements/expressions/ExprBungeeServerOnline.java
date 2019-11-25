@@ -1,6 +1,7 @@
 package me.limeglass.skungee.spigot.elements.expressions;
 
 import java.util.List;
+
 import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
@@ -8,7 +9,6 @@ import ch.njol.skript.doc.Name;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 
@@ -17,12 +17,14 @@ import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
 @Properties({"strings", "online stat(us|e)[s]", "{1}[(all [[of] the]|the)]"})
 @PropertiesAddition("[bungee[[ ]cord]] [server[s]]")
 public class ExprBungeeServerOnline extends SkungeePropertyExpression<String, Boolean> {
-	
+
 	@Override
 	protected Boolean[] get(Event event, String[] servers) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
 		@SuppressWarnings("unchecked")
-		List<Boolean> onlines = (List<Boolean>) Sockets.send(new SkungeePacket(true, SkungeePacketType.ISSERVERONLINE, servers));
+		List<Boolean> onlines = (List<Boolean>) sockets.send(new SkungeePacket(true, SkungeePacketType.ISSERVERONLINE, servers));
 		return (onlines != null) ? onlines.toArray(new Boolean[onlines.size()]) : null;
 	}
+
 }

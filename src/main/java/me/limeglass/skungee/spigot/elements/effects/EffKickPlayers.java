@@ -1,14 +1,13 @@
 package me.limeglass.skungee.spigot.elements.effects;
 
+import org.bukkit.event.Event;
+
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
-
-import org.bukkit.event.Event;
 
 @Name("Kick players")
 @Description("Kicks all of the players from the bungeecord network. You can add a message aswell, if it's not set, a default message will be used. If you want to define which users to kick, use the kick effect which kicks individual players.")
@@ -17,6 +16,8 @@ public class EffKickPlayers extends SkungeeEffect {
 
 	@Override
 	protected void execute(Event event) {
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.KICKPLAYERS, expressions.getSingle(event, String.class)));
+		SkungeePacket packet = new SkungeePacket(false, SkungeePacketType.KICKPLAYERS, expressions.getSingle(event, String.class));
+		sockets.send(packet);
 	}
+
 }

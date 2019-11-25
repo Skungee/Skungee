@@ -70,31 +70,6 @@ public class BungeeRunnable implements Runnable {
 						Skungee.exception(e, "Could not decrypt packet " + packet != null ? UniversalSkungee.getPacketDebug(packet) : "");
 					return;
 				}
-				BungeeReceivedEvent event = new BungeeReceivedEvent(packet, address);
-				ProxyServer.getInstance().getPluginManager().callEvent(event);
-				if (event.isCancelled())
-					return;
-				if (packet.getPassword() != null) {
-					if (configuration.getBoolean("security.password.hash", true)) {
-						byte[] password = encryption.hash();
-						if (configuration.getBoolean("security.password.hashFile", false) && encryption.isFileHashed()) {
-							password = encryption.getHashFromFile();
-						}
-						if (!Arrays.equals(password, packet.getPassword())) {
-							incorrectPassword(packet);
-							return;
-						}
-					} else {
-						String password = (String) encryption.deserialize(packet.getPassword());
-						if (!password.equals(configuration.getString("security.password.password"))){
-							incorrectPassword(packet);
-							return;
-						}
-					}
-				} else if (configuration.getBoolean("security.password.enabled", false)) {
-					incorrectPassword(packet);
-					return;
-				}
 				boolean debug = true;
 				for (String ignore : configuration.getStringList("debug-ignored-packets")) {
 					String name = packet.getName();
@@ -112,6 +87,31 @@ public class BungeeRunnable implements Runnable {
 				}
 				if (debug)
 					Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
+				BungeeReceivedEvent event = new BungeeReceivedEvent(packet, address);
+				ProxyServer.getInstance().getPluginManager().callEvent(event);
+				if (event.isCancelled())
+					return;
+				if (packet.getPassword() != null) {
+					if (configuration.getBoolean("security.password.hash", true)) {
+						byte[] password = encryption.hash();
+						if (configuration.getBoolean("security.password.hashFile", false) && encryption.isFileHashed()) {
+							password = encryption.getHashFromFile();
+						}
+						if (!Arrays.equals(password, packet.getPassword())) {
+							incorrectPassword(packet);
+							return;
+						}
+					} else {
+						String password = (String) encryption.deserialize(packet.getPassword());
+						if (!password.equals(configuration.getString("security.password.password"))) {
+							incorrectPassword(packet);
+							return;
+						}
+					}
+				} else if (configuration.getBoolean("security.password.enabled", false)) {
+					incorrectPassword(packet);
+					return;
+				}
 				Optional<SkungeeHandler> handler = SkungeeHandlerManager.getHandler(packet);
 				Object packetData = SkungeePacketHandler.handlePacket(packet, address);
 				if (handler.isPresent() && handler.get().onPacketCall(packet, address))

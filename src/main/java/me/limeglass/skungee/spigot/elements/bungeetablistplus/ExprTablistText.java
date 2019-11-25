@@ -7,6 +7,7 @@ import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.Nullable;
 
 import com.google.common.collect.Lists;
+
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
@@ -14,7 +15,6 @@ import codecrafter47.bungeetablistplus.api.bungee.CustomTablist;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -29,10 +29,13 @@ public class ExprTablistText extends SkungeeExpression<String> {
 	@Override
 	@Nullable
 	protected String[] get(Event event) {
-		if (areNull(event)) return null;
+		if (areNull(event))
+			return null;
 		ArrayList<Integer> objects = Lists.newArrayList(expressions.getInt(event, 0), expressions.getInt(event, 1));
+		SkungeePacket packet = new SkungeePacket(true, SkungeePacketType.BTLP_TABLISTTEXT, expressions.getAll(event, CustomTablist.class), objects);
 		@SuppressWarnings("unchecked")
-		Set<String> text = (Set<String>) Sockets.send(new SkungeePacket(true, SkungeePacketType.BTLP_TABLISTTEXT, expressions.getAll(event, CustomTablist.class), objects));
+		Set<String> text = (Set<String>) sockets.send(packet);
 		return (text != null) ? text.toArray(new String[text.size()]) : null;
 	}
+
 }

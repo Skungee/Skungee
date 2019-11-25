@@ -1,6 +1,7 @@
 package me.limeglass.skungee.spigot.elements.expressions;
 
 import java.util.Set;
+
 import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
@@ -9,7 +10,6 @@ import me.limeglass.skungee.objects.SkungeeEnums.HandSetting;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
@@ -24,10 +24,11 @@ public class ExprBungeePlayerHandSetting extends SkungeePropertyExpression<Objec
 
 	@Override
 	protected HandSetting[] get(Event event, Object[] skungeePlayers) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
 		@SuppressWarnings("unchecked")
-		Set<HandSetting> settings = (Set<HandSetting>) Sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERHANDSETTING, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<HandSetting> settings = (Set<HandSetting>) sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERHANDSETTING, Utils.toSkungeePlayers(skungeePlayers)));
 		return (settings != null) ? settings.toArray(new HandSetting[settings.size()]) : null;
 	}
-}
 
+}

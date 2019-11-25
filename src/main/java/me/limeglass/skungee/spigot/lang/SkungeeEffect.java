@@ -10,9 +10,11 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.Syntax;
+import me.limeglass.skungee.spigot.sockets.Sockets;
 
 public abstract class SkungeeEffect extends Effect implements DataChecker {
 
+	protected Sockets sockets = Skungee.getInstance().getSockets();
 	protected ExpressionData expressions;
 	protected int patternMark;
 	

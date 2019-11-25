@@ -13,7 +13,6 @@ import me.limeglass.skungee.objects.SkungeePlayer;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -22,18 +21,20 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 @Patterns("[(all [[of] the]|the)] bungee[[ ]cord] players")
 @ExpressionProperty(ExpressionType.SIMPLE)
 public class ExprBungeePlayers extends SkungeeExpression<Object> implements Returnable {
-	
+
 	@Override
 	public Class<? extends Object> getReturnType() {
 		return Returnable.getReturnType();
 	}
-	
+
 	@Override
 	@Nullable
 	protected Object[] get(Event event) {
-		if (areNull(event) || returnable == null) return null;
+		if (areNull(event) || returnable == null)
+			return null;
 		@SuppressWarnings("unchecked")
-		Set<SkungeePlayer> players = (Set<SkungeePlayer>) Sockets.send(new SkungeePacket(true, SkungeePacketType.GLOBALPLAYERS));
+		Set<SkungeePlayer> players = (Set<SkungeePlayer>) sockets.send(new SkungeePacket(true, SkungeePacketType.GLOBALPLAYERS));
 		return (players != null) ? convert(players) : null;
 	}
+
 }

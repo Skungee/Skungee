@@ -3,42 +3,31 @@ package me.limeglass.skungee.spigot.sockets;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import me.limeglass.skungee.spigot.Skungee;
 
 public class Reciever {
-	
-	private static ServerSocket reciever;
-	
-	private static ServerSocket automatic() {
-		int port = Skungee.getInstance().getConfig().getInt("Reciever.startingPort", 1000);
-		Throwable lastException = null;
-		while (port < Skungee.getInstance().getConfig().getInt("Reciever.maxPort", 65534)) {
-			try {
-				return new ServerSocket(port);
-			} catch (IOException e) {
-				lastException = e;
-			}
-			port++;
-		}
-		if (lastException != null) Skungee.exception(lastException, "Couldn't find a port between " + Skungee.getInstance().getConfig().getInt("Reciever.startingPort", 1000) + " and " + port);
-		return null;
-	}
-	
-	public static void setupReciever() {
-		Skungee.getInstance().getServer().getScheduler().runTaskAsynchronously(Skungee.getInstance(), new Runnable() {
+
+	private final FileConfiguration configuration;
+	private final BukkitScheduler scheduler;
+	private ServerSocket reciever;
+
+	public Reciever(Skungee instance) {
+		this.configuration = instance.getConfig();
+		this.scheduler = instance.getServer().getScheduler();
+		scheduler.runTaskAsynchronously(instance, new Runnable() {
 			@Override
 			public void run() {
+				int port = configuration.getInt("reciever.port", 1338);
 				try {
-					reciever = (Skungee.getInstance().getConfig().getBoolean("Reciever.automatic", true)) ? automatic() : new ServerSocket(Skungee.getInstance().getConfig().getInt("Reciever.port", 1338), 69);
+					if (configuration.getBoolean("reciever.automatic", true))
+						reciever = find();
+					else
+						reciever = new ServerSocket(port, 69);
+					instance.loadSockets();
 					Skungee.consoleMessage("Reciever established on port " + reciever.getLocalPort());
-					Bukkit.getScheduler().runTaskLaterAsynchronously(Skungee.getInstance(), new Runnable() {
-						@Override
-						public void run() {
-							Sockets.connect();
-						}
-					}, 5);
 					while (!reciever.isClosed()) {
 						try {
 							new Thread(new SpigotRunnable(reciever.accept())).start();
@@ -47,13 +36,31 @@ public class Reciever {
 						}
 					}
 				} catch (IOException e) {
-					Skungee.exception(e, "ServerSocket couldn't be created on port: " + Skungee.getInstance().getConfig().getInt("Reciever.port", 1337));
+					Skungee.exception(e, "Reciever couldn't be created on port: " + port);
 				}
 			}
 		});
 	}
-	
-	public static ServerSocket getReciever() {
+
+	public ServerSocket getReciever() {
 		return reciever;
 	}
+
+	private ServerSocket find() {
+		int starting = configuration.getInt("reciever.starting-port", 1000);
+		int ending = configuration.getInt("reciever.max-port", 65534);
+		Throwable lastException = null;
+		while (starting <= configuration.getInt("reciever.max-port", 65534)) {
+			try {
+				return new ServerSocket(starting);
+			} catch (IOException e) {
+				lastException = e;
+			}
+			starting++;
+		}
+		if (lastException != null)
+			Skungee.exception(lastException, "Couldn't find a port between " + starting + " and " + ending);
+		return null;
+	}
+
 }

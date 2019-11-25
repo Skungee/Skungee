@@ -2,6 +2,7 @@ package me.limeglass.skungee.spigot.elements.redisbungee;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
@@ -11,7 +12,6 @@ import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
@@ -24,9 +24,10 @@ public class ExprRedisBungeePlayerLastOnline extends SkungeePropertyExpression<O
 
 	@Override
 	protected Object[] get(Event event, Object[] skungeePlayers) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
 		@SuppressWarnings("unchecked")
-		Set<Number> logins = (Set<Number>) Sockets.send(new SkungeePacket(true, SkungeePacketType.REDISLASTLOGIN, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<Number> logins = (Set<Number>) sockets.send(new SkungeePacket(true, SkungeePacketType.REDISLASTLOGIN, Utils.toSkungeePlayers(skungeePlayers)));
 		if (Skungee.getInstance().getConfig().getBoolean("Timespans", true)) {
 			Set<Timespan> timespans = new HashSet<Timespan>();
 			for (Number milliseconds : logins) {
@@ -36,4 +37,5 @@ public class ExprRedisBungeePlayerLastOnline extends SkungeePropertyExpression<O
 		}
 		return (logins != null) ? logins.toArray(new Number[logins.size()]) : null;
 	}
+
 }

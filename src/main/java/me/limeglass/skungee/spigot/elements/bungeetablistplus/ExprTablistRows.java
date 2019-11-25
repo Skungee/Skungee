@@ -10,7 +10,6 @@ import codecrafter47.bungeetablistplus.api.bungee.CustomTablist;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
@@ -24,9 +23,12 @@ public class ExprTablistRows extends SkungeePropertyExpression<CustomTablist, Nu
 
 	@Override
 	protected Number[] get(Event event, CustomTablist[] tablists) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
+		SkungeePacket packet = new SkungeePacket(true, SkungeePacketType.BTLP_TABLISTROWS, tablists);
 		@SuppressWarnings("unchecked")
-		Set<Number> rows = (Set<Number>) Sockets.send(new SkungeePacket(true, SkungeePacketType.BTLP_TABLISTROWS, tablists));
+		Set<Number> rows = (Set<Number>) sockets.send(packet);
 		return (rows != null) ? rows.toArray(new Number[rows.size()]) : null;
 	}
+
 }

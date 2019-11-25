@@ -1,6 +1,7 @@
 package me.limeglass.skungee.spigot.elements.expressions;
 
 import java.util.Set;
+
 import org.bukkit.event.Event;
 
 import ch.njol.skript.classes.Changer.ChangeMode;
@@ -10,7 +11,6 @@ import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
@@ -25,16 +25,19 @@ public class ExprBungeePlayerDisplayName extends SkungeePropertyExpression<Objec
 
 	@Override
 	protected String[] get(Event event, Object[] skungeePlayers) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
 		@SuppressWarnings("unchecked")
-		Set<String> names = (Set<String>) Sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERDISPLAYNAME, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<String> names = (Set<String>) sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERDISPLAYNAME, Utils.toSkungeePlayers(skungeePlayers)));
 		return (names != null) ? names.toArray(new String[names.size()]) : null;
 	}
-	
+
 	@Override
 	public void change(Event event, Object[] delta, ChangeMode mode) {
 		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
-		if (isNull(event) || delta == null || changer == null) return;
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.PLAYERDISPLAYNAME, (String) delta[0], null, changer, Utils.toSkungeePlayers(getExpr().getAll(event))));
+		if (isNull(event) || delta == null || changer == null)
+			return;
+		sockets.send(new SkungeePacket(false, SkungeePacketType.PLAYERDISPLAYNAME, (String) delta[0], null, changer, Utils.toSkungeePlayers(getExpr().getAll(event))));
 	}
+
 }

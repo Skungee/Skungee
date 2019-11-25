@@ -22,17 +22,19 @@ public class ExprBungeeTitleSubtitle extends SkungeePropertyExpression<SkungeeTi
 
 	@Override
 	protected String[] get(Event event, SkungeeTitle[] titles) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
 		Set<String> subtitles = new HashSet<String>();
 		for (SkungeeTitle title : titles) {
 			subtitles.add(title.getSubtitleText());
 		}
 		return (subtitles != null) ? subtitles.toArray(new String[subtitles.size()]) : null;
 	}
-	
+
 	@Override
 	public void change(Event event, Object[] delta, ChangeMode mode) {
-		if (isNull(event) || delta == null || mode == null) return;
+		if (isNull(event) || delta == null || mode == null)
+			return;
 		SkungeeTitle[] titles = expressions.getAll(event, SkungeeTitle.class);
 		switch (mode) {
 			case ADD:
@@ -52,4 +54,5 @@ public class ExprBungeeTitleSubtitle extends SkungeePropertyExpression<SkungeeTi
 				break;
 		}
 	}
+
 }

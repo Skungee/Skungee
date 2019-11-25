@@ -1,17 +1,17 @@
 package me.limeglass.skungee.spigot.serverinstances.effects;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.bukkit.event.Event;
+
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.bukkit.event.Event;
 
 @Name("ServerInstances - Create server")
 @Description("Creates a new server on the Bungeecord proxy based off your templates installed. Tutorial within the expansion.")
@@ -20,10 +20,12 @@ public class EffServerInstancesCreate extends SkungeeEffect {
 
 	@Override
 	protected void execute(Event event) {
-		if (isNull(event, String.class)) return;
+		if (isNull(event, String.class))
+			return;
 		List<Object> information = new ArrayList<Object>();
 		information.add(expressions.get(1).getSingle(event));
 		if (!areNull(event)) information.addAll(Arrays.asList(expressions.getSingle(event, Number.class, 0), expressions.getSingle(event, Number.class, 1)));
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.CREATESERVER, expressions.getAll(event, String.class, 0), information));
+		sockets.send(new SkungeePacket(false, SkungeePacketType.CREATESERVER, expressions.getAll(event, String.class, 0), information));
 	}
+
 }

@@ -30,17 +30,19 @@ public class ExprBungeeTitleFadeOut extends SkungeePropertyExpression<SkungeeTit
 		}
 		return times;
 	}
-	
+
 	@Override
 	protected Timespan[] get(Event event, SkungeeTitle[] titles) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
 		Collection<Timespan> times = getTimespans(titles).values();
 		return (times != null) ? times.toArray(new Timespan[times.size()]) : null;
 	}
-	
+
 	@Override
 	public void change(Event event, Object[] delta, ChangeMode mode) {
-		if (isNull(event) || delta == null || mode == null) return;
+		if (isNull(event) || delta == null || mode == null)
+			return;
 		SkungeeTitle[] titles = expressions.getAll(event, SkungeeTitle.class);
 		Map<SkungeeTitle, Timespan> times = getTimespans(titles);
 		Timespan timespan = (Timespan)delta[0];
@@ -73,4 +75,5 @@ public class ExprBungeeTitleFadeOut extends SkungeePropertyExpression<SkungeeTit
 				break;
 		}
 	}
+
 }

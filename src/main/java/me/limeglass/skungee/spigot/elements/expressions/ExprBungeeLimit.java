@@ -8,7 +8,6 @@ import ch.njol.skript.lang.ExpressionType;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 import me.limeglass.skungee.spigot.utils.annotations.Single;
@@ -19,10 +18,11 @@ import me.limeglass.skungee.spigot.utils.annotations.Single;
 @ExpressionProperty(ExpressionType.SIMPLE)
 @Single
 public class ExprBungeeLimit extends SkungeeExpression<Number> {
-	
+
 	@Override
 	protected Number[] get(Event event) {
-		Number limit = (Number) Sockets.send(new SkungeePacket(true, SkungeePacketType.BUNGEEPLAYERLIMIT));
+		Number limit = (Number) sockets.send(new SkungeePacket(true, SkungeePacketType.BUNGEEPLAYERLIMIT));
 		return (limit != null) ? new Number[]{limit} : null;
 	}
+
 }

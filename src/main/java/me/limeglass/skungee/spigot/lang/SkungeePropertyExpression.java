@@ -15,6 +15,7 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.Syntax;
+import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
 import me.limeglass.skungee.spigot.utils.annotations.Changers;
@@ -24,6 +25,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Settable;
 
 public abstract class SkungeePropertyExpression<F, T> extends PropertyExpression<F, T> {
 
+	protected Sockets sockets = Skungee.getInstance().getSockets();
 	private List<Object> values = new ArrayList<Object>();
 	protected ExpressionData expressions;
 	protected Class<T> expressionClass;

@@ -15,7 +15,6 @@ import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.objects.packets.SkungeeYamlPacket;
 import me.limeglass.skungee.spigot.lang.ExpressionData;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -30,7 +29,7 @@ public class ExprYaml extends SkungeeExpression<Object> {
 	public boolean isSingle() {
 		return state == State.VALUE ? true : false;
 	}	
-	
+
 	@Override
 	public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, ParseResult parser) {
 		if (expressions != null && getSyntax() != null) this.expressions = new ExpressionData(expressions, getSyntax()[0]);
@@ -45,15 +44,17 @@ public class ExprYaml extends SkungeeExpression<Object> {
 		}
 		return true;
 	}
-	
+
 	@Override
 	protected Object[] get(Event event) {
-		if (areNull(event)) return null;
-		Object[] value = (Object[]) Sockets.send(new SkungeeYamlPacket(SkungeePacketType.YAML, expressions.getSingle(event, String.class, 0), expressions.getSingle(event, String.class, 1), state));
-		if (value == null) return null;
+		if (areNull(event))
+			return null;
+		Object[] value = (Object[]) sockets.send(new SkungeeYamlPacket(SkungeePacketType.YAML, expressions.getSingle(event, String.class, 0), expressions.getSingle(event, String.class, 1), state));
+		if (value == null)
+			return null;
 		return value;
 	}
-	
+
 	@Override
 	public Class<?>[] acceptChange(final ChangeMode mode) {
 		if (mode == ChangeMode.DELETE || mode == ChangeMode.RESET) {
@@ -70,8 +71,9 @@ public class ExprYaml extends SkungeeExpression<Object> {
 	@Override
 	public void change(Event event, Object[] delta, ChangeMode mode) {
 		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
-		if (changer == null || delta == null || areNull(event)) return;
-		Sockets.send(new SkungeeYamlPacket(SkungeePacketType.YAML, expressions.getSingle(event, String.class, 0), expressions.getSingle(event, String.class, 1), delta,  state, changer));
+		if (changer == null || delta == null || areNull(event))
+			return;
+		sockets.send(new SkungeeYamlPacket(SkungeePacketType.YAML, expressions.getSingle(event, String.class, 0), expressions.getSingle(event, String.class, 1), delta,  state, changer));
 	}
 
 }

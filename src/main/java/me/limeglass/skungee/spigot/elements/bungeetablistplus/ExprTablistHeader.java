@@ -12,7 +12,6 @@ import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
 import me.limeglass.skungee.spigot.utils.annotations.Disabled;
@@ -29,16 +28,21 @@ public class ExprTablistHeader extends SkungeePropertyExpression<CustomTablist, 
 
 	@Override
 	protected String[] get(Event event, CustomTablist[] tablists) {
-		if (isNull(event)) return null;
+		if (isNull(event))
+			return null;
+		SkungeePacket packet = new SkungeePacket(true, SkungeePacketType.BTLP_TABLISTHEADER, tablists);
 		@SuppressWarnings("unchecked")
-		Set<String> headers = (Set<String>) Sockets.send(new SkungeePacket(true, SkungeePacketType.BTLP_TABLISTHEADER, tablists));
+		Set<String> headers = (Set<String>) sockets.send(packet);
 		return (headers != null) ? headers.toArray(new String[headers.size()]) : null;
 	}
-	
+
 	@Override
 	public void change(Event event, Object[] delta, ChangeMode mode) {
 		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
-		if (isNull(event) || delta == null || changer == null) return;
-		Sockets.send(new SkungeePacket(false, SkungeePacketType.BTLP_TABLISTHEADER, delta, getExpr().getAll(event), changer));
+		if (isNull(event) || delta == null || changer == null)
+			return;
+		SkungeePacket packet = new SkungeePacket(false, SkungeePacketType.BTLP_TABLISTHEADER, delta, getExpr().getAll(event), changer);
+		sockets.send(packet);
 	}
+
 }

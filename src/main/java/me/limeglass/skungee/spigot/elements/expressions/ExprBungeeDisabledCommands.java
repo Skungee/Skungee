@@ -11,7 +11,6 @@ import ch.njol.skript.lang.ExpressionType;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -24,9 +23,11 @@ public class ExprBungeeDisabledCommands extends SkungeeExpression<String> {
 	@Override
 	@Nullable
 	protected String[] get(Event event) {
-		if (areNull(event)) return null;
+		if (areNull(event))
+			return null;
 		@SuppressWarnings("unchecked")
-		Collection<String> commands = (Collection<String>) Sockets.send(new SkungeePacket(true, SkungeePacketType.DISABLEDCOMMANDS));
+		Collection<String> commands = (Collection<String>) sockets.send(new SkungeePacket(true, SkungeePacketType.DISABLEDCOMMANDS));
 		return (commands != null) ? commands.toArray(new String[commands.size()]) : null;
 	}
+
 }

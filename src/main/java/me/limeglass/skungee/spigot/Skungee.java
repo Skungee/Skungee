@@ -2,12 +2,14 @@ package me.limeglass.skungee.spigot;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -25,7 +27,6 @@ import me.limeglass.skungee.SpigotConfigSaver;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.elements.Register;
-import me.limeglass.skungee.spigot.sockets.PacketQueue;
 import me.limeglass.skungee.spigot.sockets.Reciever;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.ReflectionUtil;
@@ -44,7 +45,9 @@ public class Skungee extends JavaPlugin {
 	private static Skungee instance;
 	private static boolean skript;
 	private SkriptAddon addon;
+	private Reciever reciever;
 	private Metrics metrics;
+	private Sockets sockets;
 
 	public void onEnable() {
 		Plugin plugin = Bukkit.getPluginManager().getPlugin("Skript");
@@ -57,7 +60,8 @@ public class Skungee extends JavaPlugin {
 		File config = new File(getDataFolder(), "config.yml");
 		if (!getDescription().getVersion().equals(getConfig().getString("version"))) {
 			consoleMessage("&dNew update found! Updating files now...");
-			if (config.exists()) new SpigotConfigSaver(this).execute();
+			if (config.exists())
+				new SpigotConfigSaver(this).execute();
 		}
 		for (String name : Arrays.asList("config", "syntax")) { //replace config with future files here
 			File file = new File(getDataFolder(), name + ".yml");
@@ -75,24 +79,20 @@ public class Skungee extends JavaPlugin {
 		}
 		encryption = new EncryptionUtil(this, true);
 		encryption.hashFile();
-		if (getConfig().getBoolean("Queue.enabled", true))
-			PacketQueue.start();
-
 		metrics = new Metrics(this);
 		Register.metrics(metrics);
-		if (getConfig().getBoolean("Reciever.enabled", false)) {
-			Reciever.setupReciever();
+		if (getConfig().getBoolean("reciever.enabled", false)) {
+			this.reciever = new Reciever(this);
 		} else {
-			Sockets.connect();
+			this.sockets = new Sockets(this);
 		}
 		if (!getConfig().getBoolean("DisableRegisteredInfo", false))
 			Bukkit.getLogger().info(nameplate + "has been enabled!");
 	}
 
 	public void onDisable() {
-		Sockets.send(new SkungeePacket(true, SkungeePacketType.DISCONNECT, Bukkit.getPort()));
-		PacketQueue.stop();
-		Sockets.onPluginDisabling();
+		sockets.send(new SkungeePacket(true, SkungeePacketType.DISCONNECT, Bukkit.getPort()));
+		sockets.disconnect();
 		getServer().getScheduler().cancelTasks(this);
 	}
 
@@ -162,44 +162,59 @@ public class Skungee extends JavaPlugin {
 		infoMessage("End of Error.");
 		infoMessage();
 	}
-	
+
+	// Used for receivers to avoid recurrent.
+	public void loadSockets() {
+		this.sockets = new Sockets(this);
+	}
+
 	public static Skungee getInstance() {
 		return instance;
 	}
-	
+
 	public static boolean isSkriptPresent() {
 		return skript;
 	}
-	
+
 	public EncryptionUtil getEncrypter() {
 		return encryption;
 	}
-	
+
 	public SkriptAddon getAddonInstance() {
 		return addon;
 	}
-	
+
+	public Optional<ServerSocket> getReciever() {
+		if (reciever == null)
+			return Optional.empty();
+		return Optional.ofNullable(reciever.getReciever());
+	}
+
+	public Sockets getSockets() {
+		return sockets;
+	}
+
 	public Metrics getMetrics() {
 		return metrics;
 	}
-	
+
 	public String getPackageName() {
 		return packageName;
 	}
-	
+
 	public static String getNameplate() {
 		return nameplate;
 	}
-	
+
 	public static String getPrefix() {
 		return prefix;
 	}
-	
+
 	//Grabs a FileConfiguration of a defined name. The name can't contain .yml in it.
 	public FileConfiguration getConfiguration(String file) {
 		return (files.containsKey(file)) ? files.get(file) : null;
 	}
-	
+
 	public static void save(String configuration) {
 		try {
 			File configurationFile = new File(instance.getDataFolder(), configuration + ".yml");
@@ -208,13 +223,13 @@ public class Skungee extends JavaPlugin {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void debugMessage(@Nullable String... messages) {
 		if (instance.getConfig().getBoolean("debug")) {
 			for (String text : messages) consoleMessage("&b" + text);
 		}
 	}
-	
+
 	public static void infoMessage(@Nullable String... messages) {
 		if (messages != null && messages.length > 0) {
 			for (String text : messages)

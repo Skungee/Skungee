@@ -2,7 +2,6 @@ package me.limeglass.skungee.spigot.elements.redisbungee;
 
 import java.util.Set;
 
-
 import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -14,7 +13,6 @@ import me.limeglass.skungee.objects.SkungeePlayer;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -23,7 +21,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 @Patterns({"[(all [[of] the]|the)] redis[( |-)]bungee[[ ]cord] players (on|of|from) [the] [server[s]] %strings%", "[(all [[of] the]|the)] players (on|of|from) [the] redis[( |-)]bungee[[ ]cord] [server[s]] %strings%"})
 @ExpressionProperty(ExpressionType.PROPERTY)
 public class ExprRedisBungeeServerPlayers extends SkungeeExpression<Object> implements Returnable {
-	
+
 	@Override
 	public Class<? extends Object> getReturnType() {
 		return Returnable.getReturnType();
@@ -32,9 +30,11 @@ public class ExprRedisBungeeServerPlayers extends SkungeeExpression<Object> impl
 	@Override
 	@Nullable
 	protected Object[] get(Event event) {
-		if (areNull(event) || returnable == null) return null;
+		if (areNull(event) || returnable == null)
+			return null;
 		@SuppressWarnings("unchecked")
-		Set<SkungeePlayer> players = (Set<SkungeePlayer>) Sockets.send(new SkungeePacket(true, SkungeePacketType.REDISSERVERPLAYERS, expressions.getAll(event, String.class)));
+		Set<SkungeePlayer> players = (Set<SkungeePlayer>) sockets.send(new SkungeePacket(true, SkungeePacketType.REDISSERVERPLAYERS, expressions.getAll(event, String.class)));
 		return (players != null) ? convert(players) : null;
 	}
+
 }

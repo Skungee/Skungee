@@ -8,7 +8,6 @@ import ch.njol.skript.lang.ExpressionType;
 import me.limeglass.skungee.objects.packets.SkungeePacket;
 import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
-import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 import me.limeglass.skungee.spigot.utils.annotations.Single;
@@ -19,10 +18,11 @@ import me.limeglass.skungee.spigot.utils.annotations.Single;
 @ExpressionProperty(ExpressionType.SIMPLE)
 @Single
 public class ExprBungeeOnlineMode extends SkungeeExpression<Boolean> {
-	
+
 	@Override
 	protected Boolean[] get(Event event) {
-		Boolean timeout = (Boolean) Sockets.send(new SkungeePacket(true, SkungeePacketType.BUNGEEONLINEMODE));
+		Boolean timeout = (Boolean) sockets.send(new SkungeePacket(true, SkungeePacketType.BUNGEEONLINEMODE));
 		return (timeout != null) ? new Boolean[]{timeout} : null;
 	}
+
 }

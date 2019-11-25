@@ -10,12 +10,14 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.Syntax;
+import me.limeglass.skungee.spigot.sockets.Sockets;
 
 public abstract class SkungeeCondition extends Condition implements DataChecker {
 
+	protected Sockets sockets = Skungee.getInstance().getSockets();
 	protected ExpressionData expressions;
 	protected int patternMark;
-	
+
 	@Override
 	public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, ParseResult parser) {
 		if (expressions != null && getSyntax() != null) this.expressions = new ExpressionData(expressions, getSyntax()[0]);
@@ -23,11 +25,11 @@ public abstract class SkungeeCondition extends Condition implements DataChecker 
 		setNegated(parser.mark == 1);
 		return true;
 	}
-	
+
 	public String[] getSyntax() {
 		return Syntax.get(getClass().getSimpleName());
 	}
-	
+
 	@Override
 	public String toString(Event event, boolean debug) {
 		ArrayList<String> values = new ArrayList<String>();
@@ -41,15 +43,16 @@ public abstract class SkungeeCondition extends Condition implements DataChecker 
 		return Skungee.getNameplate() + getClass().getSimpleName() + "- Syntax: " + Arrays.toString(getSyntax());
 	}
 
-	public <T> Boolean isNull(Event event, @SuppressWarnings("unchecked") Class<T>... types) {
+	public <T> boolean isNull(Event event, @SuppressWarnings("unchecked") Class<T>... types) {
 		return isNull(event, expressions, types);
 	}
-	
-	public Boolean isNull(Event event, int index) {
+
+	public boolean isNull(Event event, int index) {
 		return isNull(event, expressions, index);
 	}
 
-	public Boolean areNull(Event event) {
+	public boolean areNull(Event event) {
 		return areNull(event, expressions);
 	}
+
 }
