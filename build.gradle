@@ -43,7 +43,7 @@ repositories {
 dependencies {
 
 	// BungeeTabListPlusAPI
-	implementation (group: 'codecrafter47.bungeetablistplus', name: 'bungeetablistplus-api-bungee', version: '2.8.11')
+	implementation (group: 'codecrafter47.bungeetablistplus', name: 'bungeetablistplus-api-bungee', version: '2.8.12')
 
 	// Redis-Bungee
 	implementation (group: 'com.imaginarycode.minecraft', name: 'RedisBungee', version: '0.3.8-SNAPSHOT')
