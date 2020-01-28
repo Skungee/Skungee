@@ -1,0 +1,18 @@
+version: 1.0.12
+
+#@an makes the pattern allow for `an`.
+
+types:
+	chatmode: chat mode, chat modes
+	handsetting: hand setting, hand settings
+	
+# Represents the player's chat state.
+chatmode:
+	commands_only: commands only, commands
+	hidden: hidden, disabled
+	shown: shown, enabled
+
+# Represents the setting that the player has for their hand.
+handsetting:
+	right: right, right hand
+	left: left, left hand
