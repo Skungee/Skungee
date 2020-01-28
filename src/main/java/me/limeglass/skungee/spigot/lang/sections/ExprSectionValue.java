@@ -73,7 +73,6 @@ public class ExprSectionValue extends SkungeeExpression<Object> {
 		}
 		final Class<?> c = Classes.getClassFromUserInput(input);
 		if (c == null && !input.equals("value")) {
-			Skungee.debugMessage("returning null");
 			return null;
 		} else if (input.equals("value")) {
 			i = 1;

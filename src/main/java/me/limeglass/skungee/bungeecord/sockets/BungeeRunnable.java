@@ -116,13 +116,12 @@ public class BungeeRunnable implements Runnable {
 				Object packetData = SkungeePacketHandler.handlePacket(packet, address);
 				if (handler.isPresent() && handler.get().onPacketCall(packet, address))
 					packetData = handler.get().handlePacket(packet, address);
-				if (packetData == null)
-					Skungee.debugMessage("Packet returned null " + UniversalSkungee.getPacketDebug(packet));
 				if (packetData != null && packet.isReturnable()) {
 					BungeeReturningEvent returning = new BungeeReturningEvent(packet, packetData, address);
 					ProxyServer.getInstance().getPluginManager().callEvent(returning);
 					if (!returning.isCancelled()) {
-						Skungee.debugMessage("Returning: " + packetData.toString());
+						if (debug)
+							Skungee.debugMessage(UniversalSkungee.getPacketDebug(packet) + " is returning data: " + packetData.toString());
 						packetData = returning.getObject();
 						if (configuration.getBoolean("security.encryption.enabled", false)) {
 							byte[] serialized = encryption.serialize(packetData);
@@ -136,7 +135,7 @@ public class BungeeRunnable implements Runnable {
 			}
 			objectInputStream.close();
 			objectOutputStream.close();
-		} catch(IOException | ClassNotFoundException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			if (configuration.getBoolean("security.debug"))
 				Skungee.exception(e, "Could not read incoming packet");
 		}
