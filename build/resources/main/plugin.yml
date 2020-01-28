@@ -1,6 +1,0 @@
-name: Skungee
-authors: [LimeGlass, Skungee]
-description: The ultimate Skript addon for Bungeecord.
-version: 1.0.12
-main: me.limeglass.skungee.spigot.Skungee
-softdepend: [Skript]

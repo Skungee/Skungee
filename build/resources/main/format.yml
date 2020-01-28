@@ -1,7 +1,0 @@
-Skungee:
-    version: 1.0.12
-
-Bungeecord:
-    version: $version
-    java: $java
-    os: $os
