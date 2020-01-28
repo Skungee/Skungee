@@ -43,21 +43,21 @@ repositories {
 dependencies {
 
 	// BungeeTabListPlusAPI
-	implementation (group: 'codecrafter47.bungeetablistplus', name: 'bungeetablistplus-api-bungee', version: '2.8.11')
+	implementation (group: 'codecrafter47.bungeetablistplus', name: 'bungeetablistplus-api-bungee', version: '3.0.6')
 
 	// Redis-Bungee
 	implementation (group: 'com.imaginarycode.minecraft', name: 'RedisBungee', version: '0.3.8-SNAPSHOT')
 
 	// Nullable annotation
-	implementation (group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '2.2.300')
+	implementation (group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '2.2.400')
 
 	// Spigot
-	implementation (group: 'org.spigotmc', name: 'spigot-api', version: '1.14.4-R0.1-SNAPSHOT')
+	implementation (group: 'org.spigotmc', name: 'spigot-api', version: '1.15.2-R0.1-SNAPSHOT')
 
 	// Bungeecord
-	implementation (group: 'net.md-5', name: 'bungeecord-protocol', version: '1.14-SNAPSHOT')
-	implementation (group: 'net.md-5', name: 'bungeecord-proxy', version: '1.14-SNAPSHOT')
-	implementation (group: 'net.md-5', name: 'bungeecord-api', version: '1.14-SNAPSHOT')
+	implementation (group: 'net.md-5', name: 'bungeecord-protocol', version: '1.15-SNAPSHOT')
+	implementation (group: 'net.md-5', name: 'bungeecord-proxy', version: '1.15-SNAPSHOT')
+	implementation (group: 'net.md-5', name: 'bungeecord-api', version: '1.15-SNAPSHOT')
 
 	// Skript
 	implementation (group: 'com.github.SkriptLang', name: 'Skript', version: '2.4-beta8') {
