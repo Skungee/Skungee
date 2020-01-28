@@ -96,7 +96,8 @@ public class ExpressionData {
 	*/
 	@Nullable
 	public Expression<?> get(int index) {
-		if (index > expressions.length) return null;
+		if (index >= expressions.length)
+			return null;
 		return expressions[index];
 	}
 	

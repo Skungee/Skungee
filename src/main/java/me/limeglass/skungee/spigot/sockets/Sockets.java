@@ -120,9 +120,9 @@ public class Sockets {
 				return;
 			}
 			bungeecord = optional.get();
-			for (int i = 1; i < 11; i++) {
+			for (int i = 0; i < 10; i++) {
 				String state = send(packet, String.class);
-				if (state != null && state.equals("CONNECTED")) {
+				if (state != null && (state.equals("CONNECTED") || state.equals("ALREADY"))) {
 					connected = true;
 					Skungee.consoleMessage("Successfully connected to the Skungee on Bungeecord!");
 					break;
@@ -132,6 +132,8 @@ public class Sockets {
 					Thread.sleep(handshake);
 				} catch (InterruptedException e) {}
 			}
+			if (!connected)
+				return;
 			heartbeatTask = scheduler.scheduleAsyncRepeatingTask(instance, new Runnable() {
 				@Override
 				public void run() {
@@ -163,13 +165,16 @@ public class Sockets {
 	@SuppressWarnings("unchecked")
 	public <T> T send(SkungeePacket packet, Class<T> expected) {
 		Object object = send(packet);
+		if (object == null)
+			return null;
 		if (expected.isInstance(object))
 			return (T) object;
-		throw new IllegalArgumentException("The packet return type for " + UniversalSkungee.getPacketDebug(packet) + " was not the expected " + expected.getName());
+		throw new IllegalArgumentException("The packet return type for " + UniversalSkungee.getPacketDebug(packet) + " was not the expected " + expected.getName() +
+				", it was " + object.getClass().getName());
 	}
 
 	public Object send(SkungeePacket packet) {
-		Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), () -> {
+		new Thread(() -> {
 			SkungeeSendingEvent event = new SkungeeSendingEvent(packet);
 			Bukkit.getPluginManager().callEvent(event);
 		});
@@ -180,7 +185,7 @@ public class Sockets {
 				return null;
 			};
 			try {
-				return CompletableFuture.supplyAsync(() -> supplier).get();
+				return CompletableFuture.supplyAsync(supplier).get();
 			} catch (InterruptedException | ExecutionException e) {
 				return supplier.get();
 			}
@@ -229,7 +234,7 @@ public class Sockets {
 			String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
 			if (!configuration.getBoolean("IgnoreSpamPackets", true)) {
 				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
-			} else if (!(packet.getType() == SkungeePacketType.HEARTBEAT)) {
+			} else if (packet.getType() != SkungeePacketType.HEARTBEAT) {
 				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
 			}
 			if (configuration.getBoolean("security.password.enabled", false)) {

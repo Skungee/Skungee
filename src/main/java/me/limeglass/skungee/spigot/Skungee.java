@@ -224,9 +224,10 @@ public class Skungee extends JavaPlugin {
 		}
 	}
 
-	public static void debugMessage(@Nullable String... messages) {
+	public static void debugMessage(String... messages) {
 		if (instance.getConfig().getBoolean("debug")) {
-			for (String text : messages) consoleMessage("&b" + text);
+			for (String text : messages)
+				consoleMessage("&b" + text);
 		}
 	}
 
