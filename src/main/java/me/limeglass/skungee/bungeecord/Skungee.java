@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.limeglass.skungee.BungeeConfigSaver;
@@ -26,14 +27,20 @@ import me.limeglass.skungee.bungeecord.managers.PlayerTimeManager;
 import me.limeglass.skungee.bungeecord.protocol.channel.ChannelListener;
 import me.limeglass.skungee.bungeecord.serverinstances.Premium;
 import me.limeglass.skungee.bungeecord.sockets.BungeeRunnable;
+import me.limeglass.skungee.bungeecord.sockets.BungeeSockets;
 import me.limeglass.skungee.bungeecord.sockets.ServerInstancesSockets;
 import me.limeglass.skungee.bungeecord.utils.BungeeReflectionUtil;
 import me.limeglass.skungee.bungeecord.variables.VariableManager;
+import me.limeglass.skungee.objects.packets.BungeePacket;
+import me.limeglass.skungee.objects.packets.BungeePacketType;
+import me.limeglass.skungee.objects.packets.SkungeePacket;
+import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginDescription;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -49,6 +56,7 @@ public class Skungee extends Plugin {
 	private ServerSocket serverSocket;
 	private static Skungee instance;
 	private File SCRIPTS_FOLDER;
+	private ScheduledTask task;
 	private SkungeeBin haste;
 
 	public void onEnable() {
@@ -122,7 +130,9 @@ public class Skungee extends Plugin {
 	}
 
 	public void onDisable() {
+		task.cancel();
 		ServerInstancesSockets.shutdown();
+		BungeeSockets.sendAll(new BungeePacket(false, BungeePacketType.DISCONNECT));
 	}
 
 	private void loadConfiguration() {
@@ -153,16 +163,13 @@ public class Skungee extends Plugin {
 			else
 				serverSocket = new ServerSocket(port, 50, InetAddress.getByName(address.trim()));
 			serverSocket.setReceiveBufferSize(getConfig().getInt("buffer-size", 10240));
-			consoleMessage("connection established on address " + serverSocket.getInetAddress().getHostAddress() + " on port " + port);
-			ProxyServer.getInstance().getScheduler().runAsync(getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					while (!serverSocket.isClosed()) {
-						try {
-							new Thread(new BungeeRunnable(serverSocket.accept())).start();
-						} catch (IOException e) {
-							Skungee.exception(e, "Socket couldn't be accepted.");
-						}
+			consoleMessage("Connection established on address " + serverSocket.getInetAddress().getHostAddress() + " with port " + port);
+			task = ProxyServer.getInstance().getScheduler().runAsync(this, () -> {
+				while (!serverSocket.isClosed()) {
+					try {
+						new Thread(new BungeeRunnable(serverSocket.accept())).start();
+					} catch (IOException e) {
+						Skungee.exception(e, "Socket couldn't be accepted.");
 					}
 				}
 			});

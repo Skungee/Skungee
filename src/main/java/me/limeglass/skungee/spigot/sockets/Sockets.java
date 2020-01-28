@@ -82,6 +82,23 @@ public class Sockets {
 	}
 
 	@SuppressWarnings("deprecation")
+	public void keepAlive() {
+		Skungee.consoleMessage("&6Going into keep alive mode...");
+		keepAliveTask = scheduler.scheduleAsyncRepeatingTask(instance, new Runnable() {
+			@SuppressWarnings("resource")
+			@Override
+			public void run() {
+				try {
+					new Socket(host, port);
+					Bukkit.getScheduler().cancelTask(keepAliveTask);
+					Skungee.consoleMessage("Connection established again!");
+					connect();
+				} catch (IOException e) {}
+			}
+		}, 1, keepAlive);
+	}
+
+	@SuppressWarnings("deprecation")
 	private void connect() {
 		Set<SkungeePlayer> whitelisted = server.getWhitelistedPlayers().stream()
 				.map(player -> new SkungeePlayer(true, player.getUniqueId(), player.getName()))
@@ -104,19 +121,7 @@ public class Sockets {
 					Bukkit.getPluginManager().disablePlugin(instance);
 					return;
 				}
-				Skungee.consoleMessage("&6Going into keep alive mode...");
-				keepAliveTask = scheduler.scheduleAsyncRepeatingTask(instance, new Runnable() {
-					@SuppressWarnings("resource")
-					@Override
-					public void run() {
-						try {
-							new Socket(host, port);
-							Bukkit.getScheduler().cancelTask(keepAliveTask);
-							Skungee.consoleMessage("Connection established again!");
-							connect();
-						} catch (IOException e) {}
-					}
-				}, 1, keepAlive);
+				keepAlive();
 				return;
 			}
 			bungeecord = optional.get();

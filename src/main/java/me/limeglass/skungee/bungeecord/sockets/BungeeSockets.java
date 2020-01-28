@@ -145,21 +145,10 @@ public class BungeeSockets {
 	}
 
 	public static List<Object> sendAll(BungeePacket packet) {
-		if (packet.isReturnable())
-			return ServerTracker.getAll().parallelStream().filter(server -> server.hasReciever()).map(server -> send(server, packet)).collect(Collectors.toList());
-		ProxyServer.getInstance().getScheduler().runAsync(Skungee.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				Iterator<ConnectedServer> iterator = ServerTracker.getAll().iterator();
-				while (iterator.hasNext()) {
-					ConnectedServer server = iterator.next();
-					if (server.hasReciever()) {
-						send(server, packet);
-					}
-				}
-			}
-		});
-		return null;
+		return ServerTracker.getAll().parallelStream()
+				.filter(server -> server.hasReciever())
+				.map(server -> send(server, packet))
+				.collect(Collectors.toList());
 	}
 
 	public static Object[] get(BungeePacket packet, ConnectedServer... servers) {

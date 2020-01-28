@@ -13,5 +13,6 @@ public enum BungeePacketType {
 	SHUTDOWN,
 	SERVERLISTPING,
 	SKUNGEEMESSAGES,
+	DISCONNECT,
 	CUSTOM;
 }
