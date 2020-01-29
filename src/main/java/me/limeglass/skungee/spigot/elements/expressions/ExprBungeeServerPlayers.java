@@ -18,7 +18,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
 @Name("Bungeecord server players")
 @Description("Returns the players(s) of the defined Bungeecord server(s).")
-@Patterns({"[(all [[of] the]|the)] bungee[[ ]cord] players (on|of|from) [the] [server[s]] %strings%", "[(all [[of] the]|the)] players (on|of|from) [the] bungee[[ ]cord] [server[s]] %strings%"})
+@Patterns({"[(all [[of] the]|the)] [bungee[[ ]cord]] players (on|of|from) [the] [server[s]] %strings%", "[(all [[of] the]|the)] players (on|of|from) [the] [bungee[[ ]cord]] [server[s]] %strings%"})
 @ExpressionProperty(ExpressionType.PROPERTY)
 public class ExprBungeeServerPlayers extends SkungeeExpression<Object> implements Returnable {
 

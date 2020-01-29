@@ -2,20 +2,31 @@ package me.limeglass.skungee.bungeecord.database;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import me.limeglass.skungee.bungeecord.database.serializers.PlayerTimeSerializer;
+import me.limeglass.skungee.bungeecord.managers.PlayerTimeManager.PlayerTime;
+
 public abstract class Database<T> {
 
-	private final Gson gson;
+	protected final Gson gson;
+	private final GsonBuilder builder = new GsonBuilder()
+			.registerTypeAdapter(PlayerTime.class, new PlayerTimeSerializer())
+			.excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.STATIC)
+			.enableComplexMapKeySerialization()
+			.serializeNulls();
+
+	public Database(Map<Type, Serializer<?>> serializers) {
+		serializers.forEach((type, serializer) -> builder.registerTypeAdapter(type, serializer));
+		gson = builder.create();
+	}
 
 	public Database() {
-		gson = new GsonBuilder()
-				.excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.STATIC)
-				.enableComplexMapKeySerialization()
-				.serializeNulls().create();
+		gson = builder.create();
 	}
 
 	public abstract void put(String key, T value);

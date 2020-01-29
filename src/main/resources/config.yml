@@ -87,7 +87,7 @@ connection:
     # When the Bungeecord disconnects, Skungee will go into keep alive mode.
     # This defines the time in ticks before the keep alive task starts.
     # This value should not be modified, only if a Skungee developer lets you know you can.
-    bungeecord-keep-alive-delay: 50
+    bungeecord-keep-alive-delay: 100
 
 # This is a queue system to make sure every single packet gets sent. It will limit the amount of packets sent at a time.
 # Packets that are expressions will not be put into the queued system as it depends on a returned value.

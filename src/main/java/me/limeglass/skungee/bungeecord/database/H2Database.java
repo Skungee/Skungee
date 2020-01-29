@@ -1,14 +1,23 @@
 package me.limeglass.skungee.bungeecord.database;
 
+import java.io.File;
+import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+import com.google.common.collect.Sets;
 import com.google.gson.JsonSyntaxException;
 
 import me.limeglass.skungee.bungeecord.Skungee;
-
-import java.io.File;
-import java.lang.reflect.Type;
-import java.sql.*;
-import java.util.HashSet;
-import java.util.Set;
 
 public class H2Database<T> extends Database<T> {
 
@@ -16,11 +25,12 @@ public class H2Database<T> extends Database<T> {
 	private Connection connection;
 	private final Type type;
 
-	public H2Database(String tablename, Type type) throws SQLException, ClassNotFoundException {
+	public H2Database(Skungee instance, String tablename, Type type, Map<Type, Serializer<?>> serializers) throws SQLException, ClassNotFoundException {
+		super(serializers);
 		this.tablename = tablename;
 		this.type = type;
 		Class.forName("org.h2.Driver");
-		String url = "jdbc:h2:" + Skungee.getInstance().getDataFolder().getAbsolutePath() + File.separator + "database";
+		String url = "jdbc:h2:" + instance.getDataFolder().getAbsolutePath() + File.separator + "database";
 		connection = DriverManager.getConnection(url);
 		if (connection == null)
 			return;
@@ -34,23 +44,31 @@ public class H2Database<T> extends Database<T> {
 	public T get(String key, T def) {
 		T result = def;
 		try {
-			PreparedStatement statement = connection.prepareStatement("SELECT `data` FROM %table WHERE `id` = ?;".replace("%table", tablename));
-			statement.setString(1, key);
-			ResultSet rs = statement.executeQuery();
-			while (rs.next()) {
-				String json = rs.getString("data");
+			result = CompletableFuture.supplyAsync(() -> {
+				T resultReturn = def;
 				try {
-					result = (T) deserialize(json, type);
-				} catch (JsonSyntaxException e) {
+					PreparedStatement statement = connection.prepareStatement("SELECT `data` FROM %table WHERE `id` = ?;".replace("%table", tablename));
+					statement.setString(1, key.toLowerCase(Locale.US));
+					ResultSet rs = statement.executeQuery();
+					while (rs.next()) {
+						String json = rs.getString("data");
+						try {
+							resultReturn = (T) deserialize(json, type);
+						} catch (JsonSyntaxException e) {
+							e.printStackTrace();
+							return def;
+						}
+						if (resultReturn == null)
+							return def;
+					}
+					statement.close();
+					return resultReturn;
+				} catch (SQLException e) {
 					e.printStackTrace();
-					return def;
 				}
-				if (result == null)
-					return def;
-			}
-			statement.close();
-			return result;
-		} catch (SQLException e) {
+				return resultReturn;
+			}).get();
+		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -61,15 +79,15 @@ public class H2Database<T> extends Database<T> {
 		new Thread(() -> {
 			try {
 				if (value != null) {
-					PreparedStatement statement = connection.prepareStatement("REPLACE INTO %table (`id`,`data`) VALUES(?,?);".replace("%table", tablename));
-					statement.setString(1, key);
+					PreparedStatement statement = connection.prepareStatement("MERGE INTO %table (id, data) KEY (id) VALUES (?,?);".replace("%table", tablename));
+					statement.setString(1, key.toLowerCase(Locale.US));
 					String json = serialize(value, type);
 					statement.setString(2, json);
 					statement.executeUpdate();
 					statement.close();
 				} else {
 					PreparedStatement statement = connection.prepareStatement("DELETE FROM %table WHERE id = ?".replace("%table", tablename));
-					statement.setString(1, key);
+					statement.setString(1, key.toLowerCase(Locale.US));
 					statement.executeUpdate();
 					statement.close();
 				}
@@ -84,7 +102,7 @@ public class H2Database<T> extends Database<T> {
 		boolean result = false;
 		try {
 			PreparedStatement statement = connection.prepareStatement("SELECT `id` FROM %table WHERE `id` = ?;".replace("%table", tablename));
-			statement.setString(1, key);
+			statement.setString(1, key.toLowerCase(Locale.US));
 			ResultSet rs = statement.executeQuery();
 			result = rs.next();
 			rs.close();
@@ -110,18 +128,25 @@ public class H2Database<T> extends Database<T> {
 	}
 
 	public Set<String> getKeys() {
-		Set<String> tempset = new HashSet<>();
 		try {
-			PreparedStatement statement = connection.prepareStatement("SELECT `id` FROM %table;".replace("%table", tablename));
-			ResultSet result = statement.executeQuery();
-			while (result.next())
-				tempset.add(result.getString("id"));
-			result.close();
-			statement.close();
-		} catch (SQLException e) {
+			return CompletableFuture.supplyAsync(() -> {
+				Set<String> set = new HashSet<>();
+				try {
+					PreparedStatement statement = connection.prepareStatement("SELECT `id` FROM %table;".replace("%table", tablename));
+					ResultSet result = statement.executeQuery();
+					while (result.next())
+						set.add(result.getString("id"));
+					result.close();
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				return set;
+			}).get();
+		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
-		return tempset;
+		return Sets.newHashSet();
 	}
 
 }

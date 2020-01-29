@@ -22,12 +22,13 @@ public class PlayerTimeManager {
 
 	public PlayerTimeManager(Skungee instance) {
 		try {
-			database = new H2Database<>("playtime", PlayerTime.class);
+			database = new H2Database<>(instance, "playtime", PlayerTime.class, new HashMap<>());
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
-		ProxyServer.getInstance().getScheduler().schedule(instance, () -> {
-			ProxyServer.getInstance().getPlayers().forEach(player -> {
+		ProxyServer proxy = ProxyServer.getInstance();
+		proxy.getScheduler().schedule(instance, () -> {
+			proxy.getPlayers().forEach(player -> {
 				String uuid = player.getUniqueId() + "";
 				PlayerTime time = database.get(uuid, new PlayerTime(player.getUniqueId()));
 				time.increment(player.getServer().getInfo().getName());
@@ -48,13 +49,18 @@ public class PlayerTimeManager {
 		return database.get(uuid + "", new PlayerTime(uuid));
 	}
 
-	public class PlayerTime {
+	public static class PlayerTime {
 
 		private final Map<String, Integer> times = new HashMap<>();
 		private final UUID uuid;
 
 		public PlayerTime(UUID uuid) {
 			this.uuid = uuid;
+		}
+
+		public PlayerTime(UUID uuid, Map<String, Integer> existing) {
+			this.uuid = uuid;
+			times.putAll(existing);
 		}
 
 		public void increment(String server) {
@@ -78,6 +84,10 @@ public class PlayerTimeManager {
 
 		public UUID getUniqueId() {
 			return uuid;
+		}
+
+		public Map<String, Integer> getTimes() {
+			return times;
 		}
 
 	}

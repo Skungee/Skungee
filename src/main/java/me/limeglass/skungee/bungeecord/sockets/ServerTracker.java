@@ -32,23 +32,20 @@ public class ServerTracker {
 	private static Map<ConnectedServer, Long> tracker = new HashMap<>();
 	private static Set<ConnectedServer> servers = new HashSet<>();
 
-	public static void tracker() {
-		ProxyServer.getInstance().getScheduler().schedule(Skungee.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				if (servers.isEmpty())
-					return;
-				long trys = Skungee.getConfig().getLong("Tracker.allowedTrys", 4);
-				for (ConnectedServer server : servers) {
-					if (!tracker.containsKey(server)) {
-						tracker.put(server, System.currentTimeMillis() + (5 * server.getHeartbeat()));
-						continue;
-					}
-					long lastupdated = tracker.get(server) + (trys * server.getHeartbeat());
-					if (lastupdated < System.currentTimeMillis()) {
-						if (!notRespondingServers.contains(server)) {
-							notResponding(server);
-						}
+	public static void startTracker() {
+		ProxyServer.getInstance().getScheduler().schedule(Skungee.getInstance(), () -> {
+			if (servers.isEmpty())
+				return;
+			long trys = Skungee.getConfig().getLong("Tracker.allowedTrys", 4);
+			for (ConnectedServer server : servers) {
+				if (!tracker.containsKey(server)) {
+					tracker.put(server, System.currentTimeMillis());
+					continue;
+				}
+				long difference = System.currentTimeMillis() - tracker.get(server);
+				if (difference < System.currentTimeMillis() - (trys * server.getHeartbeat())) {
+					if (!notRespondingServers.contains(server)) {
+						notResponding(server);
 					}
 				}
 			}
@@ -66,19 +63,13 @@ public class ServerTracker {
 		}
 	}
 
-	public static void dump() {
-		tracker.clear();
-		servers.clear();
-		notRespondingServers.clear();
-	}
-
 	public static boolean update(InetSocketAddress address) {
 		Optional<ConnectedServer> connected = servers.stream()
 				.filter(server -> server.getAddress().equals(address.getAddress()))
 				.filter(server -> server.getPort() == address.getPort())
 				.findFirst();
 		if (!connected.isPresent())
-			return true;
+			return true; //Tells the system this server isn't connected.
 		ConnectedServer server = connected.get();
 		tracker.put(server, System.currentTimeMillis());
 		if (notRespondingServers.contains(server)) {

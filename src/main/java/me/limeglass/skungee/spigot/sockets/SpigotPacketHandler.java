@@ -201,7 +201,7 @@ public class SpigotPacketHandler {
 				sockets.disconnect();
 				Bukkit.getScheduler().cancelTasks(instance);
 				Skungee.consoleMessage("The bungeecord was shutdown, ending all tasks...");
-				Bukkit.getScheduler().runTaskLater(instance, () -> sockets.keepAlive(), instance.getConfig().getInt("connection.bungeecord-keep-alive-delay", 50));
+				Bukkit.getScheduler().runTaskLater(instance, () -> sockets.keepAlive(), instance.getConfig().getInt("connection.bungeecord-keep-alive-delay", 150));
 				break;
 			case SERVERLISTPING:
 				if (packet instanceof ServerPingPacket) {

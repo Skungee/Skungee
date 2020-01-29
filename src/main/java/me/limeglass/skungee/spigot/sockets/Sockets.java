@@ -15,6 +15,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -125,20 +127,23 @@ public class Sockets {
 				return;
 			}
 			bungeecord = optional.get();
-			for (int i = 0; i < 10; i++) {
+			for (int i = 1; i < 6; i++) {
 				String state = send(packet, String.class);
 				if (state != null && (state.equals("CONNECTED") || state.equals("ALREADY"))) {
 					connected = true;
 					Skungee.consoleMessage("Successfully connected to the Skungee on Bungeecord!");
 					break;
 				}
-				Skungee.consoleMessage("Ping packet had no response, configurion for the connection to Bungeecord Skungee may not be valid or blocked. Attempting to try again... " + i + "/10");
+				Skungee.consoleMessage("Ping packet had no response, configurion for the connection to Bungeecord Skungee may not be valid or blocked. Attempting to try again... " + i + "/5");
 				try {
 					Thread.sleep(handshake);
 				} catch (InterruptedException e) {}
 			}
-			if (!connected)
+			if (!connected) {
+				Bukkit.getScheduler().cancelTasks(instance);
+				keepAlive();
 				return;
+			}
 			heartbeatTask = scheduler.scheduleAsyncRepeatingTask(instance, new Runnable() {
 				@Override
 				public void run() {
@@ -190,8 +195,8 @@ public class Sockets {
 				return null;
 			};
 			try {
-				return CompletableFuture.supplyAsync(supplier).get();
-			} catch (InterruptedException | ExecutionException e) {
+				return CompletableFuture.supplyAsync(supplier).get(5, TimeUnit.SECONDS);
+			} catch (InterruptedException | ExecutionException | TimeoutException e) {
 				return supplier.get();
 			}
 		}

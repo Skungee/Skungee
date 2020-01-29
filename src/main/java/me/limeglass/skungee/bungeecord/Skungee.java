@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.limeglass.skungee.BungeeConfigSaver;
@@ -33,8 +32,6 @@ import me.limeglass.skungee.bungeecord.utils.BungeeReflectionUtil;
 import me.limeglass.skungee.bungeecord.variables.VariableManager;
 import me.limeglass.skungee.objects.packets.BungeePacket;
 import me.limeglass.skungee.objects.packets.BungeePacketType;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
 import me.limeglass.skungee.spigot.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -69,6 +66,7 @@ public class Skungee extends Plugin {
 			SCRIPTS_FOLDER.mkdir();
 		loadConfiguration();
 		Premium.check();
+		//TODO ServerTracker.startTracker();
 		playerTimeManager = new PlayerTimeManager(this);
 		encryption = new EncryptionUtil(this, false);
 		encryption.hashFile();

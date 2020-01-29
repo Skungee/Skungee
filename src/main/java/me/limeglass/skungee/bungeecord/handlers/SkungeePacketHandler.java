@@ -80,7 +80,7 @@ public class SkungeePacketHandler {
 				break;
 			case SERVERPLAYERS:
 				if (packet.getObject() != null) {
-					Set<SkungeePlayer> skungeePlayers = new HashSet<SkungeePlayer>();
+					Set<SkungeePlayer> skungeePlayers = new HashSet<>();
 					for (String server : (String[]) packet.getObject()) {
 						if (ProxyServer.getInstance().getServerInfo(server) != null) {
 							for (ProxiedPlayer player : ProxyServer.getInstance().getServerInfo(server).getPlayers()) {
