@@ -7,7 +7,7 @@ import java.util.Set;
 public class ConnectedServer implements Serializable {
 
 	private static final long serialVersionUID = -4006986305914533724L;
-	private final Integer port, maxplayers, heartbeat, recieverPort;
+	private final int port, maxplayers, heartbeat, recieverPort;
 	private final Set<SkungeePlayer> whitelisted;
 	private final InetAddress address;
 	private final String motd, name;
@@ -25,23 +25,27 @@ public class ConnectedServer implements Serializable {
 		this.motd = motd;
 	}
 
-	public Boolean hasReciever() {
-		return reciever;
-	}
-
-	public Integer getRecieverPort() {
-		return recieverPort;
-	}
-
-	public Integer getPort() {
-		return port;
+	public Set<SkungeePlayer> getWhitelisted() {
+		return whitelisted;
 	}
 
 	public InetAddress getAddress() {
 		return address;
 	}
 
-	public Integer getHeartbeat() {
+	public boolean hasReciever() {
+		return reciever;
+	}
+
+	public int getRecieverPort() {
+		return recieverPort;
+	}
+
+	public int getMaxPlayers() {
+		return maxplayers;
+	}
+
+	public int getHeartbeat() {
 		return heartbeat;
 	}
 
@@ -53,12 +57,8 @@ public class ConnectedServer implements Serializable {
 		return motd;
 	}
 
-	public Integer getMaxPlayers() {
-		return maxplayers;
-	}
-
-	public Set<SkungeePlayer> getWhitelistedPlayers() {
-		return whitelisted;
+	public int getPort() {
+		return port;
 	}
 
 }

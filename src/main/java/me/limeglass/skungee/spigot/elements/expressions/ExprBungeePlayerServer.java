@@ -33,7 +33,8 @@ public class ExprBungeePlayerServer extends SkungeePropertyExpression<Object, St
 
 	@Override
 	public void change(Event event, Object[] delta, ChangeMode mode) {
-		if (isNull(event) || delta == null) return;
+		if (isNull(event) || delta == null)
+			return;
 		sockets.send(new SkungeePacket(false, SkungeePacketType.CONNECTPLAYER, (String) delta[0], Utils.toSkungeePlayers(getExpr().getAll(event))));
 	}
 

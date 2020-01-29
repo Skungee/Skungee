@@ -26,7 +26,7 @@ public class ServersWhitelistedHandler extends SkungeeBungeeHandler {
 			for (ConnectedServer tracked : ServerTracker.get(server)) {
 				if (tracked == null || !ServerTracker.isResponding(tracked))
 					continue;
-				whitelisted.addAll(tracked.getWhitelistedPlayers());
+				whitelisted.addAll(tracked.getWhitelisted());
 			}
 		}
 		return whitelisted;

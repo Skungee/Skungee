@@ -31,6 +31,10 @@ public class PlayerTimeManager {
 			proxy.getPlayers().forEach(player -> {
 				String uuid = player.getUniqueId() + "";
 				PlayerTime time = database.get(uuid, new PlayerTime(player.getUniqueId()));
+				if (time == null) {
+					database.put(uuid, new PlayerTime(player.getUniqueId()));
+					return;
+				}
 				time.increment(player.getServer().getInfo().getName());
 				database.put(uuid, time);
 			});

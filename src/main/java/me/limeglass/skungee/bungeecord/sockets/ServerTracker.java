@@ -212,7 +212,7 @@ public class ServerTracker {
 	public static void add(ConnectedServer server) {
 		Set<ConnectedServer> toRemove = new HashSet<>();
 		for (ConnectedServer connected : servers) {
-			if (connected.getAddress().equals(server.getAddress()) && connected.getPort().equals(server.getPort())) {
+			if (connected.getAddress().equals(server.getAddress()) && connected.getPort() == server.getPort()) {
 				toRemove.add(connected);
 			}
 		}
