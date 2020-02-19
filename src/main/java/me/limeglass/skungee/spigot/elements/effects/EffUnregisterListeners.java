@@ -4,8 +4,8 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -18,7 +18,7 @@ public class EffUnregisterListeners extends SkungeeEffect {
 	protected void execute(Event event) {
 		if (areNull(event))
 			return;
-		SkungeePacket packet = new SkungeePacket(false, SkungeePacketType.UNREGISTERLISTENERS, expressions.getAll(event, String.class));
+		ServerPacket packet = new ServerPacket(false, ServerPacketType.UNREGISTERLISTENERS, expressions.getAll(event, String.class));
 		sockets.send(packet);
 	}
 

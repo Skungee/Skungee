@@ -6,15 +6,17 @@ import java.net.ServerSocket;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
 
 public class Reciever {
 
 	private final FileConfiguration configuration;
 	private final BukkitScheduler scheduler;
+	private final SkungeeSpigot instance;
 	private ServerSocket reciever;
 
-	public Reciever(Skungee instance) {
+	public Reciever(SkungeeSpigot instance) {
+		this.instance = instance;
 		this.configuration = instance.getConfig();
 		this.scheduler = instance.getServer().getScheduler();
 		scheduler.runTaskAsynchronously(instance, new Runnable() {
@@ -27,16 +29,16 @@ public class Reciever {
 					else
 						reciever = new ServerSocket(port, 69);
 					instance.loadSockets();
-					Skungee.consoleMessage("Reciever established on port " + reciever.getLocalPort());
+					instance.consoleMessage("Reciever established on port " + reciever.getLocalPort());
 					while (!reciever.isClosed()) {
 						try {
 							new Thread(new SpigotRunnable(reciever.accept())).start();
 						} catch (IOException e) {
-							Skungee.exception(e, "Socket couldn't be accepted.");
+							instance.exception(e, "Socket couldn't be accepted.");
 						}
 					}
 				} catch (IOException e) {
-					Skungee.exception(e, "Reciever couldn't be created on port: " + port);
+					instance.exception(e, "Reciever couldn't be created on port: " + port);
 				}
 			}
 		});
@@ -59,7 +61,7 @@ public class Reciever {
 			starting++;
 		}
 		if (lastException != null)
-			Skungee.exception(lastException, "Couldn't find a port between " + starting + " and " + ending);
+			instance.exception(lastException, "Couldn't find a port between " + starting + " and " + ending);
 		return null;
 	}
 

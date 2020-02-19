@@ -8,7 +8,8 @@ import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
+import me.limeglass.skungee.Skungee;
 import me.limeglass.skungee.spigot.Metrics;
 import me.limeglass.skungee.spigot.Syntax;
 import me.limeglass.skungee.spigot.utils.EnumClassInfo;
@@ -20,9 +21,9 @@ import me.limeglass.skungee.spigot.utils.annotations.*;
 public class Register {
 
 	static {
-		if (Skungee.isSkriptPresent()) {
-			run : for (Class clazz : ReflectionUtil.getClasses(Skungee.getInstance(), Skungee.getInstance().getPackageName())) {
-				if (clazz.getName().contains("serverinstances") && !Skungee.getInstance().getConfiguration("config").getBoolean("ServerInstances", false)) continue run;
+		if (SkungeeSpigot.isSkriptPresent()) {
+			run : for (Class clazz : ReflectionUtil.getClasses(SkungeeSpigot.getInstance(), SkungeeSpigot.getInstance().getPackageName())) {
+				if (clazz.getName().contains("serverinstances") && !SkungeeSpigot.getInstance().getConfiguration("config").getBoolean("ServerInstances", false)) continue run;
 				if (!clazz.isAnnotationPresent(Disabled.class)) {
 					String[] syntax = null;
 					ExpressionType type = ExpressionType.COMBINED;
@@ -38,9 +39,9 @@ public class Register {
 							if (var == 1) input1 = properties[2].substring(3, properties[2].length());
 							else input2 = properties[2].substring(3, properties[2].length());
 						}
-						String[] values = new String[]{Skungee.getNameplate() + input1 + " " + properties[1] + " (of|from)" + additions + "%" + properties[0] + "%", Skungee.getNameplate() + input2 + "%" + properties[0] + "%['s]"  + additions.replace("[the] ", "") + properties[1]};
+						String[] values = new String[]{SkungeeSpigot.getNameplate() + input1 + " " + properties[1] + " (of|from)" + additions + "%" + properties[0] + "%", SkungeeSpigot.getNameplate() + input2 + "%" + properties[0] + "%['s]"  + additions.replace("[the] ", "") + properties[1]};
 						syntax = Syntax.register(clazz, values);
-						if (syntax == null) Skungee.debugMessage("&cThere was an issue registering the syntax for " + clazz.getName() + ". Make sure that the SyntaxToggles.yml is set for this syntax.");
+						if (syntax == null) Skungee.getPlatform().debugMessage("&cThere was an issue registering the syntax for " + clazz.getName() + ". Make sure that the SyntaxToggles.yml is set for this syntax.");
 					} else {
 						continue run;
 					}
@@ -69,17 +70,17 @@ public class Register {
 					if (syntax != null) {
 						if (Effect.class.isAssignableFrom(clazz)) {
 							Skript.registerEffect(clazz, syntax);
-							Skungee.debugMessage("&5Registered Effect " + clazz.getSimpleName() + " (" + clazz.getCanonicalName() + ") with syntax " + Arrays.toString(syntax));
+							Skungee.getPlatform().debugMessage("&5Registered Effect " + clazz.getSimpleName() + " (" + clazz.getCanonicalName() + ") with syntax " + Arrays.toString(syntax));
 						} else if (Condition.class.isAssignableFrom(clazz)) {
 							Skript.registerCondition(clazz, syntax);
-							Skungee.debugMessage("&5Registered Condition " + clazz.getSimpleName() + " (" + clazz.getCanonicalName() + ") with syntax " + Arrays.toString(syntax));
+							Skungee.getPlatform().debugMessage("&5Registered Condition " + clazz.getSimpleName() + " (" + clazz.getCanonicalName() + ") with syntax " + Arrays.toString(syntax));
 						} else if (Expression.class.isAssignableFrom(clazz)) {
 							if (clazz.isAnnotationPresent(ExpressionProperty.class)) type = ((ExpressionProperty) clazz.getAnnotation(ExpressionProperty.class)).value();
 							try {
 								Skript.registerExpression(clazz, ((Expression) clazz.newInstance()).getReturnType(), type, syntax);
-								Skungee.debugMessage("&5Registered Expression " + type.toString() + " " + clazz.getSimpleName() + " (" + clazz.getCanonicalName() + ") with syntax " + Arrays.toString(syntax));
+								Skungee.getPlatform().debugMessage("&5Registered Expression " + type.toString() + " " + clazz.getSimpleName() + " (" + clazz.getCanonicalName() + ") with syntax " + Arrays.toString(syntax));
 							} catch (IllegalAccessException | IllegalArgumentException | InstantiationException e) {
-								Skungee.consoleMessage("&cFailed to register expression " + clazz.getCanonicalName());
+								Skungee.getPlatform().consoleMessage("&cFailed to register expression " + clazz.getCanonicalName());
 								e.printStackTrace();
 							}
 						}
@@ -93,12 +94,12 @@ public class Register {
 		metrics.addCustomChart(new Metrics.SimplePie("skript_version", () -> 
 				Skript.getVersion().toString()));
 		metrics.addCustomChart(new Metrics.SimplePie("use_encryption", () -> 
-				Skungee.getInstance().getConfig().getBoolean("security.encryption.enabled", false) + ""));
+				SkungeeSpigot.getInstance().getConfig().getBoolean("security.encryption.enabled", false) + ""));
 		metrics.addCustomChart(new Metrics.SimplePie("use_breaches", () -> 
-				Skungee.getInstance().getConfig().getBoolean("security.breaches.enabled", false) + ""));
+				SkungeeSpigot.getInstance().getConfig().getBoolean("security.breaches.enabled", false) + ""));
 		metrics.addCustomChart(new Metrics.SimplePie("use_password", () -> 
-				Skungee.getInstance().getConfig().getBoolean("security.password.enabled", false) + ""));
-		Skungee.debugMessage("Metrics registered!");
+				SkungeeSpigot.getInstance().getConfig().getBoolean("security.password.enabled", false) + ""));
+		Skungee.getPlatform().debugMessage("Metrics registered!");
 	}
 
 }

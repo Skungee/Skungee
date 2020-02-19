@@ -5,8 +5,8 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
@@ -23,7 +23,7 @@ public class ExprBungeePlayerYaw extends SkungeePropertyExpression<Object, Numbe
 		if (isNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<Number> yaws = (Set<Number>) sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERYAW, null, null, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<Number> yaws = (Set<Number>) sockets.send(new ServerPacket(true, ServerPacketType.PLAYERYAW, null, null, Utils.toSkungeePlayers(skungeePlayers)));
 		return (yaws != null) ? yaws.toArray(new Number[yaws.size()]) : null;
 	}
 

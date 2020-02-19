@@ -8,10 +8,10 @@ import org.eclipse.jdt.annotation.Nullable;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
-import me.limeglass.skungee.objects.Returnable;
-import me.limeglass.skungee.objects.SkungeePlayer;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.objects.Returnable;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.player.SkungeePlayer;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -33,7 +33,7 @@ public class ExprRedisBungeeProxyPlayers extends SkungeeExpression<Object> imple
 		if (areNull(event) || returnable == null)
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<SkungeePlayer> players = (Set<SkungeePlayer>) sockets.send(new SkungeePacket(true, SkungeePacketType.REDISPROXYPLAYERS, expressions.getAll(event, String.class)));
+		Set<SkungeePlayer> players = (Set<SkungeePlayer>) sockets.send(new ServerPacket(true, ServerPacketType.REDISPROXYPLAYERS, expressions.getAll(event, String.class)));
 		return (players != null) ? convert(players) : null;
 	}
 

@@ -6,9 +6,9 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.SkungeeEnums.ChatMode;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.objects.SkungeeEnums.ChatMode;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
@@ -27,7 +27,7 @@ public class ExprBungeePlayerChatMode extends SkungeePropertyExpression<Object, 
 		if (isNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<ChatMode> modes = (Set<ChatMode>) sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERCHATMODE, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<ChatMode> modes = (Set<ChatMode>) sockets.send(new ServerPacket(true, ServerPacketType.PLAYERCHATMODE, Utils.toSkungeePlayers(skungeePlayers)));
 		return (modes != null) ? modes.toArray(new ChatMode[modes.size()]) : null;
 	}
 

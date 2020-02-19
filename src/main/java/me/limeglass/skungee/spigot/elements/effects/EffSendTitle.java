@@ -4,9 +4,9 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.SkungeePlayer;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.player.SkungeePlayer;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -21,7 +21,7 @@ public class EffSendTitle extends SkungeeEffect {
 		if (areNull(event))
 			return;
 		SkungeePlayer[] players = Utils.toSkungeePlayers(expressions.get(1).getAll(event));
-		SkungeePacket packet = new SkungeePacket(false, SkungeePacketType.TITLE, expressions.get(0).getSingle(event), null, players);
+		ServerPacket packet = new ServerPacket(false, ServerPacketType.TITLE, expressions.get(0).getSingle(event), null, players);
 		sockets.send(packet);
 	}
 

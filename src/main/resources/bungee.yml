@@ -2,4 +2,4 @@ name: Skungee
 author: Skungee
 description: The ultimate Skript addon for Bungeecord.
 version: @version@
-main: me.limeglass.skungee.bungeecord.Skungee
+main: me.limeglass.skungee.bungeecord.SkungeeBungee

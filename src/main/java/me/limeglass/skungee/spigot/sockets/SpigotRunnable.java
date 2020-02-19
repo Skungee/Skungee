@@ -21,22 +21,24 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.limeglass.skungee.EncryptionUtil;
-import me.limeglass.skungee.UniversalSkungee;
-import me.limeglass.skungee.objects.events.SkungeeReceivedEvent;
-import me.limeglass.skungee.objects.events.SkungeeReturningEvent;
-import me.limeglass.skungee.objects.packets.BungeePacket;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.common.packets.ProxyPacket;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
+import me.limeglass.skungee.spigot.events.SkungeeReceivedEvent;
+import me.limeglass.skungee.spigot.events.SkungeeReturningEvent;
 
 public class SpigotRunnable implements Runnable {
 
 	private final Map<InetAddress, Integer> attempts = new HashMap<>();
 	private final Set<InetAddress> blocked = new HashSet<>();
 	private final FileConfiguration configuration;
+	private final SkungeeSpigot instance;
 	private InetAddress address;
 	private Socket socket;
 
 	public SpigotRunnable(Socket socket) {
-		this.configuration = Skungee.getInstance().getConfig();
+		this.instance = SkungeeSpigot.getInstance();
+		this.configuration = instance.getConfig();
 		this.address = socket.getInetAddress();
 		this.socket = socket;
 	}
@@ -53,20 +55,20 @@ public class SpigotRunnable implements Runnable {
 			String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
 			ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-			EncryptionUtil encryption = Skungee.getInstance().getEncrypter();
+			EncryptionUtil encryption = SkungeeSpigot.getInstance().getEncrypter();
 			Object object = objectInputStream.readObject();
 			if (object != null) {
-				BungeePacket packet = null;
+				ProxyPacket packet = null;
 				try {
 					if (configuration.getBoolean("security.encryption.enabled", false)) {
-						packet = (BungeePacket) encryption.decrypt(keyString, algorithm, (byte[]) object);
+						packet = (ProxyPacket) encryption.decrypt(keyString, algorithm, (byte[]) object);
 					} else {
-						packet = (BungeePacket) object;
+						packet = (ProxyPacket) object;
 					}
 				} catch (ClassCastException e) {
-					Skungee.consoleMessage("", "Some security settings didn't match for the incoming packet.", "Make sure all your security options on the Spigot servers match the same as in the Bungeecord Skungee configuration.yml", "The packet could not be read, thus being cancelled.");
+					instance.consoleMessage("", "Some security settings didn't match for the incoming packet.", "Make sure all your security options on the Spigot servers match the same as in the Bungeecord Skungee configuration.yml", "The packet could not be read, thus being cancelled.");
 					if (configuration.getBoolean("security.debug"))
-						Skungee.exception(e, "Could not decrypt packet " + UniversalSkungee.getPacketDebug(packet));
+						instance.exception(e, "Could not decrypt packet " + Skungee.getPacketDebug(packet));
 					attempt(address, null);
 					return;
 				}
@@ -76,7 +78,7 @@ public class SpigotRunnable implements Runnable {
 					return;
 				if (packet.getPassword() != null) {
 					if (configuration.getBoolean("security.password.hash", true)) {
-						byte[] password = encryption.hash();
+						byte[] password = encryption.hashPassword();
 						if (configuration.getBoolean("security.password.hashFile", false) && encryption.isFileHashed()) {
 							password = encryption.getHashFromFile();
 						}
@@ -116,7 +118,7 @@ public class SpigotRunnable implements Runnable {
 			objectOutputStream.close();
 		} catch (IOException | ClassNotFoundException e) {
 			if (configuration.getBoolean("security.debug"))
-				Skungee.exception(e, "Could not read incoming packet");
+				instance.exception(e, "Could not read incoming packet");
 		}
 		try {
 			socket.close();
@@ -125,15 +127,15 @@ public class SpigotRunnable implements Runnable {
 		}
 	}
 
-	private void incorrectPassword(BungeePacket packet) {
+	private void incorrectPassword(ProxyPacket packet) {
 		attempt(address, packet);
-		Skungee.consoleMessage("&cA BungeePacket with an incorrect password has just been recieved and blocked!");
-		Skungee.consoleMessage("&cThe packet came from: " + socket.getInetAddress());
-		Skungee.consoleMessage("&cThe packet type was: " + packet.getType());
+		instance.consoleMessage("&cA BungeePacket with an incorrect password has just been recieved and blocked!");
+		instance.consoleMessage("&cThe packet came from: " + socket.getInetAddress());
+		instance.consoleMessage("&cThe packet type was: " + packet.getType());
 		//insert more data maybe
 	}
 
-	private void attempt(InetAddress address, @Nullable BungeePacket packet) {
+	private void attempt(InetAddress address, @Nullable ProxyPacket packet) {
 		if (!configuration.getBoolean("security.breaches.enabled", false))
 			return;
 		int i = 0;
@@ -158,14 +160,14 @@ public class SpigotRunnable implements Runnable {
 	private void log(String... strings) {
 		try {
 			Logger logger = Logger.getLogger("log");
-			FileHandler handler = new FileHandler(Skungee.getInstance().getDataFolder() + File.separator + "breaches.log");
+			FileHandler handler = new FileHandler(SkungeeSpigot.getInstance().getDataFolder() + File.separator + "breaches.log");
 			handler.setFormatter(new SimpleFormatter());
 			logger.addHandler(handler);
 			for (String string : strings) {
 				logger.info(string);
 			}
 		} catch (SecurityException | IOException e) {
-			Skungee.exception(e, "Error logging a breach.");
+			instance.exception(e, "Error logging a breach.");
 		}
 	}
 

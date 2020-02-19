@@ -7,9 +7,9 @@ import org.bukkit.event.Event;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.objects.SkungeeEnums.SkriptChangeMode;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
@@ -30,7 +30,7 @@ public class ExprBungeePlayerGroups extends SkungeePropertyExpression<Object, St
 		if (isNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<String> permissions = (Set<String>) sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERGROUPS, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<String> permissions = (Set<String>) sockets.send(new ServerPacket(true, ServerPacketType.PLAYERGROUPS, Utils.toSkungeePlayers(skungeePlayers)));
 		return (permissions != null) ? permissions.toArray(new String[permissions.size()]) : null;
 	}
 
@@ -39,7 +39,7 @@ public class ExprBungeePlayerGroups extends SkungeePropertyExpression<Object, St
 		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
 		if (isNull(event) || delta == null || changer == null)
 			return;
-		sockets.send(new SkungeePacket(false, SkungeePacketType.PLAYERGROUPS, delta, null, changer, Utils.toSkungeePlayers(getExpr().getAll(event))));
+		sockets.send(new ServerPacket(false, ServerPacketType.PLAYERGROUPS, delta, null, changer, Utils.toSkungeePlayers(getExpr().getAll(event))));
 	}
 
 }

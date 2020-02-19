@@ -4,9 +4,9 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.SkungeePlayer;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.player.SkungeePlayer;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -24,9 +24,9 @@ public class EffPlayerChat extends SkungeeEffect {
 		if (areNull(event)) return;
 		SkungeePlayer[] players = Utils.toSkungeePlayers(expressions.get(0).getAll(event));
 		if (patternMark == 0) {
-			sockets.send(new SkungeePacket(false, SkungeePacketType.PLAYERCOMMAND, expressions.get(0).getAll(event), players));
+			sockets.send(new ServerPacket(false, ServerPacketType.PLAYERCOMMAND, expressions.get(0).getAll(event), players));
 		} else {
-			sockets.send(new SkungeePacket(false, SkungeePacketType.PLAYERCOMMAND, expressions.get(1).getAll(event), players));
+			sockets.send(new ServerPacket(false, ServerPacketType.PLAYERCOMMAND, expressions.get(1).getAll(event), players));
 		}
 	}
 

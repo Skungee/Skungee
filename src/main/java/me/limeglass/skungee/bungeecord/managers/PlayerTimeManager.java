@@ -9,10 +9,10 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import me.limeglass.skungee.bungeecord.Skungee;
-import me.limeglass.skungee.bungeecord.database.Database;
-import me.limeglass.skungee.bungeecord.database.H2Database;
-import me.limeglass.skungee.objects.SkungeePlayer;
+import me.limeglass.skungee.bungeecord.SkungeeBungee;
+import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.proxy.database.Database;
+import me.limeglass.skungee.proxy.database.H2Database;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -20,7 +20,7 @@ public class PlayerTimeManager {
 
 	private Database<PlayerTime> database;
 
-	public PlayerTimeManager(Skungee instance) {
+	public PlayerTimeManager(SkungeeBungee instance) {
 		try {
 			database = new H2Database<>(instance, "playtime", PlayerTime.class, new HashMap<>());
 		} catch (ClassNotFoundException | SQLException e) {
@@ -32,7 +32,8 @@ public class PlayerTimeManager {
 				String uuid = player.getUniqueId() + "";
 				PlayerTime time = database.get(uuid, new PlayerTime(player.getUniqueId()));
 				if (time == null) {
-					database.put(uuid, new PlayerTime(player.getUniqueId()));
+					time = new PlayerTime(player.getUniqueId());
+					database.put(uuid, time);
 					return;
 				}
 				time.increment(player.getServer().getInfo().getName());

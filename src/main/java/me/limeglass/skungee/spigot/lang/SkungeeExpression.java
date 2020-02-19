@@ -15,7 +15,8 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
 import me.limeglass.skungee.spigot.Syntax;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
@@ -29,7 +30,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Single;
 
 public abstract class SkungeeExpression<T> extends SimpleExpression<T> implements DataChecker {
 
-	protected Sockets sockets = Skungee.getInstance().getSockets();
+	protected Sockets sockets = SkungeeSpigot.getInstance().getSockets();
 	private List<Object> values = new ArrayList<Object>();
 	protected ExpressionData expressions;
 	private Class<T> expressionClass;
@@ -63,7 +64,7 @@ public abstract class SkungeeExpression<T> extends SimpleExpression<T> implement
 	public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, ParseResult parser) {
 		if (getClass().isAnnotationPresent(Events.class)) {
 			if (!contains()) {
-				Skungee.debugMessage("The expression `" + getClass().getSimpleName() + "` can't be used in the event: " + ScriptLoader.getCurrentEventName() + "it can only be used in: " + Arrays.toString(getClass().getAnnotation(Events.class).value()));
+				Skungee.getPlatform().debugMessage("The expression `" + getClass().getSimpleName() + "` can't be used in the event: " + ScriptLoader.getCurrentEventName() + "it can only be used in: " + Arrays.toString(getClass().getAnnotation(Events.class).value()));
 				return false;
 			}
 		}
@@ -77,7 +78,7 @@ public abstract class SkungeeExpression<T> extends SimpleExpression<T> implement
 	public String toString(Event event, boolean debug) {
 		String modSyntax = Syntax.isModified(getClass()) ? "Modified syntax: " + Arrays.toString(getSyntax()) : Arrays.toString(getSyntax());
 		if (expressions != null && event != null) for (Expression<?> expression : expressions.getExpressions()) values.add(expression.getSingle(event));
-		if (event != null) Skungee.debugMessage(getClass().getSimpleName() + " - " + modSyntax + " (" + event.getEventName() + ")" + " Data: " + Arrays.toString(values.toArray()));
+		if (event != null) Skungee.getPlatform().debugMessage(getClass().getSimpleName() + " - " + modSyntax + " (" + event.getEventName() + ")" + " Data: " + Arrays.toString(values.toArray()));
 		return getClass().getSimpleName() + " - " + Arrays.toString(getSyntax());
 	}
 	

@@ -4,8 +4,8 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -21,7 +21,7 @@ public class EffRedisBungeeCommand extends SkungeeEffect {
 		String[] servers = null;
 		if (!isNull(event, 1))
 			servers = expressions.getAll(event, String.class, 1);
-		sockets.send(new SkungeePacket(false, SkungeePacketType.REDISPROXYCOMMAND, expressions.get(0).getAll(event), servers));
+		sockets.send(new ServerPacket(false, ServerPacketType.REDISPROXYCOMMAND, expressions.get(0).getAll(event), servers));
 	}
 
 }

@@ -13,27 +13,32 @@ repositories {
 	mavenCentral()
 	jcenter()
 
-	//Spigot
+	// Spigot
 	maven {
 		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
 	}
 
-	//BungeeTabListPlus
+	// BungeeTabListPlus
 	maven {
 		url 'http://nexus.codecrafter47.de/content/repositories/public/'
 	}
 
-	//Bungeecord
+	// Bungeecord
 	maven {
 		url "https://oss.sonatype.org/content/repositories/snapshots"
 	}
 
-	//Redis-Bungee
+	// Redis-Bungee
 	maven {
 		url "http://repo.md-5.net/content/repositories/snapshots/"
 	}
 
-	//Jitpack
+	// Velocity
+	maven {
+		url "https://repo.velocitypowered.com/snapshots/"
+	}
+
+	// Jitpack
 	maven {
 		url 'https://jitpack.io'
 	}
@@ -50,6 +55,9 @@ dependencies {
 
 	// Nullable annotation
 	implementation (group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '2.2.400')
+
+	// Velocity
+	implementation (group: 'com.velocitypowered', name: 'velocity-api', version: '1.0.0-SNAPSHOT')
 
 	// Spigot
 	implementation (group: 'org.spigotmc', name: 'spigot-api', version: '1.15.2-R0.1-SNAPSHOT')

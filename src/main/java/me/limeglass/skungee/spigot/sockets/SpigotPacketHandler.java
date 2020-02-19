@@ -16,18 +16,18 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.Set;
 
-import me.limeglass.skungee.UniversalSkungee;
-import me.limeglass.skungee.spigot.Skungee;
-import me.limeglass.skungee.objects.SkungeeVariable.Value;
-import me.limeglass.skungee.objects.events.SkungeeMessageEvent;
-import me.limeglass.skungee.objects.events.SkungeePingEvent;
-import me.limeglass.skungee.objects.events.SkungeePlayerChatEvent;
-import me.limeglass.skungee.objects.events.SkungeePlayerCommandEvent;
-import me.limeglass.skungee.objects.events.SkungeePlayerDisconnect;
-import me.limeglass.skungee.objects.events.SkungeePlayerSwitchServer;
-import me.limeglass.skungee.objects.packets.BungeePacket;
-import me.limeglass.skungee.objects.packets.BungeePacketType;
-import me.limeglass.skungee.objects.packets.ServerPingPacket;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.common.events.SkungeePlayerChatEvent;
+import me.limeglass.skungee.common.events.SkungeePlayerCommandEvent;
+import me.limeglass.skungee.common.events.SkungeePlayerDisconnect;
+import me.limeglass.skungee.common.events.SkungeePlayerSwitchServer;
+import me.limeglass.skungee.common.objects.SkungeeVariable.Value;
+import me.limeglass.skungee.common.packets.ProxyPacket;
+import me.limeglass.skungee.common.packets.ProxyPacketType;
+import me.limeglass.skungee.common.packets.ServerPingPacket;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
+import me.limeglass.skungee.spigot.events.SkungeeMessageEvent;
+import me.limeglass.skungee.spigot.events.SkungeePingEvent;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -43,11 +43,11 @@ public class SpigotPacketHandler {
 	
 	//TODO Possible cleanup and place this into an abstract with different packet classes.
 	
-	public static Object handlePacket(BungeePacket packet, InetAddress address) {
-		if (!Skungee.getInstance().getConfig().getBoolean("IgnoreSpamPackets", true)) {
-			Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
-		} else if (!(packet.getType() == BungeePacketType.GLOBALSCRIPTS)) {
-			Skungee.debugMessage("Recieved " + UniversalSkungee.getPacketDebug(packet));
+	public static Object handlePacket(ProxyPacket packet, InetAddress address) {
+		if (!SkungeeSpigot.getInstance().getConfig().getBoolean("IgnoreSpamPackets", true)) {
+			Skungee.getPlatform().debugMessage("Recieved " + Skungee.getPacketDebug(packet));
+		} else if (!(packet.getType() == ProxyPacketType.GLOBALSCRIPTS)) {
+			Skungee.getPlatform().debugMessage("Recieved " + Skungee.getPacketDebug(packet));
 		}
 		switch (packet.getType()) {
 			case PINGSERVER:
@@ -89,10 +89,10 @@ public class SpigotPacketHandler {
 			case EVALUATE:
 				if (packet.getObject() != null) {
 					for (String effect : (String[]) packet.getObject()) {
-						Bukkit.getScheduler().runTask(Skungee.getInstance(), () -> {
+						Bukkit.getScheduler().runTask(SkungeeSpigot.getInstance(), () -> {
 							if (Effect.parse(effect, null) == null) {
-								Skungee.infoMessage("There was an error executing effect: " + effect);
-								Skungee.infoMessage("Possibly not an effect for this server? Make sure you have any addons that could run this effect and that it looks realistic.");
+								SkungeeSpigot.infoMessage("There was an error executing effect: " + effect);
+								SkungeeSpigot.infoMessage("Possibly not an effect for this server? Make sure you have any addons that could run this effect and that it looks realistic.");
 							} else {
 								Effect.parse(effect, null).run(null);
 							}
@@ -101,7 +101,7 @@ public class SpigotPacketHandler {
 				}
 				break;
 			case GLOBALSCRIPTS:
-				if (Skungee.isSkriptPresent()) {
+				if (SkungeeSpigot.isSkriptPresent()) {
 					File scriptsFolder = new File(Skript.getInstance().getDataFolder().getAbsolutePath() + File.separator + Skript.SCRIPTSFOLDER);
 					Set<File> scripts = getFiles(scriptsFolder, new FilenameFilter() {
 						@Override
@@ -111,7 +111,7 @@ public class SpigotPacketHandler {
 					});
 					@SuppressWarnings("unchecked")
 					Map<String, List<String>> data = (Map<String, List<String>>) packet.getObject();
-					if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.MimicExact", false)) {
+					if (SkungeeSpigot.getInstance().getConfig().getBoolean("GlobalScripts.MimicExact", false)) {
 						boolean reload = false;
 						for (File script : scripts) {
 							if (!data.keySet().parallelStream().anyMatch(name -> name.equals(script.getName()))) {
@@ -124,7 +124,7 @@ public class SpigotPacketHandler {
 							}
 						}
 						if (reload)
-							Bukkit.getScheduler().runTask(Skungee.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload scripts"));
+							Bukkit.getScheduler().runTask(SkungeeSpigot.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload scripts"));
 					}
 					for (Entry<String, List<String>> entry : data.entrySet()) {
 						try {
@@ -146,12 +146,12 @@ public class SpigotPacketHandler {
 									//String name = scriptsFolder + File.separator + newScript.getName();
 									//Config config = new Config(new FileInputStream(newScript), name, newScript, true, false, ":");
 									//ScriptLoader.loadScripts(config);
-									Bukkit.getScheduler().runTask(Skungee.getInstance(), new Runnable() {
+									Bukkit.getScheduler().runTask(SkungeeSpigot.getInstance(), new Runnable() {
 										@Override
 										public void run() {
 											Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sk reload " + entry.getKey());
-											if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
-												Skungee.consoleMessage("&6GlobalScripts: reloaded script " + entry.getKey() + " for this server!");
+											if (SkungeeSpigot.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
+												Skungee.getPlatform().consoleMessage("&6GlobalScripts: reloaded script " + entry.getKey() + " for this server!");
 											}
 										}
 									});
@@ -168,8 +168,8 @@ public class SpigotPacketHandler {
 									config = new Config(new FileInputStream(script), name, script, true, false, ":");
 								}
 								ScriptLoader.loadScripts(config);
-								if (Skungee.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
-									Skungee.consoleMessage("&6GlobalScripts: created script " + entry.getKey() + " for this server!");
+								if (SkungeeSpigot.getInstance().getConfig().getBoolean("GlobalScripts.Messages", true)) {
+									Skungee.getPlatform().consoleMessage("&6GlobalScripts: created script " + entry.getKey() + " for this server!");
 								}
 							}
 						} catch (IOException e) {
@@ -179,7 +179,7 @@ public class SpigotPacketHandler {
 				}
 				break;
 			case UPDATEVARIABLES:
-				if (Skungee.isSkriptPresent()) {
+				if (SkungeeSpigot.isSkriptPresent()) {
 					Object objectName = packet.getObject();
 					Object objectValues = packet.getSetObject();
 					if (objectName == null || objectValues == null) return null;
@@ -196,11 +196,11 @@ public class SpigotPacketHandler {
 				Bukkit.shutdown();
 				break;
 			case DISCONNECT:
-				Skungee instance = Skungee.getInstance();
+				SkungeeSpigot instance = SkungeeSpigot.getInstance();
 				Sockets sockets = instance.getSockets();
 				sockets.disconnect();
 				Bukkit.getScheduler().cancelTasks(instance);
-				Skungee.consoleMessage("The bungeecord was shutdown, ending all tasks...");
+				Skungee.getPlatform().consoleMessage("The bungeecord was shutdown, ending all tasks...");
 				Bukkit.getScheduler().runTaskLater(instance, () -> sockets.keepAlive(), instance.getConfig().getInt("connection.bungeecord-keep-alive-delay", 150));
 				break;
 			case SERVERLISTPING:
@@ -213,7 +213,7 @@ public class SpigotPacketHandler {
 			case SKUNGEEMESSAGES:
 				if (packet.getObject() != null && packet.getSetObject() != null) {
 					for (String channel : (String[])packet.getSetObject()) {
-						Bukkit.getScheduler().runTask(Skungee.getInstance(), () -> Bukkit.getPluginManager().callEvent(new SkungeeMessageEvent(channel, (String[])packet.getObject())));
+						Bukkit.getScheduler().runTask(SkungeeSpigot.getInstance(), () -> Bukkit.getPluginManager().callEvent(new SkungeeMessageEvent(channel, (String[])packet.getObject())));
 					}
 				}
 				break;

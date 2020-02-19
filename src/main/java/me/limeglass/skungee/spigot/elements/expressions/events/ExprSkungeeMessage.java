@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
-import me.limeglass.skungee.objects.events.SkungeeMessageEvent;
+import me.limeglass.skungee.spigot.events.SkungeeMessageEvent;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.DetermineSingle;
 import me.limeglass.skungee.spigot.utils.annotations.Events;

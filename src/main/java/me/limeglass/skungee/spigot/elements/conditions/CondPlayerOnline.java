@@ -4,9 +4,9 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.SkungeePlayer;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.player.SkungeePlayer;
 import me.limeglass.skungee.spigot.lang.SkungeeCondition;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -20,7 +20,7 @@ public class CondPlayerOnline extends SkungeeCondition {
 		if (areNull(event))
 			return false;
 		SkungeePlayer[] player = Utils.toSkungeePlayers(expressions.get(0).getSingle(event));
-		SkungeePacket packet = new SkungeePacket(true, SkungeePacketType.ISPLAYERONLINE, null, player);
+		ServerPacket packet = new ServerPacket(true, ServerPacketType.ISPLAYERONLINE, null, player);
 		return sockets.send(packet, boolean.class) ? isNegated() : !isNegated();
 	}
 

@@ -14,10 +14,11 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
-import me.limeglass.skungee.objects.events.SkungeePingEvent;
-import me.limeglass.skungee.objects.events.SkungeePlayerChatEvent;
-import me.limeglass.skungee.objects.events.SkungeePlayerDisconnect;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.common.events.SkungeePlayerChatEvent;
+import me.limeglass.skungee.common.events.SkungeePlayerDisconnect;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
+import me.limeglass.skungee.spigot.events.SkungeePingEvent;
 import me.limeglass.skungee.spigot.utils.ReflectionUtil;
 
 public class Events {
@@ -29,26 +30,26 @@ public class Events {
 	}
 	
 	public static void registerEvent(@Nullable Class<? extends SkriptEvent> skriptEvent, Class<? extends Event> event, String... patterns) {
-		if (!Skungee.getInstance().getConfig().getBoolean("Events", true))
+		if (!SkungeeSpigot.getInstance().getConfig().getBoolean("Events", true))
 			return;
 		if (skriptEvent == null)
 			skriptEvent = SimpleEvent.class;
 		for (int i = 0; i < patterns.length; i++) {
-			patterns[i] = Skungee.getNameplate() + patterns[i];
+			patterns[i] = SkungeeSpigot.getNameplate() + patterns[i];
 		}
 		Object[] values = new Object[] {true, patterns, getEventValues(event)};
 		String[] nodes = new String[] {"enabled", "patterns", "eventvalues"};
-		FileConfiguration syntax = Skungee.getInstance().getConfiguration("syntax");
+		FileConfiguration syntax = SkungeeSpigot.getInstance().getConfiguration("syntax");
 		for (int i = 0; i < nodes.length; i++) {
 			if (!syntax.isSet("Syntax.Events." + event.getSimpleName() + "." + nodes[i])) {
 				syntax.set("Syntax.Events." + event.getSimpleName() + "." + nodes[i], values[i]);
 			}
 		}
-		Skungee.save("syntax");
+		SkungeeSpigot.save("syntax");
 		if (syntax.getBoolean("Syntax.Events." + event.getSimpleName() + ".enabled", true)) {
 			//TODO find a way to make the stupid Spigot Yaml read properly for user editing of event patterns.
 			Skript.registerEvent("Skungee " + event.getSimpleName(), skriptEvent, event, patterns);
-			Skungee.debugMessage("&5Registered Event " + event.getSimpleName() + " (" + skriptEvent.getCanonicalName() + ") with syntax " + Arrays.toString(patterns));
+			Skungee.getPlatform().debugMessage("&5Registered Event " + event.getSimpleName() + " (" + skriptEvent.getCanonicalName() + ") with syntax " + Arrays.toString(patterns));
 		}
 	}
 	

@@ -8,13 +8,14 @@ import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
 import me.limeglass.skungee.spigot.Syntax;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 
 public abstract class SkungeeCondition extends Condition implements DataChecker {
 
-	protected Sockets sockets = Skungee.getInstance().getSockets();
+	protected Sockets sockets = SkungeeSpigot.getInstance().getSockets();
 	protected ExpressionData expressions;
 	protected int patternMark;
 
@@ -35,12 +36,12 @@ public abstract class SkungeeCondition extends Condition implements DataChecker 
 		ArrayList<String> values = new ArrayList<String>();
 		String modSyntax = Syntax.isModified(getClass()) ? "Modified syntax: " + Arrays.toString(getSyntax()) : Arrays.toString(getSyntax());
 		if (event == null) {
-			Skungee.debugMessage(getClass().getSimpleName() + " - " + modSyntax);
+			Skungee.getPlatform().debugMessage(getClass().getSimpleName() + " - " + modSyntax);
 		} else {
 			Arrays.asList(expressions.getExpressions()).stream().forEach(expression->values.add(expression.toString(event, debug)));
-			Skungee.debugMessage(getClass().getSimpleName() + " - " + modSyntax + " (" + event.getEventName() + ")" + " Data: " + Arrays.toString(values.toArray()));
+			Skungee.getPlatform().debugMessage(getClass().getSimpleName() + " - " + modSyntax + " (" + event.getEventName() + ")" + " Data: " + Arrays.toString(values.toArray()));
 		}
-		return Skungee.getNameplate() + getClass().getSimpleName() + "- Syntax: " + Arrays.toString(getSyntax());
+		return SkungeeSpigot.getNameplate() + getClass().getSimpleName() + "- Syntax: " + Arrays.toString(getSyntax());
 	}
 
 	public <T> boolean isNull(Event event, @SuppressWarnings("unchecked") Class<T>... types) {

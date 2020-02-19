@@ -5,8 +5,8 @@ import org.bukkit.event.Event;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.util.Timespan;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -25,7 +25,7 @@ public class EffExecuteBungeeCommand extends SkungeeEffect {
 			if (timespan.getTicks_i() > 0)
 				delay = timespan.getMilliSeconds();
 		}
-		sockets.send(new SkungeePacket(false, SkungeePacketType.BUNGEECOMMAND, expressions.getAll(event, String.class), delay));
+		sockets.send(new ServerPacket(false, ServerPacketType.SERVERCOMMAND, expressions.getAll(event, String.class), delay));
 	}
 
 }

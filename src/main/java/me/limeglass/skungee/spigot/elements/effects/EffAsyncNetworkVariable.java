@@ -20,10 +20,11 @@ import ch.njol.skript.lang.VariableString;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.StringMode;
 import ch.njol.util.Kleenean;
-import me.limeglass.skungee.objects.SkungeeVariable.Value;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.common.objects.SkungeeVariable.Value;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -81,13 +82,13 @@ public class EffAsyncNetworkVariable extends SkungeeEffect {
 	
 	@Override
 	protected TriggerItem walk(Event event) {
-		Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), () -> {
-			Object object = sockets.send(new SkungeePacket(true, SkungeePacketType.NETWORKVARIABLE, variableString.toString(event)));
+		Bukkit.getScheduler().runTaskAsynchronously(SkungeeSpigot.getInstance(), () -> {
+			Object object = sockets.send(new ServerPacket(true, ServerPacketType.NETWORKVARIABLE, variableString.toString(event)));
 			if (object == null) return;
 			if (!(object instanceof Value[])) {
-				Skungee.consoleMessage("A network variable under the index of \"" + variableString.toString(event) + "\" returned a value that could not be handled.");
-				Skungee.consoleMessage("This could be due to an old format, in that case please reset this value or reset it.");
-				Skungee.consoleMessage("Report this type to the developers of Skungee: &f" + variable.getClass().getName());
+				Skungee.getPlatform().consoleMessage("A network variable under the index of \"" + variableString.toString(event) + "\" returned a value that could not be handled.");
+				Skungee.getPlatform().consoleMessage("This could be due to an old format, in that case please reset this value or reset it.");
+				Skungee.getPlatform().consoleMessage("Report this type to the developers of Skungee: &f" + variable.getClass().getName());
 				return;
 			}
 			Set<Object> objects = new HashSet<Object>();
@@ -96,7 +97,7 @@ public class EffAsyncNetworkVariable extends SkungeeEffect {
 			}
 			if (objects.isEmpty()) return;
 			Object[] delta = objects.toArray(new Object[objects.size()]);
-			Bukkit.getScheduler().runTask(Skungee.getInstance(), () -> {
+			Bukkit.getScheduler().runTask(SkungeeSpigot.getInstance(), () -> {
 				if (delta == null || delta.length > 0) {
 					variable.change(event, delta, ChangeMode.SET);
 				}

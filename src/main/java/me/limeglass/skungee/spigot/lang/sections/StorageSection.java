@@ -7,7 +7,6 @@ import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.lang.TriggerItem;
 import ch.njol.skript.lang.TriggerSection;
-import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.lang.ExpressionData;
 
 public class StorageSection extends TriggerSection {
@@ -25,7 +24,6 @@ public class StorageSection extends TriggerSection {
 		try {
 			setTriggerItems(ScriptLoader.loadItems(node));
 		} finally {
-			Skungee.consoleMessage("removed");
 			//ExprSectionValue.sections.remove(this);
 			ScriptLoader.currentSections.remove(ScriptLoader.currentSections.size() - 1);
 		}

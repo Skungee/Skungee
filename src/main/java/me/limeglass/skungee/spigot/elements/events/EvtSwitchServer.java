@@ -6,7 +6,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
-import me.limeglass.skungee.objects.events.SkungeePlayerSwitchServer;
+import me.limeglass.skungee.common.events.SkungeePlayerSwitchServer;
 import me.limeglass.skungee.spigot.elements.Events;
 
 public class EvtSwitchServer extends SkriptEvent {

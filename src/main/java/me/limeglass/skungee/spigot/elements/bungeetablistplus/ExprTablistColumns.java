@@ -7,8 +7,8 @@ import org.bukkit.event.Event;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import codecrafter47.bungeetablistplus.api.bungee.CustomTablist;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
@@ -25,7 +25,7 @@ public class ExprTablistColumns extends SkungeePropertyExpression<CustomTablist,
 	protected Number[] get(Event event, CustomTablist[] tablists) {
 		if (isNull(event))
 			return null;
-		SkungeePacket packet = new SkungeePacket(true, SkungeePacketType.BTLP_TABLISTCOLUMNS, tablists);
+		ServerPacket packet = new ServerPacket(true, ServerPacketType.BTLP_TABLISTCOLUMNS, tablists);
 		@SuppressWarnings("unchecked")
 		Set<Number> columns = (Set<Number>) sockets.send(packet);
 		return (columns != null) ? columns.toArray(new Number[columns.size()]) : null;

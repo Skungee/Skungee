@@ -4,8 +4,8 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -18,7 +18,7 @@ public class EffEnablePlugins extends SkungeeEffect {
 	protected void execute(Event event) {
 		if (areNull(event))
 			return;
-		sockets.send(new SkungeePacket(false, SkungeePacketType.ENABLEPLUGINS));
+		sockets.send(new ServerPacket(false, ServerPacketType.ENABLEPLUGINS));
 	}
 
 }

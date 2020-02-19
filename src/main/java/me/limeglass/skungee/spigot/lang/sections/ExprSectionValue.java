@@ -13,12 +13,11 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.TriggerSection;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
+import ch.njol.skript.lang.TriggerSection;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
-import me.limeglass.skungee.spigot.Skungee;
 import me.limeglass.skungee.spigot.lang.ExpressionData;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Disabled;
@@ -63,7 +62,6 @@ public class ExprSectionValue extends SkungeeExpression<Object> {
 	
 	@Override
 	protected Object[] get(Event event) {
-		Skungee.consoleMessage(sectionExpressions.toString(event, false));
 		String input = "" + parser.regexes.get(0).group();
 		int i = -1;
 		final Matcher matcher = Pattern.compile("^(.+)(-| )(\\d+)$").matcher(input);

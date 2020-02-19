@@ -7,9 +7,9 @@ import org.bukkit.event.Event;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.objects.SkungeeEnums.SkriptChangeMode;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
@@ -28,7 +28,7 @@ public class ExprBungeePlayerDisplayName extends SkungeePropertyExpression<Objec
 		if (isNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<String> names = (Set<String>) sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERDISPLAYNAME, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<String> names = (Set<String>) sockets.send(new ServerPacket(true, ServerPacketType.PLAYERDISPLAYNAME, Utils.toSkungeePlayers(skungeePlayers)));
 		return (names != null) ? names.toArray(new String[names.size()]) : null;
 	}
 
@@ -37,7 +37,7 @@ public class ExprBungeePlayerDisplayName extends SkungeePropertyExpression<Objec
 		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
 		if (isNull(event) || delta == null || changer == null)
 			return;
-		sockets.send(new SkungeePacket(false, SkungeePacketType.PLAYERDISPLAYNAME, (String) delta[0], null, changer, Utils.toSkungeePlayers(getExpr().getAll(event))));
+		sockets.send(new ServerPacket(false, ServerPacketType.PLAYERDISPLAYNAME, (String) delta[0], null, changer, Utils.toSkungeePlayers(getExpr().getAll(event))));
 	}
 
 }

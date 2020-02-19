@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.util.Timespan;
-import me.limeglass.skungee.objects.SkungeeTitle;
+import me.limeglass.skungee.common.objects.SkungeeTitle;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;

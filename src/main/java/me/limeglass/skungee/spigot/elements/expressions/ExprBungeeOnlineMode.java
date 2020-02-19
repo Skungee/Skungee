@@ -5,8 +5,8 @@ import org.bukkit.event.Event;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -21,7 +21,7 @@ public class ExprBungeeOnlineMode extends SkungeeExpression<Boolean> {
 
 	@Override
 	protected Boolean[] get(Event event) {
-		Boolean timeout = (Boolean) sockets.send(new SkungeePacket(true, SkungeePacketType.BUNGEEONLINEMODE));
+		Boolean timeout = (Boolean) sockets.send(new ServerPacket(true, ServerPacketType.BUNGEEONLINEMODE));
 		return (timeout != null) ? new Boolean[]{timeout} : null;
 	}
 

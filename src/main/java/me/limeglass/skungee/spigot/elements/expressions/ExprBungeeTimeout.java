@@ -5,8 +5,8 @@ import org.bukkit.event.Event;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -21,7 +21,7 @@ public class ExprBungeeTimeout extends SkungeeExpression<Number> {
 
 	@Override
 	protected Number[] get(Event event) {
-		Number timeout = (Number) sockets.send(new SkungeePacket(true, SkungeePacketType.BUNGEETIMEOUT));
+		Number timeout = (Number) sockets.send(new ServerPacket(true, ServerPacketType.BUNGEETIMEOUT));
 		return (timeout != null) ? new Number[]{timeout} : null;
 	}
 

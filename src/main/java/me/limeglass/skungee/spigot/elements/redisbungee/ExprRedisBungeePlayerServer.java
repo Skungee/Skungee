@@ -6,8 +6,8 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
@@ -24,7 +24,7 @@ public class ExprRedisBungeePlayerServer extends SkungeePropertyExpression<Objec
 		if (isNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<String> servers = (Set<String>) sockets.send(new SkungeePacket(true, SkungeePacketType.REDISPLAYERSERVER, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<String> servers = (Set<String>) sockets.send(new ServerPacket(true, ServerPacketType.REDISPLAYERSERVER, Utils.toSkungeePlayers(skungeePlayers)));
 		return (servers != null) ? servers.toArray(new String[servers.size()]) : null;
 	}
 

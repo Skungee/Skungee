@@ -10,9 +10,9 @@ import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
-import me.limeglass.skungee.spigot.Skungee;
-import me.limeglass.skungee.objects.events.SkungeePingEvent;
-import me.limeglass.skungee.objects.packets.ServerPingPacket;
+import me.limeglass.skungee.common.packets.ServerPingPacket;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
+import me.limeglass.skungee.spigot.events.SkungeePingEvent;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Changers;
 import me.limeglass.skungee.spigot.utils.annotations.Events;
@@ -63,7 +63,7 @@ public class ExprPingProtocol extends SkungeeExpression<String> {
 				if (version < 1) {
 					Skript.error("The protocol version " + version + " is an invalid entry.");
 					return;
-				} else if (!protocols.contains(version) && !Skungee.getInstance().getConfig().getBoolean("PingEventProtocolOverride", false)) {
+				} else if (!protocols.contains(version) && !SkungeeSpigot.getInstance().getConfig().getBoolean("PingEventProtocolOverride", false)) {
 					Skript.error("The protocol version " + version + " is not an accepted protocol version. You can disable this restriction in the configurations. The following are valid protocols: " + protocols);
 					return;
 				}

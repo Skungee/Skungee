@@ -6,8 +6,8 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
@@ -26,7 +26,7 @@ public class ExprBungeePlayerViewDIstance extends SkungeePropertyExpression<Obje
 		if (isNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<Number> distances = (Set<Number>) sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERVIEWDISTANCE, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<Number> distances = (Set<Number>) sockets.send(new ServerPacket(true, ServerPacketType.PLAYERVIEWDISTANCE, Utils.toSkungeePlayers(skungeePlayers)));
 		return (distances != null) ? distances.toArray(new Number[distances.size()]) : null;
 	}
 

@@ -7,9 +7,9 @@ import org.bukkit.event.Event;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.objects.SkungeeEnums.SkriptChangeMode;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Changers;
@@ -28,7 +28,7 @@ public class ExprBungeePlayerReconnectServer extends SkungeePropertyExpression<O
 		if (isNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<String> servers = (Set<String>) sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERRECONNECTSERVER, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<String> servers = (Set<String>) sockets.send(new ServerPacket(true, ServerPacketType.PLAYERRECONNECTSERVER, Utils.toSkungeePlayers(skungeePlayers)));
 		return (servers != null) ? servers.toArray(new String[servers.size()]) : null;
 	}
 
@@ -37,7 +37,7 @@ public class ExprBungeePlayerReconnectServer extends SkungeePropertyExpression<O
 		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
 		if (isNull(event) || delta == null || changer == null)
 			return;
-		sockets.send(new SkungeePacket(false, SkungeePacketType.PLAYERRECONNECTSERVER, (String) delta[0], null, changer, Utils.toSkungeePlayers(getExpr().getAll(event))));
+		sockets.send(new ServerPacket(false, ServerPacketType.PLAYERRECONNECTSERVER, (String) delta[0], null, changer, Utils.toSkungeePlayers(getExpr().getAll(event))));
 	}
 
 }

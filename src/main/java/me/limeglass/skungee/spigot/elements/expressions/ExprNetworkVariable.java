@@ -19,12 +19,13 @@ import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.StringMode;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
-import me.limeglass.skungee.objects.SkungeeVariable;
-import me.limeglass.skungee.objects.SkungeeVariable.Value;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.common.objects.SkungeeVariable;
+import me.limeglass.skungee.common.objects.SkungeeEnums.SkriptChangeMode;
+import me.limeglass.skungee.common.objects.SkungeeVariable.Value;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.wrappers.SkungeePlatform;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -81,25 +82,27 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 	@Override
 	@Nullable
 	protected Object[] get(Event event) {
-		Object variable = sockets.send(new SkungeePacket(true, SkungeePacketType.NETWORKVARIABLE, variableString.toString(event)));
+		Object variable = sockets.send(new ServerPacket(true, ServerPacketType.NETWORKVARIABLE, variableString.toString(event)));
 		if (variable == null)
 			return null;
 		if (!(variable instanceof Value[])) {
-			Skungee.consoleMessage("A network variable under the index of \"" + variableString.toString(event) + "\" returned a value that could not be handled.");
-			Skungee.consoleMessage("This could be due to an old format, in that case please reset this value or reset it.");
-			Skungee.consoleMessage("Report this type to the developers of Skungee: &f" + variable.getClass().getName());
+			SkungeePlatform platform = Skungee.getPlatform();
+			platform.consoleMessage("A network variable under the index of \"" + variableString.toString(event) + "\" returned a value that could not be handled.");
+			platform.consoleMessage("This could be due to an old format, in that case please reset this value or reset it.");
+			platform.consoleMessage("Report this type to the developers of Skungee: &f" + variable.getClass().getName());
 			return null;
 		}
 		ArrayList<Object> objects = new ArrayList<Object>();
 		for (Value value : (Value[]) variable) {
 			objects.add(Classes.deserialize(value.type, value.data));
 		}
-		if (objects.isEmpty()) return null;
+		if (objects.isEmpty())
+			return null;
 		return objects.toArray(new Object[objects.size()]);
 	}
 
 	@Override
-	public Class<?>[] acceptChange(final ChangeMode mode) {
+	public Class<?>[] acceptChange(ChangeMode mode) {
 		if (this.isSingle() && (mode == ChangeMode.ADD || mode == ChangeMode.REMOVE || mode == ChangeMode.REMOVE_ALL)) {
 			Skript.error("Skungee cannot " + mode.toString() + " values from a single variable. " + 
 					"Skungee would have to send two communication packets, thus resulting in performance loss. Please get, modify and set to " + mode.toString()
@@ -123,7 +126,7 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 			}
 		}
 		SkungeeVariable variable = new SkungeeVariable(variableString.toString(event), values);
-		sockets.send(new SkungeePacket(true, SkungeePacketType.NETWORKVARIABLE, variable, changer));
+		sockets.send(new ServerPacket(true, ServerPacketType.NETWORKVARIABLE, variable, changer));
 	}
 
 }

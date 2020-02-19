@@ -8,8 +8,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -26,7 +26,7 @@ public class ExprBungeeDisabledCommands extends SkungeeExpression<String> {
 		if (areNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		Collection<String> commands = (Collection<String>) sockets.send(new SkungeePacket(true, SkungeePacketType.DISABLEDCOMMANDS));
+		Collection<String> commands = (Collection<String>) sockets.send(new ServerPacket(true, ServerPacketType.DISABLEDCOMMANDS));
 		return (commands != null) ? commands.toArray(new String[commands.size()]) : null;
 	}
 

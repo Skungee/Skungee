@@ -8,8 +8,8 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
 
@@ -25,7 +25,7 @@ public class EffServerInstancesCreate extends SkungeeEffect {
 		List<Object> information = new ArrayList<Object>();
 		information.add(expressions.get(1).getSingle(event));
 		if (!areNull(event)) information.addAll(Arrays.asList(expressions.getSingle(event, Number.class, 0), expressions.getSingle(event, Number.class, 1)));
-		sockets.send(new SkungeePacket(false, SkungeePacketType.CREATESERVER, expressions.getAll(event, String.class, 0), information));
+		sockets.send(new ServerPacket(false, ServerPacketType.CREATESERVER, expressions.getAll(event, String.class, 0), information));
 	}
 
 }

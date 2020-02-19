@@ -21,8 +21,8 @@ import org.bukkit.entity.Player;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.util.Timespan;
-import me.limeglass.skungee.objects.SkungeePlayer;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.common.player.SkungeePlayer;
 
 public class Utils {
 
@@ -59,7 +59,7 @@ public class Utils {
 			method.setAccessible(true);
 			return (T) method.invoke(clazz, object.replace("\"", "").trim().replace(" ", "_").toUpperCase());
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException error) {
-			Skungee.consoleMessage("&cUnknown type " + object + " in " + clazz.getName());
+			Skungee.getPlatform().consoleMessage("&cUnknown type " + object + " in " + clazz.getName());
 			return null;
 		}
 	}
@@ -143,7 +143,7 @@ public class Utils {
 			port++;
 		}
 		if (lastException != null)
-			Skungee.exception(lastException, "Couldn't find a port between " + start + " and " + port);
+			Skungee.getPlatform().exception(lastException, "Couldn't find a port between " + start + " and " + port);
 		return -1;
 	}
 
@@ -168,7 +168,7 @@ public class Utils {
 			port++;
 		}
 		if (lastException != null)
-			Skungee.exception(lastException, "Couldn't find a port between " + start + " and " + port);
+			Skungee.getPlatform().exception(lastException, "Couldn't find a port between " + start + " and " + port);
 		return -1;
 	}
 
@@ -195,7 +195,7 @@ public class Utils {
 			port++;
 		}
 		if (lastException != null)
-			Skungee.exception(lastException, "Couldn't find a port between " + start + " and " + port);
+			Skungee.getPlatform().exception(lastException, "Couldn't find a port between " + start + " and " + port);
 		return ports;
 	}
 

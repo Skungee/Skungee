@@ -6,8 +6,8 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
@@ -24,7 +24,7 @@ public class ExprBungeePlayerName extends SkungeePropertyExpression<Object, Stri
 		if (isNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<String> names = (Set<String>) sockets.send(new SkungeePacket(true, SkungeePacketType.PLAYERNAME, Utils.toSkungeePlayers(skungeePlayers)));
+		Set<String> names = (Set<String>) sockets.send(new ServerPacket(true, ServerPacketType.PLAYERNAME, Utils.toSkungeePlayers(skungeePlayers)));
 		return (names != null) ? names.toArray(new String[names.size()]) : null;
 	}
 

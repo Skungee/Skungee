@@ -9,10 +9,10 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import me.limeglass.skungee.objects.SkungeeEnums.SkriptChangeMode;
-import me.limeglass.skungee.objects.SkungeeEnums.State;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
-import me.limeglass.skungee.objects.packets.SkungeeYamlPacket;
+import me.limeglass.skungee.common.objects.SkungeeEnums.SkriptChangeMode;
+import me.limeglass.skungee.common.objects.SkungeeEnums.State;
+import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.packets.YamlPacket;
 import me.limeglass.skungee.spigot.lang.ExpressionData;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.Utils;
@@ -49,7 +49,7 @@ public class ExprYaml extends SkungeeExpression<Object> {
 	protected Object[] get(Event event) {
 		if (areNull(event))
 			return null;
-		Object[] value = (Object[]) sockets.send(new SkungeeYamlPacket(SkungeePacketType.YAML, expressions.getSingle(event, String.class, 0), expressions.getSingle(event, String.class, 1), state));
+		Object[] value = (Object[]) sockets.send(new YamlPacket(ServerPacketType.YAML, expressions.getSingle(event, String.class, 0), expressions.getSingle(event, String.class, 1), state));
 		if (value == null)
 			return null;
 		return value;
@@ -73,7 +73,7 @@ public class ExprYaml extends SkungeeExpression<Object> {
 		SkriptChangeMode changer = Utils.getEnum(SkriptChangeMode.class, mode.toString());
 		if (changer == null || delta == null || areNull(event))
 			return;
-		sockets.send(new SkungeeYamlPacket(SkungeePacketType.YAML, expressions.getSingle(event, String.class, 0), expressions.getSingle(event, String.class, 1), delta,  state, changer));
+		sockets.send(new YamlPacket(ServerPacketType.YAML, expressions.getSingle(event, String.class, 0), expressions.getSingle(event, String.class, 1), delta,  state, changer));
 	}
 
 }

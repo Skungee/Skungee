@@ -7,7 +7,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.localization.Language;
 import ch.njol.skript.util.EnumUtils;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
 import me.limeglass.skungee.spigot.lang.SkungeeParser;
 
 public class LangEnumParser<T extends Enum<T>> extends SkungeeParser<T> {
@@ -26,11 +27,11 @@ public class LangEnumParser<T extends Enum<T>> extends SkungeeParser<T> {
 			for (final T e : clazz.getEnumConstants()) {
 				enumNames.addAll(Arrays.asList(Language.get_(variableNamePattern + "s" + "." + e.name())));
 			}
-			Skungee.getInstance().getConfiguration("syntax").set("Syntax.Enums." + clazz.getSimpleName() + ".names", enumNames);
+			SkungeeSpigot.getInstance().getConfiguration("syntax").set("Syntax.Enums." + clazz.getSimpleName() + ".names", enumNames);
 		} catch (NullPointerException error) {
-			Skungee.consoleMessage("&cThe class: " + clazz.getName() +  " for classinfo name: " + variableNamePattern + " isn't an Enum!");
+			Skungee.getPlatform().consoleMessage("&cThe class: " + clazz.getName() +  " for classinfo name: " + variableNamePattern + " isn't an Enum!");
 		}
-		Skungee.save("syntax");
+		SkungeeSpigot.save("syntax");
 	}
 
 	@Nullable

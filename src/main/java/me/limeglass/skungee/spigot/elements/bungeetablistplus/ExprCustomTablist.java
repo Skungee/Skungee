@@ -5,8 +5,8 @@ import org.bukkit.event.Event;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import codecrafter47.bungeetablistplus.api.bungee.CustomTablist;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Disabled;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -26,7 +26,7 @@ public class ExprCustomTablist extends SkungeeExpression<CustomTablist> {
 		int size = 80;
 		if (!areNull(event))
 			size = expressions.getInt(event, 0);
-		SkungeePacket packet = new SkungeePacket(true, SkungeePacketType.BTLP_TABLIST, size);
+		ServerPacket packet = new ServerPacket(true, ServerPacketType.BTLP_TABLIST, size);
 		return (CustomTablist[]) sockets.send(packet);
 	}
 

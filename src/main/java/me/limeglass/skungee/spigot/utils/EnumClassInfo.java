@@ -5,7 +5,10 @@ import ch.njol.skript.classes.EnumSerializer;
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.common.wrappers.SkungeePlatform;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +52,7 @@ public class EnumClassInfo<E extends Enum<E>> {
 
 	public void register() {
 		if (Classes.getExactClassInfo(enumType) == null) {
-			if (Skungee.getInstance().getConfig().getBoolean("UseEnglishEnums")) {
+			if (SkungeeSpigot.getInstance().getConfig().getBoolean("UseEnglishEnums")) {
 				Classes.registerClass(classInfo.user(user).parser(new LangEnumParser<E>(codeName, enumType)).serializer(new EnumSerializer<>(enumType)));
 			} else {
 				Classes.registerClass(classInfo.user(user).parser(new Parser<E>() {
@@ -88,16 +91,19 @@ public class EnumClassInfo<E extends Enum<E>> {
 				for (final E e : enumType.getEnumConstants()) {
 					enums.add(e.name());
 				}
-				Skungee.getInstance().getConfiguration("syntax").set("Syntax.Enums." + enumType.getSimpleName() + ".enums", enums);
+				SkungeeSpigot.getInstance().getConfiguration("syntax").set("Syntax.Enums." + enumType.getSimpleName() + ".enums", enums);
 			}
 			enumDebug("&5Registered Enum '" + codeName + "' with return class " + enumType.getName(), codeName, enumType);
 		}
 	}
 	
 	private void enumDebug(String message, String codeName, Class<?> clazz) {
-		if (codeName.equalsIgnoreCase(Skungee.getInstance().getConfig().getString("syntaxDebug"))) Skungee.debugMessage("&eRegistered syntaxDebug found enum classinfo: " + codeName + " (" + clazz.getCanonicalName() + ")");
-		else Skungee.debugMessage("&5Registered Enum '" + codeName + "' with return class " + enumType.getName());
-		Skungee.getInstance().getConfiguration("syntax").set("Syntax.Enums." + clazz.getSimpleName() + ".user", user);
-		Skungee.save("syntax");
+		SkungeePlatform platform = Skungee.getPlatform();
+		if (codeName.equalsIgnoreCase(SkungeeSpigot.getInstance().getConfig().getString("syntaxDebug")))
+			platform.debugMessage("&eRegistered syntaxDebug found enum classinfo: " + codeName + " (" + clazz.getCanonicalName() + ")");
+		else
+			platform.debugMessage("&5Registered Enum '" + codeName + "' with return class " + enumType.getName());
+		SkungeeSpigot.getInstance().getConfiguration("syntax").set("Syntax.Enums." + clazz.getSimpleName() + ".user", user);
+		SkungeeSpigot.save("syntax");
 	}
 }

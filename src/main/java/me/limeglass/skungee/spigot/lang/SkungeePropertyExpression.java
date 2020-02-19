@@ -13,7 +13,8 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
 import me.limeglass.skungee.spigot.Syntax;
 import me.limeglass.skungee.spigot.sockets.Sockets;
 import me.limeglass.skungee.spigot.utils.Utils;
@@ -25,7 +26,7 @@ import me.limeglass.skungee.spigot.utils.annotations.Settable;
 
 public abstract class SkungeePropertyExpression<F, T> extends PropertyExpression<F, T> {
 
-	protected Sockets sockets = Skungee.getInstance().getSockets();
+	protected Sockets sockets = SkungeeSpigot.getInstance().getSockets();
 	private List<Object> values = new ArrayList<Object>();
 	protected ExpressionData expressions;
 	protected Class<T> expressionClass;
@@ -59,8 +60,8 @@ public abstract class SkungeePropertyExpression<F, T> extends PropertyExpression
 	public String toString(Event event, boolean debug) {
 		String modSyntax = Syntax.isModified(getClass()) ? "Modified syntax: " + Arrays.toString(getSyntax()) : Arrays.toString(getSyntax());
 		if (event != null)
-			Skungee.debugMessage(getClass().getSimpleName() + " - " + modSyntax + " (" + event.getEventName() + ")" + " Data: " + Arrays.toString(values.toArray()));
-		return Skungee.getNameplate() + getClass().getSimpleName() + ": the " + getPropertyName() + " (of|from) " + getExpr().toString(event, debug);
+			Skungee.getPlatform().debugMessage(getClass().getSimpleName() + " - " + modSyntax + " (" + event.getEventName() + ")" + " Data: " + Arrays.toString(values.toArray()));
+		return SkungeeSpigot.getNameplate() + getClass().getSimpleName() + ": the " + getPropertyName() + " (of|from) " + getExpr().toString(event, debug);
 	}
 
 	@Override
@@ -79,10 +80,10 @@ public abstract class SkungeePropertyExpression<F, T> extends PropertyExpression
 		if (getExpr() == null)
 			return true;
 		if (getExpr().isSingle() && getExpr().getSingle(event) == null) {
-			Skungee.debugMessage("The property expression was null: " + getExpr().toString(event, true));
+			Skungee.getPlatform().debugMessage("The property expression was null: " + getExpr().toString(event, true));
 			return true;
 		} else if (getExpr().getAll(event).length == 0 || getExpr().getAll(event) == null) {
-			Skungee.debugMessage("The property expression was null: " + getExpr().toString(event, true));
+			Skungee.getPlatform().debugMessage("The property expression was null: " + getExpr().toString(event, true));
 			return true;
 		}
 		return false;

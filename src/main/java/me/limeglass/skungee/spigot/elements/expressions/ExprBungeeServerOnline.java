@@ -6,8 +6,8 @@ import org.bukkit.event.Event;
 
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.spigot.lang.SkungeePropertyExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Properties;
 import me.limeglass.skungee.spigot.utils.annotations.PropertiesAddition;
@@ -23,7 +23,7 @@ public class ExprBungeeServerOnline extends SkungeePropertyExpression<String, Bo
 		if (isNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		List<Boolean> onlines = (List<Boolean>) sockets.send(new SkungeePacket(true, SkungeePacketType.ISSERVERONLINE, servers));
+		List<Boolean> onlines = (List<Boolean>) sockets.send(new ServerPacket(true, ServerPacketType.ISSERVERONLINE, servers));
 		return (onlines != null) ? onlines.toArray(new Boolean[onlines.size()]) : null;
 	}
 

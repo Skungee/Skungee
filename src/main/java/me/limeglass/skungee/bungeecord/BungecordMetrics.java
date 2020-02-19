@@ -4,7 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import net.md_5.bungee.api.ProxyServer;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.common.wrappers.ProxyPlatform;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -172,7 +173,7 @@ public class BungecordMetrics {
 			public void run() {
 				// The data collection (e.g. for custom graphs) is done sync
 				// Don't be afraid! The connection to the bStats server is still async, only the stats collection is sync ;)
-				ProxyServer.getInstance().getScheduler().schedule(Skungee.getInstance(), new Runnable() {
+				((ProxyPlatform)Skungee.getPlatform()).schedule(new Runnable() {
 					@Override
 					public void run() {
 						submitData();

@@ -7,7 +7,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.TriggerItem;
 import ch.njol.skript.util.Timespan;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -31,7 +31,7 @@ public class EffWaitUntil extends SkungeeEffect {
 			walk(getNext(), event);
 			return;
 		}
-		Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), () -> check(event, timeout - 1));
+		Bukkit.getScheduler().runTaskAsynchronously(SkungeeSpigot.getInstance(), () -> check(event, timeout - 1));
 	}
 	
 	@Override

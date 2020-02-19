@@ -12,18 +12,18 @@ import java.util.concurrent.FutureTask;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
 
 public class PacketQueue {
 
-	private final Set<SkungeePacket> queue = new HashSet<>();
+	private final Set<ServerPacket> queue = new HashSet<>();
 	private final BukkitScheduler scheduler;
-	private final Skungee instance;
+	private final SkungeeSpigot instance;
 	private final Sockets sockets;
 	private int task, delay;
 
-	public PacketQueue(FileConfiguration configuration, Skungee instance, Sockets sockets) {
+	public PacketQueue(FileConfiguration configuration, SkungeeSpigot instance, Sockets sockets) {
 		this.delay = configuration.getInt("queue.delay", 100);
 		this.scheduler = instance.getServer().getScheduler();
 		this.instance = instance;
@@ -34,7 +34,7 @@ public class PacketQueue {
 		scheduler.cancelTask(task);
 	}
 
-	public Object wait(SkungeePacket packet) {
+	public Object wait(ServerPacket packet) {
 		FutureTask<Object> future = new FutureTask<>(new WaitQueue(packet));
 		sockets.getExecutor().execute(future);
 		try {
@@ -45,8 +45,8 @@ public class PacketQueue {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void queue(SkungeePacket... packets) {
-		for (SkungeePacket packet : packets)
+	public void queue(ServerPacket... packets) {
+		for (ServerPacket packet : packets)
 			queue.add(packet);
 		if (scheduler.isCurrentlyRunning(task))
 			return;
@@ -58,9 +58,9 @@ public class PacketQueue {
 					task = -1;
 					return;
 				}
-				Iterator<SkungeePacket> iterator = queue.iterator();
+				Iterator<ServerPacket> iterator = queue.iterator();
 				while (iterator.hasNext()) {
-					SkungeePacket packet = iterator.next();
+					ServerPacket packet = iterator.next();
 					if (System.currentTimeMillis() - sockets.getLastSent() > delay + 1) {
 						sockets.send_i(packet);
 						iterator.remove();
@@ -77,9 +77,9 @@ public class PacketQueue {
 
 	private class WaitQueue implements Callable<Object> {
 
-		private final SkungeePacket packet;
+		private final ServerPacket packet;
 		
-		public WaitQueue(SkungeePacket packet) {
+		public WaitQueue(ServerPacket packet) {
 			this.packet = packet;
 		}
 		

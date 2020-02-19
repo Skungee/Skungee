@@ -24,7 +24,7 @@ import java.util.Set;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import me.limeglass.skungee.bungeecord.utils.HasteConfigurationReader;
+import me.limeglass.skungee.proxy.utils.HasteConfigurationReader;
 import me.limeglass.skungee.spigot.utils.Utils;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.config.Configuration;
@@ -34,15 +34,15 @@ import net.md_5.bungee.config.YamlConfiguration;
 public class SkungeeBin {
 
 	private final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-	private final Skungee instance;
+	private final SkungeeBungee instance;
 	private URL url;
 
-	public SkungeeBin(Skungee instance) {
+	public SkungeeBin(SkungeeBungee instance) {
 		this.instance = instance;
 		try {
 			this.url = new URL("http://skungee.com/documents");
 		} catch (IOException e) {
-			Skungee.exception(e, "There was an error attempting to grab skungee.com");
+			instance.exception(e, "There was an error attempting to grab skungee.com");
 		}
 		InputStream format = instance.getResourceAsStream("format.yml");
 		byte[] buffer = new byte[1024];
@@ -53,10 +53,11 @@ public class SkungeeBin {
 			}
 			bytes.flush();
 		} catch (IOException e) {
-			Skungee.exception(e, "There was an error attempting to read the format.yml");
+			instance.exception(e, "There was an error attempting to read the format.yml");
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public String createHaste() {
 		InputStream format = new ByteArrayInputStream(bytes.toByteArray());
 		Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(format);
@@ -90,7 +91,7 @@ public class SkungeeBin {
 			configurationReader.add("\n Bungeecord Skungee configuratons:");
 			configurationReader.add(new BufferedReader(new InputStreamReader(new FileInputStream(file))));
 		} catch (FileNotFoundException e) {
-			Skungee.exception(e, "There was an error attempting to read the config.yml");
+			instance.exception(e, "There was an error attempting to read the config.yml");
 		}
 		return configurationReader.finish();
 	}
@@ -130,7 +131,7 @@ public class SkungeeBin {
 					return "http://skungee.com/" + key;
 				}
 			} catch (IOException e) {
-				Skungee.exception(e, "There was an error attempting to upload to skungee.com");
+				instance.exception(e, "There was an error attempting to upload to skungee.com");
 			}
 		}
 		return null;

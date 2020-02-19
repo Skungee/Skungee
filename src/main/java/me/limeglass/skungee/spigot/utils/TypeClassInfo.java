@@ -7,7 +7,7 @@ import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.expressions.base.EventValueExpression;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
 
 public class TypeClassInfo<T> {
 
@@ -72,7 +72,7 @@ public class TypeClassInfo<T> {
 			}}).serializeAs(clazz);
 			if (classInfo.getSerializer() == null) classInfo.serializeAs(null);
 			Classes.registerClass(classInfo);
-			Skungee.debugMessage("&5Registered Type '" + codeName + "' with return class " + clazz.getName());
+			Skungee.getPlatform().debugMessage("&5Registered Type '" + codeName + "' with return class " + clazz.getName());
 		}
 		return classInfo;
 	}

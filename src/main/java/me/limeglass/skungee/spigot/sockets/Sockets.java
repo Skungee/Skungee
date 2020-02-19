@@ -26,26 +26,26 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import me.limeglass.skungee.EncryptionUtil;
-import me.limeglass.skungee.UniversalSkungee;
-import me.limeglass.skungee.objects.SkungeePlayer;
-import me.limeglass.skungee.objects.events.SkungeeReturnedEvent;
-import me.limeglass.skungee.objects.events.SkungeeSendingEvent;
-import me.limeglass.skungee.objects.packets.HandshakePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacket;
-import me.limeglass.skungee.objects.packets.SkungeePacketType;
-import me.limeglass.skungee.spigot.Skungee;
+import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.common.packets.HandshakePacket;
+import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.player.PacketPlayer;
+import me.limeglass.skungee.spigot.SkungeeSpigot;
+import me.limeglass.skungee.spigot.events.SkungeeReturnedEvent;
+import me.limeglass.skungee.spigot.events.SkungeeSendingEvent;
 
 public class Sockets {
 
 	private final int port, attempts, delay, handshake, heartbeat, keepAlive;
-	private final Set<SkungeePacket> unsent = new HashSet<>(); // Will only ever be effects.
+	private final Set<ServerPacket> unsent = new HashSet<>(); // Will only ever be effects.
 	private long last = System.currentTimeMillis();
 	private final FileConfiguration configuration;
 	private int heartbeatTask, keepAliveTask;
 	private final BukkitScheduler scheduler;
 	private final ExecutorService executor;
 	private PacketQueue packetQueue;
-	private final Skungee instance;
+	private final SkungeeSpigot instance;
 	private final Server server;
 	private boolean connected;
 	private final String host;
@@ -53,7 +53,7 @@ public class Sockets {
 
 	//TODO create a system to cache failed packets, It already does but it gives up after a few times and lets it go.
 
-	public Sockets(Skungee instance) {
+	public Sockets(SkungeeSpigot instance) {
 		this.instance = instance;
 		this.server = instance.getServer();
 		this.scheduler = server.getScheduler();
@@ -85,7 +85,7 @@ public class Sockets {
 
 	@SuppressWarnings("deprecation")
 	public void keepAlive() {
-		Skungee.consoleMessage("&6Going into keep alive mode...");
+		instance.consoleMessage("&6Going into keep alive mode...");
 		keepAliveTask = scheduler.scheduleAsyncRepeatingTask(instance, new Runnable() {
 			@SuppressWarnings("resource")
 			@Override
@@ -93,7 +93,7 @@ public class Sockets {
 				try {
 					new Socket(host, port);
 					Bukkit.getScheduler().cancelTask(keepAliveTask);
-					Skungee.consoleMessage("Connection established again!");
+					instance.consoleMessage("Connection established again!");
 					connect();
 				} catch (IOException e) {}
 			}
@@ -102,8 +102,8 @@ public class Sockets {
 
 	@SuppressWarnings("deprecation")
 	private void connect() {
-		Set<SkungeePlayer> whitelisted = server.getWhitelistedPlayers().stream()
-				.map(player -> new SkungeePlayer(true, player.getUniqueId(), player.getName()))
+		Set<PacketPlayer> whitelisted = server.getWhitelistedPlayers().stream()
+				.map(player -> new PacketPlayer(player.getUniqueId(), player.getName()))
 				.collect(Collectors.toSet());
 		Optional<ServerSocket> reciever = instance.getReciever();
 		HandshakePacket packet = new HandshakePacket.Builder(whitelisted)
@@ -117,9 +117,9 @@ public class Sockets {
 		scheduler.runTaskAsynchronously(instance, () -> {
 			Optional<Socket> optional = getSocketConnection();
 			if (!optional.isPresent()) {
-				Skungee.consoleMessage("&cThere was no socket found or was denied access at " + host + ":" + port);
+				instance.consoleMessage("&cThere was no socket found or was denied access at " + host + ":" + port);
 				if (configuration.getBoolean("connection.disable", false)) {
-					Skungee.consoleMessage("&cSkungee is disabling...");
+					instance.consoleMessage("&cSkungee is disabling...");
 					Bukkit.getPluginManager().disablePlugin(instance);
 					return;
 				}
@@ -131,10 +131,10 @@ public class Sockets {
 				String state = send(packet, String.class);
 				if (state != null && (state.equals("CONNECTED") || state.equals("ALREADY"))) {
 					connected = true;
-					Skungee.consoleMessage("Successfully connected to the Skungee on Bungeecord!");
+					instance.consoleMessage("Successfully connected to the Skungee on Bungeecord!");
 					break;
 				}
-				Skungee.consoleMessage("Ping packet had no response, configurion for the connection to Bungeecord Skungee may not be valid or blocked. Attempting to try again... " + i + "/5");
+				instance.consoleMessage("Ping packet had no response, configurion for the connection to Bungeecord Skungee may not be valid or blocked. Attempting to try again... " + i + "/5");
 				try {
 					Thread.sleep(handshake);
 				} catch (InterruptedException e) {}
@@ -147,10 +147,8 @@ public class Sockets {
 			heartbeatTask = scheduler.scheduleAsyncRepeatingTask(instance, new Runnable() {
 				@Override
 				public void run() {
-					Object answer = send(new SkungeePacket(true, SkungeePacketType.HEARTBEAT, server.getPort()));
-					if (answer == null)
-						return;
-					if ((boolean) answer)
+					Object answer = send(new ServerPacket(true, ServerPacketType.HEARTBEAT, server.getPort()));
+					if (answer == null || (boolean) answer)
 						restart();
 				}
 			}, 1, heartbeat);
@@ -161,7 +159,21 @@ public class Sockets {
 		if (bungeecord != null && !bungeecord.isClosed())
 			return Optional.ofNullable(bungeecord);
 		try {
-			FutureTask<Optional<Socket>> future = new FutureTask<>(new SocketConnection());
+			FutureTask<Optional<Socket>> future = new FutureTask<>(new Callable<Optional<Socket>>() {
+				@Override
+				public Optional<Socket> call() throws Exception {
+					for (int i = 0; i < attempts; i++) {
+						try {
+							return Optional.of(new Socket(host, port));
+						} catch (IOException e) {
+							try {
+								Thread.sleep(delay);
+							} catch (InterruptedException e1) {}
+						}
+					}
+					return Optional.empty();
+				}
+			});
 			executor.execute(future);
 			Optional<Socket> optional = future.get();
 			if (optional.isPresent())
@@ -173,24 +185,24 @@ public class Sockets {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T send(SkungeePacket packet, Class<T> expected) {
+	public <T> T send(ServerPacket packet, Class<T> expected) {
 		Object object = send(packet);
 		if (object == null)
 			return null;
 		if (expected.isInstance(object))
 			return (T) object;
-		throw new IllegalArgumentException("The packet return type for " + UniversalSkungee.getPacketDebug(packet) + " was not the expected " + expected.getName() +
+		throw new IllegalArgumentException("The packet return type for " + Skungee.getPacketDebug(packet) + " was not the expected " + expected.getName() +
 				", it was " + object.getClass().getName());
 	}
 
-	public Object send(SkungeePacket packet) {
+	public Object send(ServerPacket packet) {
 		new Thread(() -> {
 			SkungeeSendingEvent event = new SkungeeSendingEvent(packet);
 			Bukkit.getPluginManager().callEvent(event);
 		});
 		if (packet.isReturnable()) {
 			Supplier<Object> supplier = () -> {
-				if (connected || packet.getType() == SkungeePacketType.HANDSHAKE)
+				if (connected || packet.getType() == ServerPacketType.HANDSHAKE)
 					return send_i(packet);
 				return null;
 			};
@@ -213,7 +225,7 @@ public class Sockets {
 		return null;
 	}
 
-	public Object send_i(SkungeePacket packet) {
+	public Object send_i(ServerPacket packet) {
 		Optional<Socket> optional = getSocketConnection();
 		if (!optional.isPresent()) {
 			if (configuration.getBoolean("hault", false)) {
@@ -221,10 +233,10 @@ public class Sockets {
 			} else {
 				if (configuration.getBoolean("queue.infinite-async-queue"))
 					return packetQueue.wait(packet);
-				Skungee.consoleMessage("Could not establish connection to Skungee on the Bungeecord!");
+				instance.consoleMessage("Could not establish connection to Skungee on the Bungeecord!");
 				Bukkit.getScheduler().cancelTask(heartbeatTask);
 				unsent.add(packet);
-				Skungee.consoleMessage("&6Attempting to reconnect to Skungee...");
+				instance.consoleMessage("&6Attempting to reconnect to Skungee...");
 				restart();
 			}
 			return null;
@@ -232,20 +244,20 @@ public class Sockets {
 		bungeecord = optional.get();
 		try {
 			if (!unsent.isEmpty()) {
-				Iterator<SkungeePacket> iterator = unsent.iterator();
+				Iterator<ServerPacket> iterator = unsent.iterator();
 				while (iterator.hasNext()) {
-					SkungeePacket effect = iterator.next();
+					ServerPacket effect = iterator.next();
 					send(effect);
 					iterator.remove();
 				}
 			}
-			EncryptionUtil encryption = Skungee.getInstance().getEncrypter();
+			EncryptionUtil encryption = SkungeeSpigot.getInstance().getEncrypter();
 			String algorithm = configuration.getString("security.encryption.cipherAlgorithm", "AES/CBC/PKCS5Padding");
 			String keyString = configuration.getString("security.encryption.cipherKey", "insert 16 length");
 			if (!configuration.getBoolean("IgnoreSpamPackets", true)) {
-				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
-			} else if (packet.getType() != SkungeePacketType.HEARTBEAT) {
-				Skungee.debugMessage("Sending " + UniversalSkungee.getPacketDebug(packet));
+				instance.debugMessage("Sending " + Skungee.getPacketDebug(packet));
+			} else if (packet.getType() != ServerPacketType.HEARTBEAT) {
+				instance.debugMessage("Sending " + Skungee.getPacketDebug(packet));
 			}
 			if (configuration.getBoolean("security.password.enabled", false)) {
 				byte[] password = encryption.serialize(configuration.getString("security.password.password"));
@@ -253,7 +265,7 @@ public class Sockets {
 					if (configuration.getBoolean("security.password.hashFile", false) && encryption.isFileHashed()) {
 						password = encryption.getHashFromFile();
 					} else {
-						password = encryption.hash();
+						password = encryption.hashPassword();
 					}
 				}
 				if (password != null)
@@ -278,7 +290,7 @@ public class Sockets {
 					value = objectInputStream.readObject();
 				}
 				SkungeeReturnedEvent returned = new SkungeeReturnedEvent(packet, value);
-				Bukkit.getScheduler().runTaskAsynchronously(Skungee.getInstance(), () -> Bukkit.getPluginManager().callEvent(returned));
+				Bukkit.getScheduler().runTaskAsynchronously(SkungeeSpigot.getInstance(), () -> Bukkit.getPluginManager().callEvent(returned));
 				objectOutputStream.close();
 				objectInputStream.close();
 				bungeecord.close();
@@ -306,28 +318,10 @@ public class Sockets {
 			try {
 				bungeecord.close();
 			} catch (IOException e) {
-				Skungee.exception(e, "&cError closing main socket.");
+				instance.exception(e, "&cError closing main socket.");
 			}
 		}
 		connected = false;
-	}
-
-	private class SocketConnection implements Callable<Optional<Socket>> {
-
-		@Override
-		public Optional<Socket> call() throws Exception {
-			for (int i = 0; i < attempts; i++) {
-				try {
-					return Optional.of(new Socket(host, port));
-				} catch (IOException e) {
-					try {
-						Thread.sleep(delay);
-					} catch (InterruptedException e1) {}
-				}
-			}
-			return Optional.empty();
-		}
-
 	}
 
 }

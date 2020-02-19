@@ -35,10 +35,10 @@ public class Syntax {
 		else if (PropertyExpression.class.isAssignableFrom(syntaxClass))
 			type = "PropertyExpressions";
 		String node = "Syntax." + type + "." + syntaxClass.getSimpleName() + ".";
-		FileConfiguration syntaxConfiguration = Skungee.getInstance().getConfiguration("syntax");
+		FileConfiguration syntaxConfiguration = SkungeeSpigot.getInstance().getConfiguration("syntax");
 		if (!syntaxConfiguration.isSet(node + "enabled")) {
 			syntaxConfiguration.set(node + "enabled", true);
-			Skungee.save("syntax");
+			SkungeeSpigot.save("syntax");
 		}
 		if (syntaxClass.isAnnotationPresent(Changers.class) || syntaxClass.isAnnotationPresent(AllChangers.class)) {
 			if (syntaxClass.isAnnotationPresent(AllChangers.class))
@@ -47,21 +47,21 @@ public class Syntax {
 				ChangeMode[] changers = syntaxClass.getAnnotation(Changers.class).value();
 				syntaxConfiguration.set(node + "changers", Arrays.toString(changers));
 			}
-			Skungee.save("syntax");
+			SkungeeSpigot.save("syntax");
 		}
 		if (syntaxClass.isAnnotationPresent(Description.class)) {
 			String[] descriptions = syntaxClass.getAnnotation(Description.class).value();
 			syntaxConfiguration.set(node + "description", descriptions[0]);
-			Skungee.save("syntax");
+			SkungeeSpigot.save("syntax");
 		}
 		if (!syntaxConfiguration.getBoolean(node + "enabled")) {
-			if (Skungee.getInstance().getConfig().getBoolean("NotRegisteredSyntax", false))
-				Skungee.consoleMessage(node.toString() + " didn't register!");
+			if (SkungeeSpigot.getInstance().getConfig().getBoolean("NotRegisteredSyntax", false))
+				SkungeeSpigot.consoleMessage(node.toString() + " didn't register!");
 			return null;
 		}
 		if (!syntaxConfiguration.isSet(node + "syntax")) {
 			syntaxConfiguration.set(node + "syntax", syntax);
-			Skungee.save("syntax");
+			SkungeeSpigot.save("syntax");
 			return add(syntaxClass.getSimpleName(), syntax);
 		}
 		List<String> data = syntaxConfiguration.getStringList(node + "syntax");
