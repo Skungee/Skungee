@@ -32,7 +32,8 @@ public class PlayerTimeManager {
 				String uuid = player.getUniqueId() + "";
 				PlayerTime time = database.get(uuid, new PlayerTime(player.getUniqueId()));
 				if (time == null) {
-					database.put(uuid, new PlayerTime(player.getUniqueId()));
+					time = new PlayerTime(player.getUniqueId());
+					database.put(uuid, time);
 					return;
 				}
 				time.increment(player.getServer().getInfo().getName());
