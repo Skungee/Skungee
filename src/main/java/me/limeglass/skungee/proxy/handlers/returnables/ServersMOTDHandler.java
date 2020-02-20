@@ -11,20 +11,21 @@ import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 import me.limeglass.skungee.proxy.sockets.ServerTracker;
 
-public class ServersMOTDHandler extends SkungeeProxyHandler {
+public class ServersMOTDHandler extends SkungeeProxyHandler<Set<String>> {
 
 	public ServersMOTDHandler() {
 		super(Platform.ANY_PROXY, ServerPacketType.SERVERMOTD);
 	}
 
 	@Override
-	public Object handlePacket(ServerPacket packet, InetAddress address) {
+	public Set<String> handlePacket(ServerPacket packet, InetAddress address) {
 		Set<String> motds = new HashSet<>();
 		if (packet.getObject() == null)
 			return motds;
+		ServerTracker tracker = proxy.getServerTracker();
 		for (String server : (String[]) packet.getObject()) {
-			for (SkungeeServer tracked : ServerTracker.get(server)) {
-				if (tracked == null || !ServerTracker.isResponding(tracked))
+			for (SkungeeServer tracked : tracker.get(server)) {
+				if (tracked == null || !tracker.isResponding(tracked))
 					continue;
 				String motd = tracked.getMotd();
 				if (motd != null)

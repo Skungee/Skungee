@@ -21,6 +21,7 @@ import me.limeglass.skungee.common.packets.ProxyPacketType;
 import me.limeglass.skungee.common.packets.ServerInstancesPacket;
 import me.limeglass.skungee.common.packets.ServerInstancesPacketType;
 import me.limeglass.skungee.common.packets.ServerPacket;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.common.player.SkungeePlayer;
 import me.limeglass.skungee.proxy.sockets.ProxySockets;
 import me.limeglass.skungee.proxy.sockets.ServerInstancesSockets;
@@ -52,28 +53,13 @@ public class SkungeePacketHandler {
 			}
 		}
 		switch (packet.getType()) {
-			case KICKPLAYERS:
-				String message = "Kicked from the bungeecord network.";
-				if (packet.getObject() != null) message = (String) packet.getObject();
-				for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers())
-					p.disconnect(new TextComponent(message));
-				break;
-			case KICKPLAYER:
-				if (!players.isEmpty()) {
-					String msg = "Kicked from the bungeecord network.";
-					if (packet.getObject() != null) msg = (String) packet.getObject();
-					for (ProxiedPlayer player : players) {
-						player.disconnect(new TextComponent(msg));
-					}
-				}
-				break;
 			case SERVERPLAYERS:
 				if (packet.getObject() != null) {
-					Set<SkungeePlayer> skungeePlayers = new HashSet<>();
+					Set<PacketPlayer> skungeePlayers = new HashSet<>();
 					for (String server : (String[]) packet.getObject()) {
 						if (ProxyServer.getInstance().getServerInfo(server) != null) {
 							for (ProxiedPlayer player : ProxyServer.getInstance().getServerInfo(server).getPlayers()) {
-								skungeePlayers.add(new SkungeePlayer(false, player.getUniqueId(), player.getName()));
+								skungeePlayers.add(new PacketPlayer(player.getUniqueId(), player.getName()));
 							}
 						}
 					}
@@ -187,49 +173,6 @@ public class SkungeePacketHandler {
 					}
 				}
 				return (registered != null && !registered.isEmpty()) ? registered : null;
-			case REDISPLAYERS:
-				Set<SkungeePlayer> redisPlayers = new HashSet<SkungeePlayer>();
-				for (UUID uuid : RedisBungee.getApi().getPlayersOnline()) {
-					redisPlayers.add(new SkungeePlayer(false, uuid, ProxyServer.getInstance().getPlayer(uuid).getName()));
-				}
-				return (redisPlayers != null && !redisPlayers.isEmpty()) ? redisPlayers : null;
-			case REDISPROXYPLAYERS:
-				if (packet.getObject() == null) return null;
-				Set<SkungeePlayer> proxyPlayers = new HashSet<SkungeePlayer>();
-				for (String server : (String[]) packet.getObject()) {
-					for (UUID uuid : RedisBungee.getApi().getPlayersOnProxy(server)) {
-						proxyPlayers.add(new SkungeePlayer(false, uuid, ProxyServer.getInstance().getPlayer(uuid).getName()));
-					}
-				}
-				return (proxyPlayers != null && !proxyPlayers.isEmpty()) ? proxyPlayers : null;
-			case REDISSERVERPLAYERS:
-				if (packet.getObject() == null) return null;
-				Set<SkungeePlayer> serverPlayers = new HashSet<SkungeePlayer>();
-				for (String server : (String[]) packet.getObject()) {
-					for (UUID uuid : RedisBungee.getApi().getPlayersOnServer(server)) {
-						serverPlayers.add(new SkungeePlayer(false, uuid, ProxyServer.getInstance().getPlayer(uuid).getName()));
-					}
-				}
-				return (serverPlayers != null && !serverPlayers.isEmpty()) ? serverPlayers : null;
-			case REDISPROXYCOMMAND:
-				if (packet.getObject() == null) return null;
-				for (String command : (String[]) packet.getObject()) {
-					if (packet.getSetObject() != null) {
-						for (String server : (String[]) packet.getSetObject()) {
-							RedisBungee.getApi().sendProxyCommand(server, command);
-						}
-					} else {
-						RedisBungee.getApi().sendProxyCommand(command);
-					}
-				}
-				break;
-			case REDISPLAYERNAME:
-				if (packet.getObject() == null || players.isEmpty()) return null;
-				Set<SkungeePlayer> names = new HashSet<SkungeePlayer>();
-				for (ProxiedPlayer player : players) {
-					names.add(new SkungeePlayer(false, player.getUniqueId(), RedisBungee.getApi().getNameFromUuid(player.getUniqueId(), true)));
-				}
-				return (names != null && !names.isEmpty()) ? names : null;
 			case REDISISPLAYERONLINE:
 				if (players.isEmpty()) return false;
 				return (players != null && RedisBungee.getApi().isPlayerOnline(players.get(0).getUniqueId()));

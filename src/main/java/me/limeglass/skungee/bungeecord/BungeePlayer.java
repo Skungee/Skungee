@@ -49,6 +49,11 @@ public class BungeePlayer implements ProxyPlayer {
 		getPlayer().ifPresent(player -> player.sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message)));
 	}
 
+	@Override
+	public void disconnect(String message) {
+		getPlayer().ifPresent(player -> player.disconnect(new TextComponent(message)));
+	}
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public InetSocketAddress getAddress() {

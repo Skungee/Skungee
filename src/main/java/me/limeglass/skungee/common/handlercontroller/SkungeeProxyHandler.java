@@ -20,7 +20,7 @@ public abstract class SkungeeProxyHandler<T> extends SkungeeHandler<T> {
 	}
 
 	@Override
-	public boolean onPacketCall(ServerPacket packet, InetAddress address) {
+	public boolean onPacketCall(ServerPacket packet, ServerPacketType called, InetAddress address) {
 		return true;
 	}
 

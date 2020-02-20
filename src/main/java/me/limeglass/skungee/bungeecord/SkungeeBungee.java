@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,6 @@ import me.limeglass.skungee.common.player.ProxyPlayer;
 import me.limeglass.skungee.common.wrappers.ProxyConfiguration;
 import me.limeglass.skungee.common.wrappers.ProxyPlatform;
 import me.limeglass.skungee.proxy.protocol.channel.ChannelListener;
-import me.limeglass.skungee.proxy.serverinstances.Premium;
 import me.limeglass.skungee.proxy.sockets.ProxyRunnable;
 import me.limeglass.skungee.proxy.sockets.ProxySockets;
 import me.limeglass.skungee.proxy.sockets.ServerInstancesSockets;
@@ -44,6 +44,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerConnectRequest;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectEvent.Reason;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginDescription;
@@ -83,7 +84,6 @@ public class SkungeeBungee extends Plugin implements ProxyPlatform {
 			e.printStackTrace();
 			return;
 		}
-		Premium.check();
 		playerTimeManager = new PlayerTimeManager(this);
 		encryption = new EncryptionUtil(this);
 		//load handlers
@@ -118,12 +118,6 @@ public class SkungeeBungee extends Plugin implements ProxyPlatform {
 			@Override
 			public String getValue() {
 				return VariableManager.getMainStorage().getNames()[0];
-			}
-		});
-		metrics.addCustomChart(new BungecordMetrics.SimplePie("using_serverinstnaces") {
-			@Override
-			public String getValue() {
-				return Premium.check() + "";
 			}
 		});
 		metrics.addCustomChart(new BungecordMetrics.SimplePie("packets_enabled") {
@@ -378,6 +372,14 @@ public class SkungeeBungee extends Plugin implements ProxyPlatform {
 		return getProxy().getPlayers().stream()
 				.map(player -> new BungeePlayer(player.getUniqueId(), player.getName()))
 				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public ProxyPlayer getPlayer(UUID uuid) {
+		ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+		if (player == null)
+			return new BungeePlayer(uuid, null);
+		return new BungeePlayer(uuid, player.getName());
 	}
 
 }

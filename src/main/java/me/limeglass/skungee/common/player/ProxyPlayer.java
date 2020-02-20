@@ -8,6 +8,8 @@ public interface ProxyPlayer extends SkungeePlayer {
 
 	public void sendActionbar(String message);
 
+	public void disconnect(String message);
+
 	public InetSocketAddress getAddress();
 
 	public void chat(String message);

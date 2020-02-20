@@ -6,7 +6,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.spigot.SkungeeSpigot;
 import me.limeglass.skungee.spigot.utils.Utils;
 
@@ -15,9 +15,9 @@ public interface Returnable {
 	SkungeeReturnable returnable = Utils.getEnum(SkungeeReturnable.class, SkungeeSpigot.getInstance().getConfig().getString("SkungeeReturn", "STRING"));
 
 	@SuppressWarnings("deprecation")
-	public default Object[] convert(SkungeeReturnable type, SkungeePlayer... players) {
+	public default Object[] convert(SkungeeReturnable type, PacketPlayer... players) {
 		Set<Object> converted = new HashSet<Object>();
-		for (SkungeePlayer player : players) {
+		for (PacketPlayer player : players) {
 			if (player == null)
 				continue;
 			switch (type) {
@@ -45,15 +45,15 @@ public interface Returnable {
 		} else if (returnable.getReturnType() == OfflinePlayer.class) {
 			return converted.toArray(new OfflinePlayer[converted.size()]);
 		} else {
-			return converted.toArray(new SkungeePlayer[converted.size()]);
+			return converted.toArray(new PacketPlayer[converted.size()]);
 		}
 	}
 	
-	public default Object[] convert(Set<SkungeePlayer> players) {
-		return convert(players.toArray(new SkungeePlayer[players.size()]));
+	public default Object[] convert(Set<PacketPlayer> players) {
+		return convert(players.toArray(new PacketPlayer[players.size()]));
 	}
 	
-	public default Object[] convert(SkungeePlayer... players) {
+	public default Object[] convert(PacketPlayer... players) {
 		return convert(returnable, players);
 	}
 	
@@ -75,7 +75,7 @@ public interface Returnable {
 		}
 		
 		public Class<?> getReturnType() {
-			return (value == 1) ? String.class : (value == 2) ? OfflinePlayer.class : SkungeePlayer.class;
+			return (value == 1) ? String.class : (value == 2) ? OfflinePlayer.class : PacketPlayer.class;
 		}
 	}
 }

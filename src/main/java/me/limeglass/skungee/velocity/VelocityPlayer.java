@@ -53,6 +53,11 @@ public class VelocityPlayer implements ProxyPlayer {
 	}
 
 	@Override
+	public void disconnect(String message) {
+		getPlayer().ifPresent(player -> player.disconnect(ComponentBuilders.text(message).build()));
+	}
+
+	@Override
 	public InetSocketAddress getAddress() {
 		Optional<Player> player = getPlayer();
 		if (!player.isPresent())

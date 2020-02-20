@@ -189,7 +189,7 @@ public class Sockets {
 		Object object = send(packet);
 		if (object == null)
 			return null;
-		if (expected.isAssignableFrom(object.getClass()))
+		if (object.getClass().isAssignableFrom(expected))
 			return (T) object;
 		throw new IllegalArgumentException("The packet return type for " + Skungee.getPacketDebug(packet) + " was not the expected " + expected.getName() +
 				", it was " + object.getClass().getName());

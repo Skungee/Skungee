@@ -11,20 +11,21 @@ import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 import me.limeglass.skungee.proxy.sockets.ServerTracker;
 
-public class ServersMaxPlayersHandler extends SkungeeProxyHandler {
+public class ServersMaxPlayersHandler extends SkungeeProxyHandler<Set<Number>> {
 
 	public ServersMaxPlayersHandler() {
 		super(Platform.ANY_PROXY, ServerPacketType.MAXPLAYERS);
 	}
 
 	@Override
-	public Object handlePacket(ServerPacket packet, InetAddress address) {
+	public Set<Number> handlePacket(ServerPacket packet, InetAddress address) {
 		Set<Number> limits = new HashSet<>();
 		if (packet.getObject() == null)
 			return limits;
+		ServerTracker tracker = proxy.getServerTracker();
 		for (String server : (String[]) packet.getObject()) {
-			for (SkungeeServer tracked : ServerTracker.get(server)) {
-				if (tracked == null || !ServerTracker.isResponding(tracked))
+			for (SkungeeServer tracked : tracker.get(server)) {
+				if (tracked == null || !tracker.isResponding(tracked))
 					continue;
 				limits.add(tracked.getMaxPlayers());
 			}

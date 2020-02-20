@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 
@@ -154,7 +156,7 @@ public class SkungeeVelocity implements ProxyPlatform {
 		if (!info.isPresent())
 			return;
 		for (ProxyPlayer player : players)
-			((VelocityPlayer)player).getPlayer().ifPresent(proxied -> proxied.createConnectionRequest(info.get()).connect());
+			((VelocityPlayer)player).getPlayer().ifPresent(proxied -> proxied.createConnectionRequest(info.get()).fireAndForget());
 	}
 
 	@Override
@@ -162,6 +164,14 @@ public class SkungeeVelocity implements ProxyPlatform {
 		return server.getAllPlayers().stream()
 				.map(player -> new VelocityPlayer(player.getUniqueId(), player.getUsername()))
 				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public ProxyPlayer getPlayer(UUID uuid) {
+		Optional<Player> player = server.getPlayer(uuid);
+		if (!player.isPresent())
+			return new VelocityPlayer(uuid, null);
+		return new VelocityPlayer(uuid, player.get().getUsername());
 	}
 
 }

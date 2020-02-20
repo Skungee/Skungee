@@ -64,7 +64,7 @@ public abstract class SkungeeHandler<T> {
 	 * @param address The address the packet came from.
 	 * @return If the packet should be accepted or not.
 	 */
-	public abstract boolean onPacketCall(ServerPacket packet, InetAddress address);
+	public abstract boolean onPacketCall(ServerPacket packet, ServerPacketType called, InetAddress address);
 
 	/**
 	 * The main packet handler. This is what is defined to happen when the packet comes in.

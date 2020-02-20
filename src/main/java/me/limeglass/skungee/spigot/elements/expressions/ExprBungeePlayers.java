@@ -11,7 +11,7 @@ import ch.njol.skript.lang.ExpressionType;
 import me.limeglass.skungee.common.objects.Returnable;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
-import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -33,7 +33,7 @@ public class ExprBungeePlayers extends SkungeeExpression<Object> implements Retu
 		if (areNull(event) || returnable == null)
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<SkungeePlayer> players = (Set<SkungeePlayer>) sockets.send(new ServerPacket(true, ServerPacketType.GLOBALPLAYERS));
+		Set<PacketPlayer> players = (Set<PacketPlayer>) sockets.send(new ServerPacket(true, ServerPacketType.GLOBALPLAYERS));
 		return (players != null) ? convert(players) : null;
 	}
 
