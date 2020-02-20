@@ -5,12 +5,13 @@ import java.net.InetAddress;
 import me.limeglass.skungee.common.handlercontroller.SkungeeExecutor;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 import net.md_5.bungee.api.ProxyServer;
 
 public class StopHandler extends SkungeeExecutor {
 
 	public StopHandler() {
-		super(ServerPacketType.PROXYSTOP);
+		super(Platform.BUNGEECORD, ServerPacketType.PROXYSTOP);
 	}
 
 	@Override

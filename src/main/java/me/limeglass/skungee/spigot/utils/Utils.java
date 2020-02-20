@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import ch.njol.skript.Skript;
 import ch.njol.skript.util.Timespan;
 import me.limeglass.skungee.Skungee;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.common.player.SkungeePlayer;
 
 public class Utils {
@@ -64,11 +65,11 @@ public class Utils {
 		}
 	}
 
-	public static SkungeePlayer[] toSkungeePlayers(Object... players) {
+	public static PacketPlayer[] toSkungeePlayers(Object... players) {
 		Set<SkungeePlayer> skungeePlayers = new HashSet<>();
 		for (Object player : players) {
 			if (player instanceof Player) {
-				skungeePlayers.add(new SkungeePlayer(true, ((Player) player).getUniqueId(), ((Player) player).getName()));
+				skungeePlayers.add(new PacketPlayer(((Player) player).getUniqueId(), ((Player) player).getName()));
 			} else if (player instanceof String) {
 				UUID uuid = null;
 				try {
@@ -76,12 +77,12 @@ public class Utils {
 				} catch (IllegalArgumentException ex) {}
 				if (uuid != null) {
 					Player p = Bukkit.getPlayer(uuid);
-					if (p != null) skungeePlayers.add(new SkungeePlayer(false, uuid, Bukkit.getPlayer(uuid).getName()));
-					else skungeePlayers.add(new SkungeePlayer(false, null, (String) player));
-				} else skungeePlayers.add(new SkungeePlayer(false, null, (String) player));
+					if (p != null) skungeePlayers.add(new PacketPlayer(uuid, Bukkit.getPlayer(uuid).getName()));
+					else skungeePlayers.add(new PacketPlayer(null, (String) player));
+				} else skungeePlayers.add(new PacketPlayer(null, (String) player));
 			}
 		}
-		return skungeePlayers.toArray(new SkungeePlayer[skungeePlayers.size()]);
+		return skungeePlayers.toArray(new PacketPlayer[skungeePlayers.size()]);
 	}
 
 	public static Class<?> getArrayClass(Class<?> parameter){

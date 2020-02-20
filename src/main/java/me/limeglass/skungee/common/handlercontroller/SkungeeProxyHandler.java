@@ -7,7 +7,7 @@ import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.common.wrappers.ProxyPlatform;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 
-public abstract class SkungeeProxyHandler extends SkungeeHandler {
+public abstract class SkungeeProxyHandler<T> extends SkungeeHandler<T> {
 
 	protected final ProxyPlatform proxy = (ProxyPlatform)platform;
 

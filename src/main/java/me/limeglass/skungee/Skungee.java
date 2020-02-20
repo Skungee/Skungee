@@ -64,7 +64,7 @@ public class Skungee {
 			}
 		}
 		if (packet.getPlayers() != null && packet.getPlayers().length > 0) {
-			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(SkungeePlayer::getName).collect(Collectors.toList());
+			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(SkungeePlayer::getUsername).collect(Collectors.toList());
 		}
 		if (packet.getChangeMode() != null) {
 			debug = debug + " with change mode: " + packet.getChangeMode();
@@ -89,7 +89,7 @@ public class Skungee {
 			}
 		}
 		if (packet.getPlayers() != null && packet.getPlayers().length > 0) {
-			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(SkungeePlayer::getName).collect(Collectors.toList());
+			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(SkungeePlayer::getUsername).collect(Collectors.toList());
 		}
 		return debug;
 	}

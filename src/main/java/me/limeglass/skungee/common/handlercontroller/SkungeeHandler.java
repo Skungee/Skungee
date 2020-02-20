@@ -8,7 +8,7 @@ import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 
-public abstract class SkungeeHandler {
+public abstract class SkungeeHandler<T> {
 
 	private ServerPacketType[] types = new ServerPacketType[] {ServerPacketType.CUSTOM};
 	protected final SkungeePlatform platform = Skungee.getPlatform();
@@ -73,6 +73,6 @@ public abstract class SkungeeHandler {
 	 * @param address The address the packet came from.
 	 * @return The value to be send back to the sender if it's a returnable packet.
 	 */
-	public abstract Object handlePacket(ServerPacket packet, InetAddress address);
+	public abstract T handlePacket(ServerPacket packet, InetAddress address);
 
 }

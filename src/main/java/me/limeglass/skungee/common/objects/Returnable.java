@@ -26,14 +26,14 @@ public interface Returnable {
 					if (SkungeeSpigot.getInstance().getConfig().getBoolean("SkungeeReturnUUID", false) && offline != null) {
 						converted.add(Bukkit.getOfflinePlayer(player.getUUID()));
 					} else {
-						converted.add(Bukkit.getOfflinePlayer(player.getName()));
+						converted.add(Bukkit.getOfflinePlayer(player.getUsername()));
 					}
 					break;
 				case SKUNGEE:
 					converted.add(player);
 					break;
 				case STRING:
-					converted.add(player.getName());
+					converted.add(player.getUsername());
 					break;
 				case UUID:
 					converted.add(player.getUUID().toString());

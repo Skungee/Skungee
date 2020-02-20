@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import me.limeglass.skungee.common.handlercontroller.SkungeeExecutor;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -12,7 +13,7 @@ import net.md_5.bungee.api.plugin.PluginManager;
 public class UnregisterListenersHandler extends SkungeeExecutor {
 
 	public UnregisterListenersHandler() {
-		super(ServerPacketType.UNREGISTERLISTENERS);
+		super(Platform.BUNGEECORD, ServerPacketType.UNREGISTERLISTENERS);
 	}
 
 	@Override

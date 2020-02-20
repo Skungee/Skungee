@@ -15,14 +15,14 @@ import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 import me.limeglass.skungee.proxy.sockets.ServerTracker;
 
-public class HeartbeatHandler extends SkungeeProxyHandler {
+public class HeartbeatHandler extends SkungeeProxyHandler<Boolean> {
 
 	public HeartbeatHandler() {
 		super(Platform.ANY_PROXY, ServerPacketType.HEARTBEAT);
 	}
 
 	@Override
-	public Object handlePacket(ServerPacket packet, InetAddress address) {
+	public Boolean handlePacket(ServerPacket packet, InetAddress address) {
 		if (packet.getObject() == null)
 			return null;
 		int port = (int) packet.getObject();

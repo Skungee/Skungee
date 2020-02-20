@@ -13,7 +13,7 @@ import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 import me.limeglass.skungee.proxy.variables.VariableManager;
 
-public class NetworkVariableHandler extends SkungeeProxyHandler {
+public class NetworkVariableHandler extends SkungeeProxyHandler<Value[]> {
 
 	public NetworkVariableHandler() {
 		super(Platform.ANY_PROXY, ServerPacketType.NETWORKVARIABLE);

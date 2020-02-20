@@ -1,5 +1,6 @@
 package me.limeglass.skungee.bungeecord;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -7,7 +8,7 @@ import me.limeglass.skungee.common.objects.ProxyPacketResponse;
 import me.limeglass.skungee.common.objects.SkungeeServer;
 import me.limeglass.skungee.common.packets.ProxyPacket;
 import me.limeglass.skungee.common.packets.ProxyPacketType;
-import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class SkungeeBungeeAPI {
@@ -26,11 +27,11 @@ public class SkungeeBungeeAPI {
 	 * @param players The ProxiedPlayers to be converted to SkungeePlayers.
 	 * @return The SkungeePlayers converted.
 	 */
-	public static SkungeePlayer[] getPlayersFrom(ProxiedPlayer... players) {
-		SkungeePlayer[] skungees = new SkungeePlayer[players.length];
+	public static BungeePlayer[] getPlayersFrom(ProxiedPlayer... players) {
+		BungeePlayer[] skungees = new BungeePlayer[players.length];
 		for (int i = 0; i < players.length; i++) {
 			ProxiedPlayer player = players[i];
-			skungees[i] = new SkungeePlayer(player.getUniqueId(), player.getName());
+			skungees[i] = new BungeePlayer(player.getUniqueId(), player.getName());
 		}
 		return skungees;
 	}
@@ -90,7 +91,7 @@ public class SkungeeBungeeAPI {
 		 * @param players
 		 * @return The PacketBuilder for chaining.
 		 */
-		PacketBuilder withPlayers(SkungeePlayer... players);
+		PacketBuilder withPlayers(PacketPlayer... players);
 		
 		/**
 		 * Sets if the SkungeePacket needs to have a value returned.
@@ -127,7 +128,7 @@ public class SkungeeBungeeAPI {
 	public static class BungeePacketBuilder implements PacketBuilder {
 		
 		private ProxyPacketType type = ProxyPacketType.CUSTOM;
-		protected SkungeePlayer[] players;
+		protected PacketPlayer[] players;
 		protected boolean returnable;
 		protected Object object;
 		protected String name;
@@ -144,7 +145,7 @@ public class SkungeeBungeeAPI {
 		 * @return The PacketBuilder for chaining.
 		 */
 		@Override
-		public BungeePacketBuilder withPlayers(SkungeePlayer... players) {
+		public BungeePacketBuilder withPlayers(PacketPlayer... players) {
 			this.players = players;
 			return this;
 		}
@@ -159,7 +160,9 @@ public class SkungeeBungeeAPI {
 		 * @return The PacketBuilder for chaining.
 		 */
 		public BungeePacketBuilder withPlayers(ProxiedPlayer... players) {
-			this.players = SkungeeBungeeAPI.getPlayersFrom(players);
+			this.players = Arrays.stream(players)
+					.map(player -> new PacketPlayer(player.getUniqueId(), player.getName()))
+					.toArray(PacketPlayer[]::new);
 			return this;
 		}
 		

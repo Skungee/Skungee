@@ -30,7 +30,7 @@ public class SkungeeBungeeTitle extends SkungeeTitle {
 	public SkungeeBungeeTitle(SkungeeTitle title) {
 		super(title.getTitleText(), title.getSubtitleText(), title.getFadeIn(), title.getStay(), title.getFadeOut());
 	}
-	
+
 	private Title getTitle() {
 		Title title = ProxyServer.getInstance().createTitle();
 		if (this.title != null)

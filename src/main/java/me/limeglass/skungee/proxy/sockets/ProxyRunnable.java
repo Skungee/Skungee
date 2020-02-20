@@ -123,10 +123,12 @@ public class ProxyRunnable implements Runnable {
 					incorrectPassword(packet);
 					return;
 				}
-				Optional<SkungeeHandler> handler = SkungeeHandlerManager.getHandler(packet);
+				Optional<SkungeeHandler<?>> handler = SkungeeHandlerManager.getHandler(packet);
 				Object packetData = SkungeePacketHandler.handlePacket(packet, address);
 				if (handler.isPresent() && handler.get().acceptsPlatform(Skungee.getPlatformType()) && handler.get().onPacketCall(packet, address))
 					packetData = handler.get().handlePacket(packet, address);
+				if (!handler.get().acceptsPlatform(Skungee.getPlatformType()))
+					platform.consoleMessage(Skungee.getPacketDebug(packet) + " is not applicable for this platform " + Skungee.getPlatformType());
 				bungee : if (packetData != null && packet.isReturnable()) {
 					if (platform.getPlatform() == Platform.BUNGEECORD) {
 						BungeeReturningEvent returning = new BungeeReturningEvent(packet, packetData, address);

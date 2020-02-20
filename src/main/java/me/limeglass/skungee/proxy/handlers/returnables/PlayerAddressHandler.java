@@ -1,24 +1,27 @@
 package me.limeglass.skungee.proxy.handlers.returnables;
 
 import java.net.InetAddress;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import me.limeglass.skungee.common.handlercontroller.SkungeeBungeePlayerHandler;
+import me.limeglass.skungee.common.handlercontroller.SkungeeProxyHandler;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 
-public class PlayerAddressHandler extends SkungeeBungeePlayerHandler {
+public class PlayerAddressHandler extends SkungeeProxyHandler<Set<String>> {
 
 	public PlayerAddressHandler() {
-		super(ServerPacketType.PLAYERIP);
+		super(Platform.ANY_PROXY, ServerPacketType.PLAYERIP);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public Object handlePacket(ServerPacket packet, InetAddress address) {
-		if (packet.getObject() == null)
-			return null;
-		return players.parallelStream().map(player -> player.getAddress().getHostName()).collect(Collectors.toSet());
+	public Set<String> handlePacket(ServerPacket packet, InetAddress address) {
+		return proxy.getPlayers(packet.getPlayers()).stream()
+				.map(player -> player.getAddress())
+				.filter(socket -> socket != null)
+				.map(socket -> socket.getHostName())
+				.collect(Collectors.toSet());
 	}
 
 }

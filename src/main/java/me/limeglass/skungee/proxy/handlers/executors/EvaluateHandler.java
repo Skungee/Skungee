@@ -1,14 +1,15 @@
-package me.limeglass.skungee.proxy.handlers.returnables;
+package me.limeglass.skungee.proxy.handlers.executors;
 
 import java.net.InetAddress;
 
 import me.limeglass.skungee.common.handlercontroller.SkungeeExecutor;
+import me.limeglass.skungee.common.objects.SkungeeServer;
 import me.limeglass.skungee.common.packets.ProxyPacket;
 import me.limeglass.skungee.common.packets.ProxyPacketType;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.wrappers.ProxyPlatform;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
-import me.limeglass.skungee.proxy.sockets.ProxySockets;
 import me.limeglass.skungee.proxy.sockets.ServerTracker;
 
 public class EvaluateHandler extends SkungeeExecutor {
@@ -26,8 +27,13 @@ public class EvaluateHandler extends SkungeeExecutor {
 		String[] evaluations = (String[]) packet.getObject();
 		String[] evalServers = (String[]) packet.getSetObject();
 		ProxyPacket evalPacket = new ProxyPacket(false, ProxyPacketType.EVALUATE, evaluations);
-		for (String server : evalServers) {
-			ProxySockets.send(evalPacket, ServerTracker.get(server));
+		ProxyPlatform proxy = (ProxyPlatform) platform;
+		ServerTracker tracker = proxy.getServerTracker();
+		for (String name : evalServers) {
+			SkungeeServer[] server = tracker.get(name);
+			if (server == null || server.length <= 0)
+				continue;
+			proxy.send(evalPacket, server[0]);
 		}
 	}
 

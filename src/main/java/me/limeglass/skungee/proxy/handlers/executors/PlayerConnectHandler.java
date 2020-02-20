@@ -2,37 +2,28 @@ package me.limeglass.skungee.proxy.handlers.executors;
 
 import java.net.InetAddress;
 
-import me.limeglass.skungee.common.handlercontroller.SkungeeBungeePlayerHandler;
+import me.limeglass.skungee.common.handlercontroller.SkungeeExecutor;
+import me.limeglass.skungee.common.objects.SkungeeServer;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.ServerConnectRequest;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.event.ServerConnectEvent.Reason;
+import me.limeglass.skungee.common.wrappers.ProxyPlatform;
+import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 
-public class PlayerConnectHandler extends SkungeeBungeePlayerHandler {
+public class PlayerConnectHandler extends SkungeeExecutor {
 
 	public PlayerConnectHandler() {
-		super(ServerPacketType.CONNECTPLAYER);
+		super(Platform.ANY_PROXY, ServerPacketType.CONNECTPLAYER);
 	}
 
 	@Override
-	public Object handlePacket(ServerPacket packet, InetAddress address) {
+	public void executePacket(ServerPacket packet, InetAddress address) {
 		if (packet.getObject() == null)
-			return null;
-		ServerInfo server = ProxyServer.getInstance().getServerInfo((String) packet.getObject());
-		if (server == null)
-			return null;
-		Reason reason = Reason.PLUGIN;
-		if (packet.getSetObject() != null)
-			reason = Reason.valueOf((String) packet.getSetObject());
-		ServerConnectRequest connection = ServerConnectRequest.builder()
-				.reason(reason)
-				.target(server)
-				.retry(true)
-				.build();
-		players.forEach(player -> player.connect(connection));
-		return null;
+			return;
+		ProxyPlatform proxy = (ProxyPlatform) platform;
+		SkungeeServer[] servers = proxy.getServerTracker().get((String) packet.getObject());
+		if (servers == null || servers.length <= 0)
+			return;
+		proxy.connect(servers[0], proxy.getPlayers(packet.getPlayers()));
 	}
 
 }

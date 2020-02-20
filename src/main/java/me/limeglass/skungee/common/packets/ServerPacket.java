@@ -10,7 +10,7 @@ public class ServerPacket implements Serializable {
 	private static final long serialVersionUID = -7377209366283539512L;
 	private final boolean returnable;
 	private SkriptChangeMode changeMode;
-	private PacketPlayer[] players;
+	private PacketPlayer[] players = new PacketPlayer[0];
 	private Object settable, object;
 	private ServerPacketType type;
 	private byte[] password;

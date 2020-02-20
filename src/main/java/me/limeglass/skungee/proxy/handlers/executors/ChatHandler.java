@@ -2,13 +2,11 @@ package me.limeglass.skungee.proxy.handlers.executors;
 
 import java.net.InetAddress;
 
-import me.limeglass.skungee.common.handlercontroller.SkungeeBungeePlayerExecutor;
 import me.limeglass.skungee.common.handlercontroller.SkungeeExecutor;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.wrappers.ProxyPlatform;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class ChatHandler extends SkungeeExecutor {
 
@@ -20,11 +18,9 @@ public class ChatHandler extends SkungeeExecutor {
 	public void executePacket(ServerPacket packet, InetAddress address) {
 		if (packet.getObject() == null)
 			return;
-		for (ProxiedPlayer player : players) {
-			for (String msg : (String[]) packet.getObject()) {
-				player.chat(ChatColor.stripColor(msg));
-			}
-		}
+		ProxyPlatform proxy = (ProxyPlatform) platform;
+		for (String message : (String[]) packet.getObject())
+			proxy.getPlayers(packet.getPlayers()).forEach(player -> player.chat(message));
 	}
 
 }

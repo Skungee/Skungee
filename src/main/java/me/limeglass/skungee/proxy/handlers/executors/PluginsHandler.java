@@ -5,12 +5,13 @@ import java.net.InetAddress;
 import me.limeglass.skungee.common.handlercontroller.SkungeeExecutor;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 import net.md_5.bungee.api.ProxyServer;
 
 public class PluginsHandler extends SkungeeExecutor {
 
 	public PluginsHandler() {
-		super(ServerPacketType.ENABLEPLUGINS, ServerPacketType.LOADPLUGINS);
+		super(Platform.BUNGEECORD, ServerPacketType.ENABLEPLUGINS, ServerPacketType.LOADPLUGINS);
 	}
 
 	@Override

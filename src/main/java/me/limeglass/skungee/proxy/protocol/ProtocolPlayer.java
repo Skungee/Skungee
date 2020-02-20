@@ -2,7 +2,7 @@ package me.limeglass.skungee.proxy.protocol;
 
 import java.util.UUID;
 
-import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.common.player.PacketPlayer;
 
 public class ProtocolPlayer {
 	
@@ -91,8 +91,8 @@ public class ProtocolPlayer {
 		this.server = server;
 	}
 	
-	public SkungeePlayer toSkungeePlayer() {
-		return new SkungeePlayer(true, uniqueId, server);
+	public PacketPlayer toPacketPlayer() {
+		return new PacketPlayer(uniqueId, server);
 	}
 	
 }

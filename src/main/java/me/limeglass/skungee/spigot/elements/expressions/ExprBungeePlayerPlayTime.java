@@ -24,7 +24,7 @@ public class ExprBungeePlayerPlayTime extends SkungeePropertyExpression<Object, 
 		if (isNull(event))
 			return null;
 		@SuppressWarnings("unchecked")
-		Set<Number> times = (Set<Number>) sockets.send(new ServerPacket(true, ServerPacketType.PLAYTIME, expressions.getAll(event, String.class), Utils.toSkungeePlayers(skungeePlayers)));
+		Set<Integer> times = (Set<Integer>) sockets.send(new ServerPacket(true, ServerPacketType.PLAYTIME, expressions.getAll(event, String.class), Utils.toSkungeePlayers(skungeePlayers)));
 		return (times != null) ? times.toArray(new Number[times.size()]) : null;
 	}
 

@@ -18,14 +18,14 @@ import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 import me.limeglass.skungee.proxy.sockets.ServerTracker;
 
-public class HandshakeHandler extends SkungeeProxyHandler {
+public class HandshakeHandler extends SkungeeProxyHandler<String> {
 
 	public HandshakeHandler() {
 		super(Platform.ANY_PROXY, ServerPacketType.HANDSHAKE);
 	}
 
 	@Override
-	public Object handlePacket(ServerPacket packet, InetAddress address) {
+	public String handlePacket(ServerPacket packet, InetAddress address) {
 		if (!(packet instanceof HandshakePacket))
 			return null;
 		HandshakePacket handshake = (HandshakePacket) packet;

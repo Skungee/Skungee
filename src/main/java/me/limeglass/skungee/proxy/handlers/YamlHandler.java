@@ -18,7 +18,7 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
-public class YamlHandler extends SkungeeProxyHandler {
+public class YamlHandler extends SkungeeProxyHandler<Object[]> {
 
 	public YamlHandler() {
 		super(Platform.BUNGEECORD, ServerPacketType.YAML);

@@ -1,5 +1,6 @@
 package me.limeglass.skungee.velocity;
 
+import java.net.InetSocketAddress;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -7,6 +8,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.util.MessagePosition;
 
 import me.limeglass.skungee.Skungee;
@@ -37,8 +39,58 @@ public class VelocityPlayer implements ProxyPlayer {
 		return uuid == null ? proxy.getPlayer(username) : proxy.getPlayer(uuid);
 	}
 
+	@Override
+	public void sendMessage(String... messages) {
+		Optional<Player> player = getPlayer();
+		if (!player.isPresent())
+			return;
+		for (String message : messages)
+			player.get().sendMessage(ComponentBuilders.text(message).build());
+	}
+
 	public void sendActionbar(String message) {
 		getPlayer().ifPresent(player -> player.sendMessage(ComponentBuilders.translatable(message).build(), MessagePosition.ACTION_BAR));
+	}
+
+	@Override
+	public InetSocketAddress getAddress() {
+		Optional<Player> player = getPlayer();
+		if (!player.isPresent())
+			return null;
+		return player.get().getRemoteAddress();
+	}
+
+	@Override
+	public void chat(String message) {
+		getPlayer().ifPresent(player -> player.spoofChatInput(message));
+	}
+
+	@Override
+	public String getServerName() {
+		Optional<Player> player = getPlayer();
+		if (!player.isPresent())
+			return null;
+		// Because why is this a optional velocity? Are they not on the proxy at all or...?
+		Optional<ServerConnection> server = player.get().getCurrentServer();
+		if (!server.isPresent())
+			return null;
+		return server.get().getServerInfo().getName();
+	}
+
+	@Override
+	public byte getViewDistance() {
+		Optional<Player> player = getPlayer();
+		if (!player.isPresent())
+			return -1;
+		return player.get().getPlayerSettings().getViewDistance();
+	}
+
+	@Override
+	public long getPing() {
+		Optional<Player> player = getPlayer();
+		if (!player.isPresent())
+			return -1;
+		return player.get().getPing();
 	}
 
 	@Override

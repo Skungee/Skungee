@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -43,6 +42,9 @@ import me.limeglass.skungee.proxy.variables.VariableManager;
 import me.limeglass.skungee.spigot.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.ServerConnectRequest;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.event.ServerConnectEvent.Reason;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginDescription;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
@@ -92,7 +94,7 @@ public class SkungeeBungee extends Plugin implements ProxyPlatform {
 				Object object = clazz.newInstance();
 				if (!(object instanceof SkungeeHandler))
 					return;
-				SkungeeHandler handler = (SkungeeHandler) object;
+				SkungeeHandler<?> handler = (SkungeeHandler<?>) object;
 				SkungeeHandlerManager.registerHandler(handler);
 			} catch (InstantiationException | IllegalAccessException e) {}
 		});
@@ -351,18 +353,30 @@ public class SkungeeBungee extends Plugin implements ProxyPlatform {
 	}
 
 	@Override
-	public Optional<ProxyPlayer> getPlayer(PacketPlayer player) {
+	public ProxyPlayer getPlayer(PacketPlayer player) {
 		if (!getConfiguration().shouldAcceptIncomingUUID())
-			return Optional.of(new BungeePlayer(null, player.getUsername()));
-		return Optional.of(new BungeePlayer(player));
+			return new BungeePlayer(null, player.getUsername());
+		return new BungeePlayer(player);
 	}
 
 	@Override
-	public Set<ProxyPlayer> getPlayers(PacketPlayer... players) {
-		return Arrays.stream(players)
-				.map(player -> getPlayer(player))
-				.filter(optional -> optional.isPresent())
-				.map(optional -> optional.get())
+	public void connect(SkungeeServer server, ProxyPlayer... players) {
+		ServerInfo info = ProxyServer.getInstance().getServerInfo(server.getName());
+		if (info == null)
+			return;
+		ServerConnectRequest connection = ServerConnectRequest.builder()
+				.reason(Reason.PLUGIN)
+				.target(info)
+				.retry(true)
+				.build();
+		for (ProxyPlayer player : players)
+			((BungeePlayer)player).getPlayer().ifPresent(proxied -> proxied.connect(connection));
+	}
+
+	@Override
+	public Set<ProxyPlayer> getPlayers() {
+		return getProxy().getPlayers().stream()
+				.map(player -> new BungeePlayer(player.getUniqueId(), player.getName()))
 				.collect(Collectors.toSet());
 	}
 

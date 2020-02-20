@@ -12,7 +12,7 @@ import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 
-public class TablistTextHandler extends SkungeeProxyHandler {
+public class TablistTextHandler extends SkungeeProxyHandler<Set<String>> {
 
 	public TablistTextHandler() {
 		super(Platform.BUNGEECORD, ServerPacketType.BTLP_TABLISTTEXT);
@@ -20,7 +20,7 @@ public class TablistTextHandler extends SkungeeProxyHandler {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object handlePacket(ServerPacket packet, InetAddress address) {
+	public Set<String> handlePacket(ServerPacket packet, InetAddress address) {
 		if (packet.getObject() == null || packet.getSetObject() == null)
 			return null;
 		CustomTablist[] tablists = (CustomTablist[]) packet.getObject();

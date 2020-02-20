@@ -15,6 +15,7 @@ import me.limeglass.skungee.common.objects.SkungeeServer;
 import me.limeglass.skungee.common.packets.ProxyPacket;
 import me.limeglass.skungee.common.packets.ProxyPacketType;
 import me.limeglass.skungee.common.packets.ServerPingPacket;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.common.player.SkungeePlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.Favicon;
@@ -43,10 +44,11 @@ public class EventListener implements Listener {
 
 	@EventHandler
     public void onServerSwitch(ServerSwitchEvent event) {
+		ProxiedPlayer player = event.getPlayer();
 		if (event.getPlayer() != null) {
-			SkungeePlayer player = new SkungeePlayer(false, event.getPlayer().getUniqueId(), event.getPlayer().getName());
-			if (event.getPlayer().getServer() != null) {
-				ProxyPacket packet = new ProxyPacket(false, ProxyPacketType.PLAYERSWITCH, event.getPlayer().getServer().getInfo().getName(), null, player);
+			PacketPlayer packetPlayer = new PacketPlayer(player.getUniqueId(), player.getName());
+			if (player.getServer() != null) {
+				ProxyPacket packet = new ProxyPacket(false, ProxyPacketType.PLAYERSWITCH, event.getPlayer().getServer().getInfo().getName(), null, packetPlayer);
 				instance.sendToAll(packet);
 			}
 		}
@@ -54,12 +56,13 @@ public class EventListener implements Listener {
 
 	@EventHandler
     public void onDisconnect(PlayerDisconnectEvent event) {
-		if (event.getPlayer() != null) {
-			SkungeePlayer player = new SkungeePlayer(false, event.getPlayer().getUniqueId(), event.getPlayer().getName());
-			if (event.getPlayer().getServer() != null) {
+		ProxiedPlayer player = event.getPlayer();
+		if (player != null) {
+			PacketPlayer packetPlayer = new PacketPlayer(player.getUniqueId(), player.getName());
+			if (player.getServer() != null) {
 				SkungeeServer[] servers = instance.getServerTracker().get(event.getPlayer().getServer().getInfo().getName());
 				if (servers == null) return; //Not a valid Skungee connected server
-				ProxyPacket packet = new ProxyPacket(false, ProxyPacketType.PLAYERDISCONNECT, servers[0].getName(), null, player);
+				ProxyPacket packet = new ProxyPacket(false, ProxyPacketType.PLAYERDISCONNECT, servers[0].getName(), null, packetPlayer);
 				instance.sendToAll(packet);
 			}
 		}
@@ -77,7 +80,7 @@ public class EventListener implements Listener {
 		if (proxied.isPresent() && serverInfo.isPresent()) {
 			ProxiedPlayer p = proxied.get();
 			ServerInfo server = serverInfo.get();
-			SkungeePlayer player = new SkungeePlayer(false, p.getUniqueId(), p.getName());
+			PacketPlayer player = new PacketPlayer(p.getUniqueId(), p.getName());
 			ProxyPacket packet = new ProxyPacket(true, ProxyPacketType.PLAYERCHAT, event.getMessage(), server.getName(), player);
 			if (event.isCommand())
 				packet = new ProxyPacket(true, ProxyPacketType.PLAYERCOMMAND, event.getMessage(), server.getName(), player);
@@ -98,10 +101,10 @@ public class EventListener implements Listener {
 			packet.setDescription(ping.getDescriptionComponent().toLegacyText());
 			if (ping.getPlayers().getSample() != null) {
 				PlayerInfo[] playerInfo = ping.getPlayers().getSample();
-				SkungeePlayer[] players = new SkungeePlayer[playerInfo.length];
+				PacketPlayer[] players = new PacketPlayer[playerInfo.length];
 				int i = 0;
 				for (PlayerInfo info : playerInfo) {
-					players[i] = new SkungeePlayer(false, info.getUniqueId(), info.getName());
+					players[i] = new PacketPlayer(info.getUniqueId(), info.getName());
 					i++;
 				}
 				packet.setPlayers(players);
@@ -141,7 +144,7 @@ public class EventListener implements Listener {
 						PlayerInfo[] info = new PlayerInfo[returned.getPlayers().length];
 						int spot = 0;
 						for (SkungeePlayer player : returned.getPlayers()) {
-							info[spot] = new PlayerInfo(player.getName(), player.getUUID()); 
+							info[spot] = new PlayerInfo(player.getUsername(), player.getUUID()); 
 							spot++;
 						}
 						ping.getPlayers().setSample(info);

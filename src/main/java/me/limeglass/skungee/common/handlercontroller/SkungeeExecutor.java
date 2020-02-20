@@ -6,7 +6,7 @@ import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 
-public abstract class SkungeeExecutor extends SkungeeHandler {
+public abstract class SkungeeExecutor extends SkungeeHandler<Object> {
 
 	public SkungeeExecutor(Platform platform, String name) {
 		super(platform, name);

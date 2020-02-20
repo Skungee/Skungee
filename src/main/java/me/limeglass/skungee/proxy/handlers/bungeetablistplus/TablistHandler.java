@@ -9,14 +9,14 @@ import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 
-public class TablistHandler extends SkungeeProxyHandler {
+public class TablistHandler extends SkungeeProxyHandler<CustomTablist[]> {
 
 	public TablistHandler() {
 		super(Platform.BUNGEECORD, ServerPacketType.BTLP_TABLIST);
 	}
 
 	@Override
-	public Object handlePacket(ServerPacket packet, InetAddress address) {
+	public CustomTablist[] handlePacket(ServerPacket packet, InetAddress address) {
 		CustomTablist tablist = BungeeTabListPlusAPI.createCustomTablist();
 		Object size = packet.getObject();
 		if (size != null)

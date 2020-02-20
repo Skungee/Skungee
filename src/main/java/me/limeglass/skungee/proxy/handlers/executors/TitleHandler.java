@@ -1,17 +1,21 @@
 package me.limeglass.skungee.proxy.handlers.executors;
 
 import java.net.InetAddress;
+import java.util.stream.Collectors;
 
-import me.limeglass.skungee.common.handlercontroller.SkungeeBungeePlayerExecutor;
+import me.limeglass.skungee.bungeecord.BungeePlayer;
+import me.limeglass.skungee.common.handlercontroller.SkungeeExecutor;
 import me.limeglass.skungee.common.objects.SkungeeBungeeTitle;
 import me.limeglass.skungee.common.objects.SkungeeTitle;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
+import me.limeglass.skungee.common.wrappers.ProxyPlatform;
+import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 
-public class TitleHandler extends SkungeeBungeePlayerExecutor {
+public class TitleHandler extends SkungeeExecutor {
 
 	public TitleHandler() {
-		super(ServerPacketType.TITLE);
+		super(Platform.BUNGEECORD, ServerPacketType.TITLE);
 	}
 
 	@Override
@@ -19,7 +23,11 @@ public class TitleHandler extends SkungeeBungeePlayerExecutor {
 		if (packet.getObject() == null)
 			return;
 		SkungeeBungeeTitle title = new SkungeeBungeeTitle((SkungeeTitle)packet.getObject());
-		title.send(players);
+		title.send(((ProxyPlatform)platform).getPlayers(packet.getPlayers()).stream()
+				.map(player -> ((BungeePlayer)player).getPlayer())
+				.filter(optional -> optional.isPresent())
+				.map(optional -> optional.get())
+				.collect(Collectors.toSet()));
 	}
 
 }
