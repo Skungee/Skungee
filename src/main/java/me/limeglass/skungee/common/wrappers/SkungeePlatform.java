@@ -23,6 +23,8 @@ public interface SkungeePlatform {
 
 	public void debugMessage(String text);
 
+	public String getPlatformVersion();
+
 	public Platform getPlatform();
 
 	public File getDataFolder();

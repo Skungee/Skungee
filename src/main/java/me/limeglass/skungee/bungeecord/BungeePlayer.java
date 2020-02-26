@@ -85,6 +85,14 @@ public class BungeePlayer implements ProxyPlayer {
 	}
 
 	@Override
+	public boolean isConnected() {
+		Optional<ProxiedPlayer> player = getPlayer();
+		if (!player.isPresent())
+			return false;
+		return player.get().isConnected();
+	}
+
+	@Override
 	public long getPing() {
 		Optional<ProxiedPlayer> player = getPlayer();
 		if (!player.isPresent())

@@ -39,17 +39,21 @@ public class ServerTracker {
 			for (SkungeeServer server : servers) {
 				long timeElapsed = System.currentTimeMillis() - server.getLastUpdate();
 				if (timeElapsed > timeoutMultiplier * server.getHeartbeat()) {
-					if (!notResponding.contains(server)) {
-						platform.debugMessage("Server " + server.getName() + " has stopped responding!");
-						if (platform.getConfiguration().shouldDisableTracking()) {
-							remove(server);
-						} else {
-							notResponding.add(server);
-						}
-					}
+					notResponding(server);
 				}
 			}
 		}, 1, TimeUnit.SECONDS);
+	}
+
+	public void notResponding(SkungeeServer server) {
+		if (!notResponding.contains(server)) {
+			platform.debugMessage("Server " + server.getName() + " has stopped responding!");
+			if (platform.getConfiguration().shouldDisableTracking()) {
+				remove(server);
+			} else {
+				notResponding.add(server);
+			}
+		}
 	}
 
 	/**

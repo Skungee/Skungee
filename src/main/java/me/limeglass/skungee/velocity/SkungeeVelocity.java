@@ -174,4 +174,9 @@ public class SkungeeVelocity implements ProxyPlatform {
 		return new VelocityPlayer(uuid, player.get().getUsername());
 	}
 
+	@Override
+	public String getPlatformVersion() {
+		return server.getVersion().getVersion();
+	}
+
 }

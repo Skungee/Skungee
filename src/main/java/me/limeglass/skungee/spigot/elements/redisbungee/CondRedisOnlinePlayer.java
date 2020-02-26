@@ -6,7 +6,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
-import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.spigot.lang.SkungeeCondition;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -19,7 +19,7 @@ public class CondRedisOnlinePlayer extends SkungeeCondition {
 	public boolean check(Event event) {
 		if (areNull(event))
 			return false;
-		SkungeePlayer[] players = Utils.toSkungeePlayers(expressions.get(0).getSingle(event));
+		PacketPlayer[] players = Utils.toSkungeePlayers(expressions.get(0).getSingle(event));
 		ServerPacket packet = new ServerPacket(true, ServerPacketType.REDISISPLAYERONLINE, players);
 		return sockets.send(packet, boolean.class) ? isNegated() : !isNegated();
 	}

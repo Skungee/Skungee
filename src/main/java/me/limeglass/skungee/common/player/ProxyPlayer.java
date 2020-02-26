@@ -1,16 +1,10 @@
 package me.limeglass.skungee.common.player;
 
-import java.net.InetSocketAddress;
-
 public interface ProxyPlayer extends SkungeePlayer {
-
-	public void sendMessage(String... messages);
 
 	public void sendActionbar(String message);
 
 	public void disconnect(String message);
-
-	public InetSocketAddress getAddress();
 
 	public void chat(String message);
 

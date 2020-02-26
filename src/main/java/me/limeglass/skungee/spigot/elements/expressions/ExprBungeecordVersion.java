@@ -21,7 +21,7 @@ public class ExprBungeecordVersion extends SkungeeExpression<String> {
 
 	@Override
 	protected String[] get(Event event) {
-		String version = (String) sockets.send(new ServerPacket(true, ServerPacketType.BUNGEEVERSION));
+		String version = (String) sockets.send(new ServerPacket(true, ServerPacketType.VERSION));
 		return (version != null) ? new String[]{version} : null;
 	}
 

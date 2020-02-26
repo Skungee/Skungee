@@ -2,14 +2,14 @@ package me.limeglass.skungee.common.events;
 
 import org.bukkit.event.Cancellable;
 
-import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.common.player.PacketPlayer;
 
 public class SkungeePlayerChatEvent extends SkungeePlayerEvent implements Cancellable {
 
 	private boolean cancelled;
 	private String message;
 	
-	public SkungeePlayerChatEvent(String message, String server, SkungeePlayer... players) {
+	public SkungeePlayerChatEvent(String message, String server, PacketPlayer... players) {
 		super(server, players);
 		this.message = message;
 	}

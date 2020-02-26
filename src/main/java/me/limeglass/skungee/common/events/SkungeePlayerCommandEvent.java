@@ -4,14 +4,14 @@ import java.util.Arrays;
 
 import org.bukkit.event.Cancellable;
 
-import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.common.player.PacketPlayer;
 
 public class SkungeePlayerCommandEvent extends SkungeePlayerEvent implements Cancellable {
 
 	private boolean cancelled;
 	private String command;
 	
-	public SkungeePlayerCommandEvent(String message, String server, SkungeePlayer... players) {
+	public SkungeePlayerCommandEvent(String message, String server, PacketPlayer... players) {
 		super(server, players);
 		this.command = message;
 	}

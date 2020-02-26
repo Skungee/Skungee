@@ -174,36 +174,9 @@ public class SkungeePacketHandler {
 				}
 				return (registered != null && !registered.isEmpty()) ? registered : null;
 			case REDISISPLAYERONLINE:
-				if (players.isEmpty()) return false;
+				if (players.isEmpty())
+					return false;
 				return (players != null && RedisBungee.getApi().isPlayerOnline(players.get(0).getUniqueId()));
-			case REDISLASTLOGIN:
-				if (packet.getObject() == null || players.isEmpty()) return null;
-				Set<Number> logins = new HashSet<Number>();
-				for (ProxiedPlayer player : players) {
-					logins.add(RedisBungee.getApi().getLastOnline(player.getUniqueId()));
-				}
-				return (logins != null && !logins.isEmpty()) ? logins : null;
-			case REDISPLAYERID:
-				if (packet.getObject() == null || players.isEmpty()) return null;
-				Set<String> IDS = new HashSet<String>();
-				for (ProxiedPlayer player : players) {
-					IDS.add(RedisBungee.getApi().getProxy(player.getUniqueId()));
-				}
-				return (IDS != null && !IDS.isEmpty()) ? IDS : null;
-			case REDISPLAYERSERVER:
-				if (packet.getObject() == null || players.isEmpty()) return null;
-				Set<String> redisservers = new HashSet<String>();
-				for (ProxiedPlayer player : players) {
-					redisservers.add(RedisBungee.getApi().getServerFor(player.getUniqueId()).getName());
-				}
-				return (redisservers != null && !redisservers.isEmpty()) ? redisservers : null;
-			case REDISPLAYERIP:
-				if (packet.getObject() == null || players.isEmpty()) return null;
-				Set<String> IPS = new HashSet<String>();
-				for (ProxiedPlayer player : players) {
-					IPS.add(RedisBungee.getApi().getPlayerIp(player.getUniqueId()).getHostName());
-				}
-				return (IPS != null && !IPS.isEmpty()) ? IPS : null;
 			case ISPLAYERONLINE:
 				if (players.isEmpty()) return false;
 				return (players != null && players.get(0).isConnected());
@@ -213,9 +186,6 @@ public class SkungeePacketHandler {
 			case PLAYERCOLOURS:
 				if (players.isEmpty()) return false;
 				return (players != null && players.get(0).hasChatColors());
-			case DISCONNECT:
-				if (packet.getObject() != null)	ServerTracker.notResponding(ServerTracker.getByAddress(address, (int)packet.getObject()));
-				break;
 			case CREATESERVER:
 				if (packet.getObject() != null && packet.getSetObject() != null) {
 					ServerInstancesSockets.send(new ServerInstancesPacket(false, ServerInstancesPacketType.CREATESERVER, packet.getObject(), packet.getSetObject()));
@@ -338,14 +308,6 @@ public class SkungeePacketHandler {
 				break;
 			case SERVERINSTANCES:
 				return ServerInstancesSockets.send(new ServerInstancesPacket(true, ServerInstancesPacketType.SERVERINSTANCES));
-			case REDISSERVERS:
-				return RedisBungee.getApi().getAllServers();
-			case REDISSERVERID:
-				return RedisBungee.getApi().getServerId();
-			case BUNGEEVERSION:
-				return ProxyServer.getInstance().getVersion();
-			case CURRENTSERVER:
-				return (ServerTracker.getByAddress(address, (int)packet.getObject()) != null) ? ServerTracker.getByAddress(address, (int)packet.getObject()).getName() : null;
 			case DISABLEDCOMMANDS:
 				return ProxyServer.getInstance().getDisabledCommands();
 			case BUNGEENAME:

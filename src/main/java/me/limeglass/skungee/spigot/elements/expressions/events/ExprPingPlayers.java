@@ -13,6 +13,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.lang.ExpressionType;
 import me.limeglass.skungee.common.objects.Returnable;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.common.player.SkungeePlayer;
 import me.limeglass.skungee.spigot.events.SkungeePingEvent;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
@@ -48,9 +49,9 @@ public class ExprPingPlayers extends SkungeeExpression<Object> implements Return
 		/*if (((PingEvent)event).getPacket().getPlayers() == null) {
 			((PingEvent)event).getPacket().setPlayers(new SkungeePlayer[] {new SkungeePlayer(false, UUID.randomUUID(), "")});
 		}*/
-		List<SkungeePlayer> players = new ArrayList<SkungeePlayer>();
+		List<PacketPlayer> players = new ArrayList<>();
 		if (((SkungeePingEvent)event).getPacket().getPlayers() != null) {
-			for (SkungeePlayer skungeePlayer : ((SkungeePingEvent)event).getPacket().getPlayers()) {
+			for (PacketPlayer skungeePlayer : ((SkungeePingEvent)event).getPacket().getPlayers()) {
 				if (skungeePlayer != null) players.add(skungeePlayer);
 			}
 		}
@@ -61,9 +62,9 @@ public class ExprPingPlayers extends SkungeeExpression<Object> implements Return
 				for (Object player : delta) {
 					if (player instanceof OfflinePlayer || player instanceof Player) {
 						OfflinePlayer p = (OfflinePlayer)player;
-						players.add(new SkungeePlayer(true, p.getUniqueId(), p.getName()));
+						players.add(new PacketPlayer(p.getUniqueId(), p.getName()));
 					} else if (player instanceof String) {
-						players.add(new SkungeePlayer(false, UUID.randomUUID(), (String)player));
+						players.add(new PacketPlayer(UUID.randomUUID(), (String)player));
 					}
 				}
 				//players = settable;
@@ -72,21 +73,21 @@ public class ExprPingPlayers extends SkungeeExpression<Object> implements Return
 				for (Object player : delta) {
 					if (player instanceof OfflinePlayer || player instanceof Player) {
 						OfflinePlayer p = (OfflinePlayer)player;
-						players.add(new SkungeePlayer(true, p.getUniqueId(), p.getName()));
+						players.add(new PacketPlayer(p.getUniqueId(), p.getName()));
 					} else if (player instanceof String) {
-						players.add(new SkungeePlayer(false, UUID.randomUUID(), (String)player));
+						players.add(new PacketPlayer(UUID.randomUUID(), (String)player));
 					}
 				}
 				break;
 			case REMOVE_ALL:
 			case REMOVE:
-				for (SkungeePlayer player : players) {
+				for (PacketPlayer player : players) {
 					for (Object object : delta) {
 						if (object instanceof OfflinePlayer || object instanceof Player) {
 							OfflinePlayer p = (OfflinePlayer)object;
-							if (player.getName().equalsIgnoreCase(p.getName()) && player.getUUID() == p.getUniqueId()) players.remove(player);
+							if (player.getUsername().equalsIgnoreCase(p.getName()) && player.getUUID() == p.getUniqueId()) players.remove(player);
 						} else if (object instanceof String) {
-							if (player.getName().equalsIgnoreCase((String)object)) players.remove(player);
+							if (player.getUsername().equalsIgnoreCase((String)object)) players.remove(player);
 						}
 					}
 				}
@@ -97,6 +98,6 @@ public class ExprPingPlayers extends SkungeeExpression<Object> implements Return
 				break;
 		}
 		if (players == null || players.isEmpty()) ((SkungeePingEvent)event).getPacket().setPlayers(null);
-		else ((SkungeePingEvent)event).getPacket().setPlayers(players.toArray(new SkungeePlayer[players.size()]));
+		else ((SkungeePingEvent)event).getPacket().setPlayers(players.toArray(new PacketPlayer[players.size()]));
 	}
 }

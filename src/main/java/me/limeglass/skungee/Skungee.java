@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import me.limeglass.skungee.common.packets.ProxyPacket;
 import me.limeglass.skungee.common.packets.ProxyPacketType;
 import me.limeglass.skungee.common.packets.ServerPacket;
-import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform;
 import me.limeglass.skungee.common.wrappers.SkungeePlatform.Platform;
 import me.limeglass.skungee.velocity.SkungeeVelocity;
@@ -64,7 +64,7 @@ public class Skungee {
 			}
 		}
 		if (packet.getPlayers() != null && packet.getPlayers().length > 0) {
-			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(SkungeePlayer::getUsername).collect(Collectors.toList());
+			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(PacketPlayer::getUsername).collect(Collectors.toList());
 		}
 		if (packet.getChangeMode() != null) {
 			debug = debug + " with change mode: " + packet.getChangeMode();
@@ -89,7 +89,7 @@ public class Skungee {
 			}
 		}
 		if (packet.getPlayers() != null && packet.getPlayers().length > 0) {
-			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(SkungeePlayer::getUsername).collect(Collectors.toList());
+			debug = debug + " for players: " + Arrays.stream(packet.getPlayers()).filter(player -> player != null).map(PacketPlayer::getUsername).collect(Collectors.toList());
 		}
 		return debug;
 	}

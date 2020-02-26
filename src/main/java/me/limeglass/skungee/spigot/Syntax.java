@@ -13,6 +13,7 @@ import ch.njol.skript.expressions.base.PropertyExpression;
 import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.util.SimpleEvent;
+import me.limeglass.skungee.Skungee;
 import me.limeglass.skungee.spigot.utils.annotations.AllChangers;
 import me.limeglass.skungee.spigot.utils.annotations.Changers;
 import me.limeglass.skungee.spigot.utils.annotations.Disabled;
@@ -56,7 +57,7 @@ public class Syntax {
 		}
 		if (!syntaxConfiguration.getBoolean(node + "enabled")) {
 			if (SkungeeSpigot.getInstance().getConfig().getBoolean("NotRegisteredSyntax", false))
-				SkungeeSpigot.consoleMessage(node.toString() + " didn't register!");
+				Skungee.getPlatform().consoleMessage(node.toString() + " didn't register!");
 			return null;
 		}
 		if (!syntaxConfiguration.isSet(node + "syntax")) {

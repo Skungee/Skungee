@@ -115,4 +115,12 @@ public class VelocityPlayer implements ProxyPlayer {
 		return uuid + ":" + username;
 	}
 
+	@Override
+	public boolean isConnected() {
+		Optional<Player> player = getPlayer();
+		if (!player.isPresent())
+			return false;
+		return player.get().isActive();
+	}
+
 }

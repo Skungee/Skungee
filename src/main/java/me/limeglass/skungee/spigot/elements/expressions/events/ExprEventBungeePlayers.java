@@ -12,7 +12,7 @@ import me.limeglass.skungee.common.events.SkungeePlayerDisconnect;
 import me.limeglass.skungee.common.events.SkungeePlayerEvent;
 import me.limeglass.skungee.common.events.SkungeePlayerSwitchServer;
 import me.limeglass.skungee.common.objects.Returnable;
-import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.spigot.lang.SkungeeExpression;
 import me.limeglass.skungee.spigot.utils.annotations.Events;
 import me.limeglass.skungee.spigot.utils.annotations.ExpressionProperty;
@@ -28,9 +28,9 @@ public class ExprEventBungeePlayers extends SkungeeExpression<String> implements
 	@Override
 	protected String[] get(Event event) {
 		Set<String> names = new HashSet<>();
-		for (SkungeePlayer player : ((SkungeePlayerEvent) event).getPlayers()) {
+		for (PacketPlayer player : ((SkungeePlayerEvent) event).getPlayers()) {
 			if (player != null)
-				names.add(player.getName());
+				names.add(player.getUsername());
 		}
 		return names.toArray(new String[names.size()]);
 	}

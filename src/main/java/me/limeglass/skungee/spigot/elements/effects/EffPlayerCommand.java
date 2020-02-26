@@ -6,7 +6,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import me.limeglass.skungee.common.packets.ServerPacket;
 import me.limeglass.skungee.common.packets.ServerPacketType;
-import me.limeglass.skungee.common.player.SkungeePlayer;
+import me.limeglass.skungee.common.player.PacketPlayer;
 import me.limeglass.skungee.spigot.lang.SkungeeEffect;
 import me.limeglass.skungee.spigot.utils.Utils;
 import me.limeglass.skungee.spigot.utils.annotations.Patterns;
@@ -19,7 +19,7 @@ public class EffPlayerCommand extends SkungeeEffect {
 	@Override
 	protected void execute(Event event) {
 		if (areNull(event)) return;
-		SkungeePlayer[] players = Utils.toSkungeePlayers(expressions.get(0).getAll(event));
+		PacketPlayer[] players = Utils.toSkungeePlayers(expressions.get(0).getAll(event));
 		ServerPacket packet = new ServerPacket(false, ServerPacketType.PLAYERCHAT, (String[]) expressions.get(1).getAll(event), players);
 		sockets.send(packet);
 	}

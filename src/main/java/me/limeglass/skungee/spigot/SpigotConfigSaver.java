@@ -15,10 +15,12 @@ public class SpigotConfigSaver {
 
 	private final File folder, config, oldconfig;
 	private FileConfiguration configuration;
+	private final SkungeeSpigot instance;
 
 	public SpigotConfigSaver(SkungeeSpigot instance) {
 		this.folder = new File(instance.getDataFolder(), "old-configs/");
 		this.config = new File(instance.getDataFolder(), "config.yml");
+		this.instance = instance;
 		load();
 		this.oldconfig = new File(folder, configuration.getString("version", "old") + "-config.yml");
 		if (!folder.exists())
@@ -31,7 +33,7 @@ public class SpigotConfigSaver {
 		try {
 			configuration.load(config);
 		} catch (IOException | InvalidConfigurationException exception) {
-			SkungeeSpigot.exception(exception, "Failed to load the configuration.");
+			instance.exception(exception, "Failed to load the configuration.");
 		}
 	}
 
@@ -39,7 +41,7 @@ public class SpigotConfigSaver {
 		try {
 			Files.move(config, oldconfig);
 		} catch (IOException exception) {
-			SkungeeSpigot.exception(exception, "Failed to save the old configuration.");
+			instance.exception(exception, "Failed to save the old configuration.");
 		}
 	}
 

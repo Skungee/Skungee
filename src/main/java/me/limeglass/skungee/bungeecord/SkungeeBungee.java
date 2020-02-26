@@ -382,4 +382,10 @@ public class SkungeeBungee extends Plugin implements ProxyPlatform {
 		return new BungeePlayer(uuid, player.getName());
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
+	public String getPlatformVersion() {
+		return ProxyServer.getInstance().getGameVersion();
+	}
+
 }

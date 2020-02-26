@@ -23,7 +23,6 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.util.Timespan;
 import me.limeglass.skungee.Skungee;
 import me.limeglass.skungee.common.player.PacketPlayer;
-import me.limeglass.skungee.common.player.SkungeePlayer;
 
 public class Utils {
 
@@ -66,7 +65,7 @@ public class Utils {
 	}
 
 	public static PacketPlayer[] toSkungeePlayers(Object... players) {
-		Set<SkungeePlayer> skungeePlayers = new HashSet<>();
+		Set<PacketPlayer> skungeePlayers = new HashSet<>();
 		for (Object player : players) {
 			if (player instanceof Player) {
 				skungeePlayers.add(new PacketPlayer(((Player) player).getUniqueId(), ((Player) player).getName()));

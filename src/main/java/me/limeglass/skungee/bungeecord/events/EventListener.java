@@ -16,7 +16,6 @@ import me.limeglass.skungee.common.packets.ProxyPacket;
 import me.limeglass.skungee.common.packets.ProxyPacketType;
 import me.limeglass.skungee.common.packets.ServerPingPacket;
 import me.limeglass.skungee.common.player.PacketPlayer;
-import me.limeglass.skungee.common.player.SkungeePlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ProxyServer;
@@ -143,7 +142,7 @@ public class EventListener implements Listener {
 					if (returned.getPlayers() != null) {
 						PlayerInfo[] info = new PlayerInfo[returned.getPlayers().length];
 						int spot = 0;
-						for (SkungeePlayer player : returned.getPlayers()) {
+						for (PacketPlayer player : returned.getPlayers()) {
 							info[spot] = new PlayerInfo(player.getUsername(), player.getUUID()); 
 							spot++;
 						}
