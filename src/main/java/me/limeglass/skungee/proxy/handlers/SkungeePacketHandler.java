@@ -78,29 +78,6 @@ public class SkungeePacketHandler {
 					return addresses;
 				}
 				break;
-			case PLAYERDISPLAYNAME:
-				if (!players.isEmpty()) {
-					Set<String> names = new HashSet<String>();
-					for (ProxiedPlayer player : players) {
-						names.add(player.getDisplayName());
-						if (packet.getObject() != null && packet.getChangeMode() != null) {
-							switch (packet.getChangeMode()) {
-								case SET:
-								case ADD:
-									player.setDisplayName((String) packet.getObject());
-									break;
-								case DELETE:
-								case REMOVE:
-								case REMOVE_ALL:
-								case RESET:
-									player.setDisplayName((String) packet.getObject());
-									break;
-							}
-						}
-					}
-					return names;
-				}
-				break;
 			case ISSERVERONLINE:
 				if (packet.getObject() != null) {
 					if (packet.getObject() instanceof String) {

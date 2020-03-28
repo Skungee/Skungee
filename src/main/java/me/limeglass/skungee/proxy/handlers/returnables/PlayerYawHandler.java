@@ -14,7 +14,7 @@ import me.limeglass.skungee.proxy.protocol.ProtocolPlayerManager;
 public class PlayerYawHandler extends SkungeeProxyHandler<Set<Number>> {
 
 	public PlayerYawHandler() {
-		super(Platform.ANY_PROXY, ServerPacketType.PLAYERYAW);
+		super(Platform.BUNGEECORD, ServerPacketType.PLAYERYAW);
 	}
 
 	@Override
