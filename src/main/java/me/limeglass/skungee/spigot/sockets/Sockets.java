@@ -44,7 +44,6 @@ public class Sockets {
 	private int heartbeatTask, keepAliveTask;
 	private final BukkitScheduler scheduler;
 	private final ExecutorService executor;
-	private PacketQueue packetQueue;
 	private final Skungee instance;
 	private final Server server;
 	private boolean connected;
@@ -66,8 +65,6 @@ public class Sockets {
 		this.attempts = configuration.getInt("connection.attempts", 20);
 		this.keepAlive = configuration.getInt("connection.keep-alive", 10) * 20;
 		this.handshake = configuration.getInt("connection.handshake-delay", 2000);
-		if (configuration.getBoolean("queue.enabled", true))
-			this.packetQueue = new PacketQueue(configuration, instance, this);
 		connect();
 	}
 
@@ -200,16 +197,12 @@ public class Sockets {
 				return supplier.get();
 			}
 		}
-		if (packetQueue != null) { // null if disabled.
-			packetQueue.queue(packet);
-		} else {
-			scheduler.runTaskAsynchronously(instance, new Runnable() {
-				@Override
-				public void run() {
-					send_i(packet);
-				}
-			});
-		}
+		scheduler.runTaskAsynchronously(instance, new Runnable() {
+			@Override
+			public void run() {
+				send_i(packet);
+			}
+		});
 		return null;
 	}
 
@@ -219,8 +212,6 @@ public class Sockets {
 			if (configuration.getBoolean("hault", false)) {
 				return send_i(packet);
 			} else {
-				if (configuration.getBoolean("queue.infinite-async-queue"))
-					return packetQueue.wait(packet);
 				Skungee.consoleMessage("Could not establish connection to Skungee on the Bungeecord!");
 				Bukkit.getScheduler().cancelTask(heartbeatTask);
 				unsent.add(packet);
@@ -299,9 +290,6 @@ public class Sockets {
 	public void disconnect() {
 		Bukkit.getScheduler().cancelTask(heartbeatTask);
 		Bukkit.getScheduler().cancelTask(keepAliveTask);
-		if (packetQueue != null) {
-			packetQueue.stop();
-		}
 		if (bungeecord != null) {
 			try {
 				bungeecord.close();

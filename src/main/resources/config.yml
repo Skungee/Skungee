@@ -89,18 +89,6 @@ connection:
     # This value should not be modified, only if a Skungee developer lets you know you can.
     bungeecord-keep-alive-delay: 100
 
-# This is a queue system to make sure every single packet gets sent. It will limit the amount of packets sent at a time.
-# Packets that are expressions will not be put into the queued system as it depends on a returned value.
-# The queue system will only handle effects unless the `infinite-async-queue` option is enabled.
-queue:
-    enabled: true
-    # Minimum delay between each packet in milliseconds.
-    delay: 15
-    # If you want to guarentee every packet is set, you can set this to true.
-    # It will throw every packet into a queue system until the connection is reinitiated again.
-    # Keep in mind that it keeps the queue in loaded memory.
-    infinite-async-queue: false
-
 # Reciever, this will allow for some syntax to work. Like "evaluate", "server is online", "global scripts", "network variables" and lots more.
 # This also needs to be enabled in order to run events.
 # Keep in mind that this port must not already be in use. If you run all your servers on the same machine, you will need to make

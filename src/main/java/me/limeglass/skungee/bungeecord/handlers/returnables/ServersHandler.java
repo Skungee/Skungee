@@ -13,7 +13,7 @@ public class ServersHandler extends SkungeeBungeeHandler {
 	public ServersHandler() {
 		super(SkungeePacketType.ALLSERVERS);
 	}
-	
+
 	@Override
 	public Object handlePacket(SkungeePacket packet, InetAddress address) {
 		return ProxyServer.getInstance().getServers().keySet().parallelStream().collect(Collectors.toSet());

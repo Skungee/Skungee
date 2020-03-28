@@ -21,9 +21,12 @@ public class ExprBungeeServers extends SkungeeExpression<String> {
 
 	@Override
 	protected String[] get(Event event) {
+		Object object = sockets.send(new SkungeePacket(true, SkungeePacketType.ALLSERVERS));
+		if (object == null)
+			return null;
 		@SuppressWarnings("unchecked")
-		Set<String> servers = (Set<String>) sockets.send(new SkungeePacket(true, SkungeePacketType.ALLSERVERS));
-		return (servers != null) ? servers.toArray(new String[servers.size()]) : null;
+		Set<String> servers = (Set<String>) object;
+		return servers.toArray(new String[servers.size()]);
 	}
 
 }

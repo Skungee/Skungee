@@ -98,6 +98,9 @@ DisableConsoleMessages: false
 # Disables the colour in the console.
 DisableConsoleColour: false
 
+# disable the player time counter.
+disable-player-time: false
+
 # Change the allowed buffer size of the server sockets accepting all the packets.
 # NOTE: This number must be a byte cap size. Aka divisable by 8. (512, 1024, etc)
 # If you have lots of allocated ram, and lots of Skungee servers, you may want to increase this.

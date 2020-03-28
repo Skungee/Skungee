@@ -21,16 +21,19 @@ public class PlayerTimeManager {
 	private Database<PlayerTime> database;
 
 	public PlayerTimeManager(Skungee instance) {
+		if (Skungee.getConfig().getBoolean("disable-player-time", false))
+			return;
 		try {
 			database = new H2Database<>(instance, "playtime", PlayerTime.class, new HashMap<>());
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
+			return;
 		}
 		ProxyServer proxy = ProxyServer.getInstance();
 		proxy.getScheduler().schedule(instance, () -> {
 			proxy.getPlayers().forEach(player -> {
 				String uuid = player.getUniqueId() + "";
-				PlayerTime time = database.get(uuid, new PlayerTime(player.getUniqueId()));
+				PlayerTime time = database.get(uuid);
 				if (time == null) {
 					time = new PlayerTime(player.getUniqueId());
 					database.put(uuid, time);
