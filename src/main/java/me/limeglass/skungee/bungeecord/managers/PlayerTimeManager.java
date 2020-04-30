@@ -15,6 +15,7 @@ import me.limeglass.skungee.bungeecord.database.H2Database;
 import me.limeglass.skungee.objects.SkungeePlayer;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 
 public class PlayerTimeManager {
 
@@ -32,6 +33,8 @@ public class PlayerTimeManager {
 		ProxyServer proxy = ProxyServer.getInstance();
 		proxy.getScheduler().schedule(instance, () -> {
 			proxy.getPlayers().forEach(player -> {
+				if (!player.isConnected())
+					return;
 				String uuid = player.getUniqueId() + "";
 				PlayerTime time = database.get(uuid);
 				if (time == null) {
@@ -39,7 +42,10 @@ public class PlayerTimeManager {
 					database.put(uuid, time);
 					return;
 				}
-				time.increment(player.getServer().getInfo().getName());
+				Server server = player.getServer();
+				if (server == null)
+					return;
+				time.increment(server.getInfo().getName());
 				database.put(uuid, time);
 			});
 		}, 0, 1, TimeUnit.SECONDS);
