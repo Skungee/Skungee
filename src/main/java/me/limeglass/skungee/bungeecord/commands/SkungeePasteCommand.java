@@ -27,6 +27,7 @@ public class SkungeePasteCommand extends Command {
 		}
 		if (args[0].equalsIgnoreCase("paste")) {
 			CompletableFuture.runAsync(() -> {
+				@SuppressWarnings("deprecation")
 				TextComponent component = new TextComponent(ChatColor.YELLOW + "Paste: " + SkungeeBungee.getInstance().postSkungeeHaste());
 				sender.sendMessage(component);
 			});

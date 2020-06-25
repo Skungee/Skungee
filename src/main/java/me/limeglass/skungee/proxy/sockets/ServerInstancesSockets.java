@@ -10,6 +10,7 @@ import java.util.Base64;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.config.Configuration;
+import me.limeglass.skungee.Skungee;
 import me.limeglass.skungee.bungeecord.SkungeeBungee;
 import me.limeglass.skungee.common.packets.ServerInstancesPacket;
 
@@ -37,13 +38,13 @@ public class ServerInstancesSockets {
 				return new Socket(InetAddress.getLocalHost(), port);
 			} catch (IOException e) {}
 		}
-		SkungeeBungee.consoleMessage("Could not establish a connection to the ServerInstances Bootstap.");
+		Skungee.getPlatform().consoleMessage("Could not establish a connection to the ServerInstances Bootstap.");
 		return null;
 	}
 
 	public static Object sendPacket(ServerInstancesPacket packet) {
 		if (port <= 0)
-			SkungeeBungee.consoleMessage("The recieving system for ServerInstances has not been setup yet, ", "make sure that you have ServerInstances installed or configured properly.");
+			Skungee.getPlatform().consoleMessage("The recieving system for ServerInstances has not been setup yet, ", "make sure that you have ServerInstances installed or configured properly.");
 		try {
 			if (bootstrap == null || !bootstrap.isConnected() || bootstrap.isClosed()) {
 				if (checking) {
@@ -67,7 +68,7 @@ public class ServerInstancesSockets {
 				bootstrap.setSoTimeout(10000);
 				checking = false;
 			}
-			SkungeeBungee.debugMessage("Sending " + getPacketDebug(packet) + " to the ServerInstances Bootstrap.");
+			Skungee.getPlatform().debugMessage("Sending " + getPacketDebug(packet) + " to the ServerInstances Bootstrap.");
 			Configuration configuration = SkungeeBungee.getConfig();
 			//Security setup
 			if (configuration.getBoolean("security.password.enabled", false)) {
@@ -102,7 +103,7 @@ public class ServerInstancesSockets {
 			objectOutputStream.close();
 			objectInputStream.close();
 		} catch (IOException | ClassNotFoundException e) {
-			SkungeeBungee.exception(e, "Could not send packet " + packet.getType());
+			Skungee.getPlatform().exception(e, "Could not send packet " + packet.getType());
 		}
 		return null;
 	}
