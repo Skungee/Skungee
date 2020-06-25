@@ -59,6 +59,7 @@ public class EventListener implements Listener {
 		}
     }
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
     public void onCommand(ChatEvent event) {
 		Optional<ProxiedPlayer> proxied = ProxyServer.getInstance().getPlayers().parallelStream()

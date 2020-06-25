@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/"/>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/codecrafter47.bungeetablistplus/bungeetablistplus-api-bungee/3.0.10/a9298509cd8ec836a43871b8c05cb24c7e78a550/bungeetablistplus-api-bungee-3.0.10.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/codecrafter47.bungeetablistplus/bungeetablistplus-api-bungee/3.0.10/7a604abd4ce937b0b0d2636e851af66c8dd8003e/bungeetablistplus-api-bungee-3.0.10-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/codecrafter47.bungeetablistplus/bungeetablistplus-api-bungee/3.3.0/be2a86170d809af2254de3d88c7a05b659999343/bungeetablistplus-api-bungee-3.3.0.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/codecrafter47.bungeetablistplus/bungeetablistplus-api-bungee/3.3.0/360fed3ad291cef7b1393e453ee2ec68a6dd96af/bungeetablistplus-api-bungee-3.3.0-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -13,32 +13,32 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.eclipse.jdt/org.eclipse.jdt.annotation/2.2.400/2cdbfefa379b4eca4cb7bc4e74b7ba8239411476/org.eclipse.jdt.annotation-2.2.400.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.eclipse.jdt/org.eclipse.jdt.annotation/2.2.400/793e354cd6c5503f5c1a06258db6067d4ba0f941/org.eclipse.jdt.annotation-2.2.400-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.eclipse.jdt/org.eclipse.jdt.annotation/2.2.600/f3126a50091c5b3f40a2e4c5b478f18476d54c00/org.eclipse.jdt.annotation-2.2.600.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.eclipse.jdt/org.eclipse.jdt.annotation/2.2.600/6b09ce7c2f8ed715e2a74c1b6614fa97cde7c50a/org.eclipse.jdt.annotation-2.2.600-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.spigotmc/spigot-api/1.15.2-R0.1-SNAPSHOT/fcc83592e9019ce5cc46b637273bafa406ae5125/spigot-api-1.15.2-R0.1-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.spigotmc/spigot-api/1.15.2-R0.1-SNAPSHOT/ef6ae93c98ba70f426c576db5d607a30c066adef/spigot-api-1.15.2-R0.1-SNAPSHOT-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.spigotmc/spigot-api/1.16.1-R0.1-SNAPSHOT/aab168d3cb2c659f141f8ec924a6a4585fc2b236/spigot-api-1.16.1-R0.1-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.spigotmc/spigot-api/1.16.1-R0.1-SNAPSHOT/56eddfb3520e379481533a742a2b7dc4d3f7c006/spigot-api-1.16.1-R0.1-SNAPSHOT-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-proxy/1.15-SNAPSHOT/981fba0f27842d103f1e76ebcd48c584b5964cb2/bungeecord-proxy-1.15-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-proxy/1.15-SNAPSHOT/3ab05fe61d02236123d6752b25fef2fadb738893/bungeecord-proxy-1.15-SNAPSHOT-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-proxy/1.16-R0.2-SNAPSHOT/9d4c8dbd977b6700c19784d6b96e4d65317403c/bungeecord-proxy-1.16-R0.2-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-proxy/1.16-R0.2-SNAPSHOT/30c3e2aaaf8db09dfba63f728672a5c90c3b2df1/bungeecord-proxy-1.16-R0.2-SNAPSHOT-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-query/1.15-SNAPSHOT/2f8f2f97396b39b4e45a08c1569579245017884d/bungeecord-query-1.15-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-query/1.15-SNAPSHOT/2902ab0d3767b17e47f83a842dbc695d0429e094/bungeecord-query-1.15-SNAPSHOT-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-query/1.16-R0.2-SNAPSHOT/63add39d5380fc0c8a47ea918fa7724abcdc5c64/bungeecord-query-1.16-R0.2-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-query/1.16-R0.2-SNAPSHOT/3486297b5dae76d10be46ce00c027c6f321d0135/bungeecord-query-1.16-R0.2-SNAPSHOT-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-api/1.15-SNAPSHOT/dcce889b97610e7782b7c64800d6486a4fd4ad3c/bungeecord-api-1.15-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-api/1.15-SNAPSHOT/a022a81566bb39c78685aeae3954d620c324c026/bungeecord-api-1.15-SNAPSHOT-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-api/1.16-R0.2-SNAPSHOT/613ca281bfad79f366c40b84d529dcf5982c6691/bungeecord-api-1.16-R0.2-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-api/1.16-R0.2-SNAPSHOT/d46fec93637924b604bc732bd2890cd46e5efe30/bungeecord-api-1.16-R0.2-SNAPSHOT-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-protocol/1.15-SNAPSHOT/51ad7bf2ac02032d06e0e6b3f0aa96763e0e659d/bungeecord-protocol-1.15-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-protocol/1.15-SNAPSHOT/969ab5cc5bfcf61db02dc89f3967edce8b9bb56e/bungeecord-protocol-1.15-SNAPSHOT-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-protocol/1.16-R0.2-SNAPSHOT/5dc77a67f35b8ec0fc0d48a702f06fbdcbfa1606/bungeecord-protocol-1.16-R0.2-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-protocol/1.16-R0.2-SNAPSHOT/28687e91d3d45228ea642c0da0055c986e530a39/bungeecord-protocol-1.16-R0.2-SNAPSHOT-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -48,7 +48,7 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.json/json/20190722/7bce7bacf0ab5e9f894d307a3de8b7f540064d5/json-20190722.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.json/json/20190722/6c40df0d93d36cdfc0fbf08e4e3b27eaa1208199/json-20190722-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.json/json/20200518/41a767de4bde8f01d53856b905c49b2db8862f13/json-20200518.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.json/json/20200518/ceb261c0ee9e87e2c4cb51ac95209006a3a2bd4c/json-20200518-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -63,27 +63,27 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-log/1.15-SNAPSHOT/a741114406a30058faf01f566f2198a474f13f11/bungeecord-log-1.15-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-log/1.15-SNAPSHOT/52b856891ae3c06893a06eae0e29665ae100c56/bungeecord-log-1.15-SNAPSHOT-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-log/1.16-R0.2-SNAPSHOT/49b7e1591e1f92777ebee1bdf5d2d3fb89442908/bungeecord-log-1.16-R0.2-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-log/1.16-R0.2-SNAPSHOT/a2c95b2a1f6501f21b91ac2ef9e4d0ec9032776d/bungeecord-log-1.16-R0.2-SNAPSHOT-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-chat/1.15-SNAPSHOT/1eb6e516f2b325dc185180610688c261437848cf/bungeecord-chat-1.15-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-chat/1.15-SNAPSHOT/8ac46209918c791b5456f1d4ecb2782473071231/bungeecord-chat-1.15-SNAPSHOT-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-chat/1.16-R0.1/78443aea8de49f046eb360edd012c97d2d920f39/bungeecord-chat-1.16-R0.1.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-chat/1.16-R0.1/24a496fdc7ca5b5b72849a8659dec37ced95ea9e/bungeecord-chat-1.16-R0.1-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-native/1.15-SNAPSHOT/ae6006c282822f552452dde9125d2d0831843782/bungeecord-native-1.15-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-native/1.15-SNAPSHOT/f0d33bc23d683bb9cc73559f340acae8b1e089d2/bungeecord-native-1.15-SNAPSHOT-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-native/1.16-R0.2-SNAPSHOT/3ee2af9376f3f260972d168ad0b26cb47eb50fbd/bungeecord-native-1.16-R0.2-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-native/1.16-R0.2-SNAPSHOT/3136c45d66105b2ee792ee45f6038f5f8a81378/bungeecord-native-1.16-R0.2-SNAPSHOT-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-config/1.15-SNAPSHOT/d7e2aecc0110cf99c241db0f235fc8b2ed1ae5df/bungeecord-config-1.15-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-config/1.15-SNAPSHOT/abc39a6f4814170f36bf4b4380488a1e203f7e4e/bungeecord-config-1.15-SNAPSHOT-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-config/1.16-R0.2-SNAPSHOT/4fcef31e3f84f8ca7743845535d8f9c858ad43f9/bungeecord-config-1.16-R0.2-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-config/1.16-R0.2-SNAPSHOT/2a8c5f7062707c668f20b93e5819dd38f6bedaa6/bungeecord-config-1.16-R0.2-SNAPSHOT-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-event/1.15-SNAPSHOT/dbe104e01208bcc71c6ff24db82ccfe067e21c0f/bungeecord-event-1.15-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-event/1.15-SNAPSHOT/5b14e4d4200d8a1dc790854f6dca59c87117835b/bungeecord-event-1.15-SNAPSHOT-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-event/1.16-R0.2-SNAPSHOT/fdea67ac5741427693145bca11c1eb62a806423d/bungeecord-event-1.16-R0.2-SNAPSHOT.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/net.md-5/bungeecord-event/1.16-R0.2-SNAPSHOT/2d720b707ac216728508388f9d038ce03b42d486/bungeecord-event-1.16-R0.2-SNAPSHOT-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -98,7 +98,7 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.yaml/snakeyaml/1.25/8b6e01ef661d8378ae6dd7b511a7f2a33fae1421/snakeyaml-1.25.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.yaml/snakeyaml/1.25/45379604b7a254120101009ba09537737daed6f/snakeyaml-1.25-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.yaml/snakeyaml/1.26/a78a8747147d2c5807683e76ec2b633e95c14fe9/snakeyaml-1.26.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/org.yaml/snakeyaml/1.26/1f369166f21abc8c07e618c2b9c0897f405d0999/snakeyaml-1.26-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -133,7 +133,7 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/com.flowpowered/flow-nbt/1.0.0/cdb46ca1a493dfc635e53a5055ed6c7872c32941/flow-nbt-1.0.0.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/com.flowpowered/flow-nbt/1.0.0/de26e633e2da05ddd80f3a494b3e8fb066df3625/flow-nbt-1.0.0-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/se.llbit/jo-nbt/1.3.0/fbbf96a883d5b53536bc526a57a22c550e15f02f/jo-nbt-1.3.0.jar" sourcepath="C:/Users/Sean Grover/.gradle/caches/modules-2/files-2.1/se.llbit/jo-nbt/1.3.0/c40e294f569becb698e07c6eb9a276436eb39109/jo-nbt-1.3.0-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>

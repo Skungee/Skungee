@@ -39,6 +39,7 @@ public class HandshakeHandler extends SkungeeBungeeHandler {
 		int port = handshake.getPort();
 		try {
 			for (Entry<String, ServerInfo> server : ProxyServer.getInstance().getServers().entrySet()) {
+				@SuppressWarnings("deprecation")
 				InetSocketAddress serverAddress = server.getValue().getAddress();
 				// Check the packet provided address first.
 				if (serverAddress.getAddress().equals(address) && port == serverAddress.getPort()) {

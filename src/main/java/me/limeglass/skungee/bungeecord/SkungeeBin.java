@@ -57,6 +57,7 @@ public class SkungeeBin {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public String createHaste() {
 		InputStream format = new ByteArrayInputStream(bytes.toByteArray());
 		Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(format);

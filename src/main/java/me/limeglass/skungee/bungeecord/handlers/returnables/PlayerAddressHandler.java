@@ -13,6 +13,7 @@ public class PlayerAddressHandler extends SkungeePlayerHandler {
 		super(SkungeePacketType.PLAYERIP);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Object handlePacket(SkungeePacket packet, InetAddress address) {
 		if (packet.getObject() == null)
