@@ -65,7 +65,7 @@ dependencies {
 	}
 
 	// JSON.org
-	shade (group: 'org.json', name: 'json', version: '20201115')
+	shade (group: 'org.json', name: 'json', version: '20210307')
 
 	// H2 Database
 	shade (group: 'com.h2database', name: 'h2', version: '1.4.200')
