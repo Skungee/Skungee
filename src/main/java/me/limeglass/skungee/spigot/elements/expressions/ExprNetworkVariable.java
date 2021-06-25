@@ -123,7 +123,7 @@ public class ExprNetworkVariable extends SkungeeExpression<Object> {
 			}
 		}
 		SkungeeVariable variable = new SkungeeVariable(variableString.toString(event), values);
-		sockets.send(new SkungeePacket(true, SkungeePacketType.NETWORKVARIABLE, variable, changer));
+		sockets.send(new SkungeePacket(false, SkungeePacketType.NETWORKVARIABLE, variable, changer));
 	}
 
 }
